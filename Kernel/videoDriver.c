@@ -43,6 +43,7 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
+
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
@@ -54,10 +55,9 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 // inicio del bitmap
 extern unsigned char _binary_font_psf_start[];
 
-// Pointer to the font bitmap
 unsigned char *font = _binary_font_psf_start;
 
-void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor)
+void putChar(unsigned char c, int x, int y, int fgcolor, int bgcolor)
 {
 	int cx,cy;
 	int mask[8]={1,2,4,8,16,32,64,128};
@@ -65,7 +65,15 @@ void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor)
 
 	for(cy=0;cy<16;cy++){
 		for(cx=0;cx<8;cx++){
-			putPixel(glyph[cy]&mask[cx]?fgcolor:bgcolor,x+cx,y+cy-12);
+			putPixel(glyph[cy]&mask[7 - cx]?fgcolor:bgcolor,x+cx,y+cy-12);
 		}
 	}
 }
+
+void print(const char * word, int x, int y, int fgcolor, int bgcolor)
+{
+	for(int i = 0; word[i] != 0; i++){
+		putChar(word[i], x + i*8, y, fgcolor, bgcolor); 
+	}
+}
+

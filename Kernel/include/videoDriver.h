@@ -4,6 +4,8 @@
 #include <stdint.h>
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y);
-void drawchar(unsigned char c, int x, int y, int fgcolor, int bgcolor);
+void putChar(unsigned char c, int x, int y, int fgcolor, int bgcolor);
+void print(const char * word, int x, int y, int fgcolor, int bgcolor);
+
 
 #endif
