@@ -9,3 +9,6 @@
 
 #Object files
 *.o
+
+#No access
+.bash_history
