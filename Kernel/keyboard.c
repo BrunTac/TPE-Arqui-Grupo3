@@ -75,7 +75,6 @@ void keyboard_handler() {
 }
 
 char getKey() {
-        print("hola", 50, 80, 0xFFFFFF, 0x000000);
         if(head != tail) {
                 char toReturn = buffer[tail];
                 tail = (tail + 1) % BUFFER_SIZE;

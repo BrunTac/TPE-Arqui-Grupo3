@@ -103,22 +103,20 @@ int main()
 {	
 	load_idt();
 	
-	print("Vamos ciclon", 50, 50, COLOR_RED, COLOR_BLUE);
+	print("Vamos h ciclon", 50, 50, COLOR_RED, COLOR_BLUE);
 
 	int x = 50;
-	int y = 60;
+	int y = 66;
 	int i = 0;
 	int j = 0;
 	while(1){
 		char c = getKey();
 		if(c != '\0'){
-			if(i*8 + x < 80){
-				i++;
-			}else{
+			if(i*8 + x >= 110 * 8){
 				i = 0;
 				j++;
-			}
-			putChar(c, x + i*8, y + j * 16, COLOR_GREEN, COLOR_WHITE);
+			} 
+			putChar(c, x + i++*8, y + j * 16, COLOR_RED, COLOR_BLUE);
 		}
 	}
 	
