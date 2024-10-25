@@ -2,10 +2,19 @@
 #define VIDEO_DRIVER_H
 
 #include <stdint.h>
+typedef struct {
+    uint8_t b;
+    uint8_t g;
+    uint8_t r;
+} Color;
+void putPixel(Color color, uint64_t x, uint64_t y)
+void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor);
+void print(const char * word, int x, int y, Color fgcolor, Color bgcolor);
 
-void putPixel(uint32_t hexColor, uint64_t x, uint64_t y);
-void putChar(unsigned char c, int x, int y, int fgcolor, int bgcolor);
-void print(const char * word, int x, int y, int fgcolor, int bgcolor);
-
+void prints(const char *str, Color fnt, Color bgd);
+static void scrollUp ();
+static uint32_t* getPixelPtr(uint16_t x, uint16_t y);
+void print_newline();
+void print_backspace(Color fnt, Color bgd);
 
 #endif

@@ -1,6 +1,9 @@
 #include <videoDriver.h>
 #include <stdio.h>
 
+const uint16_t WIDTH_FONT = 8;
+const uint16_t HEIGHT_FONT = 16;
+
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -44,12 +47,16 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 
-void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
-    uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
-    uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
-    framebuffer[offset]     =  (hexColor) & 0xFF;
-    framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF; 
-    framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
+void putPixel(Color color, uint64_t x, uint64_t y) {
+    
+    if (x >= VBE_mode_info->width || y >= VBE_mode_info->height)
+        return;
+	
+    Color* pixel = (Color*) getPixelPtr(x, y);
+
+    pixel->r = color.r;
+    pixel->g = color.g;
+    pixel->b = color.b;
 }
 
 // inicio del bitmap
@@ -57,23 +64,96 @@ extern unsigned char _binary_font_psf_start[];
 
 unsigned char *font = _binary_font_psf_start;
 
-void putChar(unsigned char c, int x, int y, int fgcolor, int bgcolor)
+//coordenadas de donde escribir el proximo char
+uint16_t current_X = 0;
+uint16_t current_Y = 0;
+
+
+void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 {
 	int cx,cy;
 	int mask[8]={1,2,4,8,16,32,64,128};
 	unsigned char *glyph=font+(int)c*16;
 
-	for(cy=0;cy<16;cy++){
-		for(cx=0;cx<8;cx++){
-			putPixel(glyph[cy]&mask[7 - cx]?fgcolor:bgcolor,x+cx,y+cy-12);
+	if (current_X >= VBE_mode_info->width) {
+		current_X = 0;
+        	if (current_Y + HEIGHT_FONT > VBE_mode_info->height) {
+			current_Y -= HEIGHT_FONT;
+            		scrollUp();
+        	} else {
+            		current_Y += HEIGHT_FONT;
+        	}
+    	}
+
+	for(cy=0;cy<HEIGHT_FONT;cy++){
+		for(cx=0;cx<WIDTH_FONT;cx++){
+			putPixel(glyph[cy] & mask[cx] ? fntColor : bgColor, current_X + (8 - cx) + i, current_Y + cy + j );
 		}
 	}
+	
+	current_X += WIDTH_FONT;
 }
 
-void print(const char * word, int x, int y, int fgcolor, int bgcolor)
-{
-	for(int i = 0; word[i] != 0; i++){
-		putChar(word[i], x + i*8, y, fgcolor, bgcolor); 
-	}
+void prints(const char *str, Color fnt, Color bgd){
+    for (int i = 0 ; str[i] != '\0'; i++ ){
+        print(str[i], fnt, bgd);
+    }
 }
 
+
+void print(const char c, Color fnt, Color bgd){
+    switch (c) {
+        case '\n':
+            print_newline();
+        break;
+        case '\b':
+            print_backspace(fnt, bgd);
+        break;
+        case '\0':
+            /* nada, no imprime nada */
+        break;
+        default:
+            putChar(c, current_X , current_Y , fnt , bgd);
+        break;
+    }
+}
+
+static void scrollUp (){
+    Color* pixel, *next;
+    for (int i = 0 ; i < current_Y + HEIGHT_FONT ; i++){
+        for (int j = 0 ; j < VBE_mode_info->width ; j++){
+            pixel = (Color *) getPixelPtr(j,i);
+            next = (Color *) getPixelPtr(j,i+HEIGHT_FONT);
+            *pixel = *next;
+        }
+    }
+}
+
+static uint32_t* getPixelPtr(uint16_t x, uint16_t y) {
+    uint8_t pixelwidth = VBE_mode_info->bpp/8;     //la cantidad de bytes hasta el siguiente pixel a la derecha (bpp: BITS per px)
+    uint16_t pixelHeight = VBE_mode_info->pitch;   //la cantidad de bytes hasta el pixel hacia abajo
+
+    uintptr_t pixelPtr = (uintptr_t)(VBE_mode_info->framebuffer) + x + y;
+    return (uint32_t*)pixelPtr;
+}
+
+
+void print_newline(){
+    current_X = 0;
+    current_Y += HEIGHT_FONT;
+
+    if (current_Y + HEIGHT_FONT > VBE_mode_info->height){
+        current_Y -= HEIGHT_FONT;
+        scrollUp();
+    }
+}
+
+void print_backspace(Color fnt, Color bgd){
+    if (current_X >= WIDTH_FONT){
+	current_X -= WIDTH_FONT;
+    } else {
+        current_X = 0;
+    }
+    drawChar(current_X, current_Y , ' ' , fnt , bgd);
+    current_X -= WIDTH_FONT;
+}
