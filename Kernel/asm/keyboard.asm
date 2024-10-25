@@ -1,13 +1,7 @@
-
-GLOBAL keyboard_read
-
 section .text
 
+GLOBAL readKey
 
-keyboard_read:
-	
-	mov dx, 0x60
-	in al, dx
-	movxz rax, al
-	ret
-
+readKey:
+    in al, 60h
+    ret
