@@ -65,7 +65,7 @@ void putChar(unsigned char c, int x, int y, int fgcolor, int bgcolor)
 
 	for(cy=0;cy<16;cy++){
 		for(cx=0;cx<8;cx++){
-			putPixel(glyph[cy]&mask[7 - cx]?fgcolor:bgcolor,x+cx,y+cy-12);
+			putPixel(glyph[cy]&mask[7 - cx]?fgcolor:bgcolor,x+cx,y+cy);
 		}
 	}
 }
