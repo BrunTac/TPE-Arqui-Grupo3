@@ -12,7 +12,8 @@ extern uint8_t data;
 extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
-
+extern Color WHITE;
+extern Color BLACK;
 static const uint64_t PageSize = 0x1000;
 
 static void * const sampleCodeModuleAddress = (void*)0x400000;
@@ -69,7 +70,7 @@ void * initializeKernelBinary()
 int main()
 {	
 	load_idt();
-	
+	prints("test", BLACK, WHITE);
 
 	return 0;
 }

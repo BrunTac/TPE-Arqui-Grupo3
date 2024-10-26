@@ -7,9 +7,11 @@ typedef struct {
     uint8_t g;
     uint8_t r;
 } Color;
-void putPixel(Color color, uint64_t x, uint64_t y)
+extern Color WHITE;
+extern Color BLACK;
+void putPixel(Color color, uint64_t x, uint64_t y);
 void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor);
-void print(const char * word, int x, int y, Color fgcolor, Color bgcolor);
+void print(const char c, Color fgcolor, Color bgcolor);
 
 void prints(const char *str, Color fnt, Color bgd);
 static void scrollUp ();

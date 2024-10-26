@@ -46,6 +46,8 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
+Color WHITE = {255, 255, 255};
+Color BLACK = {0,0,0};
 
 void putPixel(Color color, uint64_t x, uint64_t y) {
     
@@ -87,12 +89,13 @@ void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 
 	for(cy=0;cy<HEIGHT_FONT;cy++){
 		for(cx=0;cx<WIDTH_FONT;cx++){
-			putPixel(glyph[cy] & mask[cx] ? fntColor : bgColor, current_X + (8 - cx) + i, current_Y + cy + j );
+			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, current_X + (8 - cx), current_Y + cy);
 
-	
+		}
+	}	
 	current_X += WIDTH_FONT;
+	
 }
-
 void prints(const char *str, Color fnt, Color bgd){
     for (int i = 0 ; str[i] != '\0'; i++ ){
         print(str[i], fnt, bgd);
@@ -153,6 +156,6 @@ void print_backspace(Color fnt, Color bgd){
     } else {
         current_X = 0;
     }
-    drawChar(current_X, current_Y , ' ' , fnt , bgd);
+    putChar(current_X, current_Y , ' ' , fnt , bgd);
     current_X -= WIDTH_FONT;
 }
