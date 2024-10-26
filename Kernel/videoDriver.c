@@ -88,8 +88,7 @@ void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 	for(cy=0;cy<HEIGHT_FONT;cy++){
 		for(cx=0;cx<WIDTH_FONT;cx++){
 			putPixel(glyph[cy] & mask[cx] ? fntColor : bgColor, current_X + (8 - cx) + i, current_Y + cy + j );
-		}
-	}
+
 	
 	current_X += WIDTH_FONT;
 }
