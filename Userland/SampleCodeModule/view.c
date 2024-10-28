@@ -52,7 +52,7 @@ void getCommandline(){
     int read = 0;
     tokens = 0;
     while((c = getchar()) != '\n' && tokens < MAX_TOKENS && read < MAX_BUFFER){
-        if(c == BACK_SPACE){
+        if(c == '\b'){
             if(read > 0){
                 read--;
                 putchar(c);
@@ -80,31 +80,31 @@ void getCommandline(){
 
 void commandline_handler(){
     switch(cmdline[0]){
-        case help:
+        case "help":
             help();
             break;
-        case clear:
+        case "clear":
             clear();
             break;
-        case changeusername:
+        case "changeusername":
             changeusername();
             break;
-        case whoami:
+        case "whoami":
             whoami();
             break;
-        case time:
+        case "time":
             time();
             break;
-        case showregisters:
+        case "showregisters":
             showregisters();
             break;
-        case test_exception:
+        case "test_exception":
             test_exception();
             break;
-        case snake:
+        case "snake":
             snake();
             break;
-        case exit:
+        case "exit":
             break;
         default:
             invalid_command();
@@ -113,7 +113,7 @@ void commandline_handler(){
 }
 
 void notEnoughArguments(int arguments){
-    printf("Error: faltan argumentos. El comando '%s' necesita %d argumentos.", cmdline[0], argumentos);
+    printf("Error: faltan argumentos. El comando '%s' necesita %d argumentos.", cmdline[0], arguments);
 }
 
 void tooManyArguments(int arguments){

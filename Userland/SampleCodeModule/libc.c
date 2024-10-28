@@ -72,7 +72,6 @@ void scanf(const char *format, void * variable){
             }
         }
     }
-    va_end(args);
     return;
 }
 
@@ -88,13 +87,48 @@ void newLine(){
     sys_write(STDOUT, '\n');
 }
 
-// void printfColor(const char * format, void * variable, Color color){
+void printfColor(const char * format, Color color, ...){
+    va_list args;
+    va_start(args, format);
 
-// }
+    for (const char *ptr = format; *ptr != '\0'; ptr++) {
+        if (*ptr == '%' && *(ptr + 1) != '\0') {
+            ptr++;
+            if (*ptr == 'd') {
+                int num = va_arg(args, int);
+                if (num < 0) {
+                    putcharColor('-', color);
+                    num = -num;
+                }
+                // Convert int to string and print
+                char buffer[10];
+                int i = 0;
+                do {
+                    buffer[i++] = '0' + (num % 10);
+                    num /= 10;
+                } while (num > 0);
+                while (i > 0) {
+                    putcharColor(buffer[--i], color);
+                }
+            } else if (*ptr == 's') {
+                char *str = va_arg(args, char*);
+                while (*str) {
+                    putcharColor(*str++, color);
+                }
+            } else if (*ptr == 'n'){
+                newLine();
+            }
+        } else {
+            putchar(*ptr);
+        }
+    }
+    va_end(args);
+    return;
+}
 
-// void putcharColor(int character, Color color){
-
-// }   
+void putcharColor(int character, Color color){
+    sys_write_color(STDOUT, character, color);
+}   
 
 // int strcmp(const char * s1, const char * s2){
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nombre del contenedor
-NOMBRE="TPE-Arqui"
+NOMBRE="TPE-Arqui-Grupo3"
 # Nombre del usuario
 MI_USER="isaconde"  # Reemplaza "tu_usuario" con tu nombre de usuario
 
