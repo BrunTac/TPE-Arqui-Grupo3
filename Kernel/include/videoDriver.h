@@ -9,11 +9,12 @@ typedef struct {
 } Color;
 extern Color WHITE;
 extern Color BLACK;
+extern Color RED;
 void putPixel(Color color, uint64_t x, uint64_t y);
 void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor);
 void print(const char c, Color fgcolor, Color bgcolor);
-
 void prints(const char *str, Color fnt, Color bgd);
+void printHex(const uint64_t num, Color fnt, Color bgd);
 static void scrollUp();
 static uint32_t* getPixelPtr(uint16_t x, uint16_t y);
 void print_newline();

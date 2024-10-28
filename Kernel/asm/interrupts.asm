@@ -57,7 +57,13 @@ SECTION .text
 %endmacro
 
 %macro saveRegisters 0
-	mov [registerState], rip
+	push rax
+	call rip
+	rip:
+	pop rax
+	mov [registerState], rax
+	pop rax ; hasta aca es para guardar RIP
+
 	mov [registerState+8], rax
 	mov [registerState+16], rbx
 	mov [registerState+24], rcx
@@ -74,7 +80,12 @@ SECTION .text
 	mov [registerState+112], r13
 	mov [registerState+120], r14
 	mov [registerState+128], r15
-	mov [registerState+136], rflags
+
+	push rax
+	pushfq
+	pop rax
+	mov [registerState+136], rax
+	pop rax
 %endmacro
 
 %macro irqHandlerMaster 1

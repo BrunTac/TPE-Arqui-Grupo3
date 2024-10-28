@@ -1,6 +1,8 @@
 #include <videoDriver.h>
 #include <stdio.h>
 
+#define SIZE 16
+
 const uint16_t WIDTH_FONT = 8;
 const uint16_t HEIGHT_FONT = 16;
 
@@ -48,6 +50,7 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 Color WHITE = {255, 255, 255};
 Color BLACK = {0,0,0};
+Color RED = {255, 0, 0};
 
 void putPixel(Color color, uint64_t x, uint64_t y) {
     
@@ -104,8 +107,8 @@ void prints(const char *str, Color fnt, Color bgd){
 
 void printHex(const uint64_t num, Color fnt, Color bgd) {
 	char hexChars[] = "0123456789ABCDEF";
-	char * toPrint;
-	for(int i = 15 ; i >= 0 ; i--) {
+	char toPrint[SIZE];
+	for(int i = SIZE - 1 ; i >= 0 ; i--) {
 		toPrint[i] = hexChars[(num >> (i * 4)) & 0xF];	
 	}
 	prints(toPrint, fnt, bgd);
