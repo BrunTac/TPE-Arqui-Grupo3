@@ -91,6 +91,7 @@ SECTION .text
 %macro irqHandlerMaster 1
 	pushState
 
+	mov r9, rdi
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
 
@@ -173,6 +174,10 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
+;Sys_calls
+_irq60Handler:
+	sti
+	irqHandlerMaster 60
 
 ;Zero Division Exception
 _exception0Handler:

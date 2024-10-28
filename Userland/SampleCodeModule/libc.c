@@ -5,10 +5,9 @@
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
-#define MAX_BUFFER 100 // esto seria el maximo de un string que le puedo pasar a scanf?
+#define MAX_BUFFER 256 // esto seria el maximo de un string que le puedo pasar a scanf?
 
-// FALTA: incluir Color, printfcolor y putcharcolor. strcpy y strcmp
-// en las que llame a sys_call, esta a determinar. depende de como las hagamos pero es una idea
+
 
 void printf(const char *format, ...){
     va_list args;
@@ -77,7 +76,7 @@ void scanf(const char *format, void * variable){
 }
 
 void putchar(char character){
-    sys_write(STDOUT, &character);
+    sys_write_char(STDOUT, character, WHITE, BLACK);
 }
 
 char getchar(){
@@ -85,12 +84,12 @@ char getchar(){
 }
 
 void newLine(){
-    sys_write(STDOUT, '\n');
+    sys_write_char(STDOUT, '\n', WHITE, BLACK);
 }
 
 void printfColor(const char * format, Color color, ...){
     va_list args;
-    va_start(args, format);
+    va_start(args, color);
 
     for (const char *ptr = format; *ptr != '\0'; ptr++) {
         if (*ptr == '%' && *(ptr + 1) != '\0') {
@@ -127,8 +126,8 @@ void printfColor(const char * format, Color color, ...){
     return;
 }
 
-void putcharColor(char character, Color color){
-    sys_write_color(STDOUT, &character, color);
+void putcharColor(char character, Color font, Color background){
+    sys_write_char(STDOUT, character, font, background);
 }   
 
  int strcmp(const char * s1, const char * s2){
@@ -153,7 +152,7 @@ void putcharColor(char character, Color color){
 
 	int w = 0;
 
-	while(source[w] != '\0')
+	while(source[w] != '\0'){
 		destination[w] = source[w];
 		w++;
 	}
