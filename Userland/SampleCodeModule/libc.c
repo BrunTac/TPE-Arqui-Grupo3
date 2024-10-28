@@ -152,7 +152,7 @@ void putcharColor(char character, Color font, Color background){
 
 	int w = 0;
 
-	while(source[w] != '\0')
+	while(source[w] != '\0'){
 		destination[w] = source[w];
 		w++;
 	}
