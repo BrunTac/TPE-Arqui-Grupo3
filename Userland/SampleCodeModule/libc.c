@@ -130,10 +130,32 @@ void putcharColor(char character, Color font, Color background){
     sys_write_char(STDOUT, character, font, background);
 }   
 
-// int strcmp(const char * s1, const char * s2){
+ int strcmp(const char * s1, const char * s2){
 
-// }
+	int r1 = 0;
+	int r2 = 0;
 
-// void strcpy(char * destination, const chat * source){
-    
-// }
+	while(s1[r1] != '\0' && s2[r2] != '\0'){
+		if(s1[r1] != s2[r2]){
+			return s1[r1] - s2[r2];
+		}
+		r1++;
+		r2++;
+	}
+
+	return s1[r1] - s2[r2];
+	
+
+}
+
+ void strcpy(char * destination, const char * source){
+
+	int w = 0;
+
+	while(source[w] != '\0')
+		destination[w] = source[w];
+		w++;
+	}
+
+	destination[w] = '\0';
+ }
