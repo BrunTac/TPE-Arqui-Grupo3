@@ -1,5 +1,6 @@
 #include <libc.h>
 #include <stdarg.h>
+#include <sys_calls.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -75,12 +76,12 @@ void scanf(const char *format, void * variable){
     return;
 }
 
-void putchar(int character){
-    sys_write(STDOUT, character);
+void putchar(char character){
+    sys_write(STDOUT, &character);
 }
 
 char getchar(){
-    sys_read(STDIN);
+    return sys_read(STDIN);
 }
 
 void newLine(){
@@ -126,8 +127,8 @@ void printfColor(const char * format, Color color, ...){
     return;
 }
 
-void putcharColor(int character, Color color){
-    sys_write_color(STDOUT, character, color);
+void putcharColor(char character, Color color){
+    sys_write_color(STDOUT, &character, color);
 }   
 
 // int strcmp(const char * s1, const char * s2){

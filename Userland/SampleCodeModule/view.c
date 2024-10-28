@@ -1,5 +1,6 @@
 #include <view.h>
 #include <libc.h>
+#include <sys_calls.h>
 
 //FALTA: printMenu (facil pero paja), todas las sys_ (kernel), los test_ y snake obvioooooooooooo
 //OBS: le puse sys_algo a todas las funciones que van a estar en kernel. pero no se si decirles sys_calls. capaz les cambiamos el nombre
@@ -170,7 +171,7 @@ void time(){
 
 void showregisters(){
     if(checkArguments(0)){
-        sys_showregisters();
+        sys_show_registers();
     }
 }
 
@@ -215,7 +216,7 @@ void test_divzero_exep(){
 
 
 void printMenu(){
-    
+
 }
 
 

@@ -10,6 +10,7 @@ typedef struct {
 extern Color WHITE;
 extern Color BLACK;
 extern Color RED;
+
 void putPixel(Color color, uint64_t x, uint64_t y);
 void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor);
 void print(const char c, Color fgcolor, Color bgcolor);
