@@ -83,3 +83,8 @@ char getKey() {
         } else
                 return '\0';
 }
+
+void emptyBuffer(){
+        head = 0;
+        head = tail;
+}

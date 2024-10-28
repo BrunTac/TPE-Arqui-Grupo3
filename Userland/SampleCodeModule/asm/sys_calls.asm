@@ -7,18 +7,18 @@ GLOBAL sys_clear
 GLOBAL sys_show_registers
 
 
-sys_write:
+sys_write_char:
     mov rax, 4
     int 80h
 
     ret
 
-sys_write_color:
-    ret
 
 sys_read:
     mov rax, 3
-    
+    int 80h
+
+    ret
 
 sys_clear:
     ret

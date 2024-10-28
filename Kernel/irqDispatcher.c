@@ -12,6 +12,9 @@ void irqDispatcher(uint64_t irq) {
 		case 1:
 			int_21();
 			break;
+		case 60:
+			int_80();
+			break;
 	}
 	return;
 }
@@ -22,4 +25,8 @@ void int_20() {
 
 void int_21() {
 	keyboard_handler();
+}
+
+void int_80() {
+	syscalls_handler();
 }

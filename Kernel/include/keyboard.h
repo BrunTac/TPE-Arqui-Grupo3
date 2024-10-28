@@ -4,5 +4,6 @@
 void keyboard_handler();
 void bufferKey(char key);
 char getKey();
+void emptyBuffer();
 
 #endif
