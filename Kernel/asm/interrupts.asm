@@ -56,6 +56,27 @@ SECTION .text
 	pop rax
 %endmacro
 
+%macro saveRegisters 0
+	mov [registerState], rip
+	mov [registerState+8], rax
+	mov [registerState+16], rbx
+	mov [registerState+24], rcx
+	mov [registerState+32], rdx
+	mov [registerState+40], rbp
+	mov [registerState+48], rsi
+	mov [registerState+56], rdi
+	mov [registerState+64], rsp
+	mov [registerState+72], r8
+	mov [registerState+80], r9
+	mov [registerState+88], r10
+	mov [registerState+96], r11
+	mov [registerState+104], r12
+	mov [registerState+112], r13
+	mov [registerState+120], r14
+	mov [registerState+128], r15
+	mov [registerState+136], rflags
+%endmacro
+
 %macro irqHandlerMaster 1
 	pushState
 
@@ -75,7 +96,10 @@ SECTION .text
 %macro exceptionHandler 1
 	pushState
 
+	saveRegisters
+
 	mov rdi, %1 ; pasaje de parametro
+	mov rsi, registerState ; puntero a arreglo con los valores de los registros
 	call exceptionDispatcher
 
 	popState
@@ -152,3 +176,4 @@ haltcpu:
 
 SECTION .bss
 	aux resq 1
+	registerState resq 18

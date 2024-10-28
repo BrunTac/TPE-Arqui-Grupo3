@@ -102,6 +102,14 @@ void prints(const char *str, Color fnt, Color bgd){
     }
 }
 
+void printHex(const uint64_t num, Color fnt, Color bgd) {
+	char hexChars[] = "0123456789ABCDEF";
+	char * toPrint;
+	for(int i = 15 ; i >= 0 ; i--) {
+		toPrint[i] = hexChars[(num >> (i * 4)) & 0xF];	
+	}
+	prints(toPrint, fnt, bgd);
+}
 
 void print(const char c, Color fnt, Color bgd){
     switch (c) {
