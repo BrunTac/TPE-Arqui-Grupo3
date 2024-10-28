@@ -18,7 +18,7 @@ char user[MAX_BUFFER];
 char cmdtoken[MAX_BUFFER];
 char cmdline[MAX_TOKENS][MAX_BUFFER];
 int tokens = 0;
-int exit = 0;
+int exited = 0;
 
 void initialize(){
     
@@ -34,7 +34,7 @@ void initialize(){
 }
 
 void terminal(){
-    while(!exit){
+    while(!exited){
         printf("%s$> ", user);
 
         cmdline[0][0] = '\0';
@@ -80,36 +80,27 @@ void getCommandline(){
 }
 
 void commandline_handler(){
-    switch(cmdline[0]){
-        case "help":
-            help();
-            break;
-        case "clear":
-            clear();
-            break;
-        case "changeusername":
-            changeusername();
-            break;
-        case "whoami":
-            whoami();
-            break;
-        case "time":
-            time();
-            break;
-        case "showregisters":
-            showregisters();
-            break;
-        case "test_exception":
-            test_exception();
-            break;
-        case "snake":
-            snake();
-            break;
-        case "exit":
-            break;
-        default:
-            invalid_command();
-            break;
+    char * cmd = cmdline[0];
+    if(strcmp(cmd, "help") == 0){
+        help();
+    }else if(strcmp(cmd, "clear") == 0){
+        clear();
+    }else if(strcmp(cmd, "changeusername") == 0){
+        changeusername();
+    }else if(strcmp(cmd, "whoami") == 0){
+        whoami();
+    }else if(strcmp(cmd, "time") == 0){
+        time();
+    }else if(strcmp(cmd, "showregisters") == 0){
+        showregisters();
+    }else if(strcmp(cmd, "test_exception") == 0){
+        test_exception();
+    }else if(strcmp(cmd, "snake") == 0){
+        snake();
+    }else if(strcmp(cmd, "exit") == 0){
+        exit();
+    }else{
+        invalid_command();
     }
 }
 
@@ -121,7 +112,7 @@ void tooManyArguments(int arguments){
     if(arguments == 0){
         printf("Error: el comando '%s' no acepta argumentos.", cmdline[0]);
     }else{
-        printf("Error: el comando '%s' solo acepta %d argumentos.", cmdline[0], argumentos);
+        printf("Error: el comando '%s' solo acepta %d argumentos.", cmdline[0], arguments);
     }
 }
 
@@ -131,7 +122,7 @@ int checkArguments(int arguments){
         return 0;
     }
     if(tokens > arguments + 1){
-        tooManyArguments(argumentos);
+        tooManyArguments(arguments);
         return 0;
     }
     return 1;
@@ -144,7 +135,7 @@ void help(){
 }
 
 void clear(){
-    if checkArguments(0){
+    if (checkArguments(0)){
         // vacia la pantalla y ubica los punteros de posicion en el principio
         sys_clear();
     }
@@ -165,7 +156,8 @@ void whoami(){
 
 void time(){
     if(checkArguments(0)){
-        printf("%d:%d:%d", sys_hours(), sys_minutes(), sys_seconds());
+        //printf("%d:%d:%d", sys_hours(), sys_minutes(), sys_seconds());
+        printf("Time");
     }
 }
 
@@ -177,17 +169,14 @@ void showregisters(){
 
 void test_exception(){
     if(checkArguments(1)){
-        switch(cmdline[1]){
-            case "opcode":
-                test_opcode_exep();
-                break;
-            case "divzero":
-                test_divzero_exep();
-                break;
-            default:
-                printf("Argumento invalido. Por favor ingresar una se las siguientes opciones:%n");
-                printf("1. opcode%n2. divzero%n");
-                break;
+        char * arg = cmdline[1];
+        if(strcmp(arg, "opcode") == 0){
+            test_opcode_exep();
+        }else if(strcmp(arg, "divzero") == 0){
+            test_divzero_exep();
+        }else{
+            printf("Argumento invalido. Por favor ingresar una se las siguientes opciones:%n");
+            printf("1. opcode%n2. divzero%n");
         }
     }
 }
@@ -197,7 +186,7 @@ void snake(){
 }
 
 void exit(){
-    exit = 0;
+    exited = 1;
 }
 
 void invalid_command(){
@@ -211,7 +200,7 @@ void test_opcode_exep(){
 }
 void test_divzero_exep(){
     // esto seria asi??
-    int a = 5 / 0;
+    // int a = 5 / 0;
 }
 
 

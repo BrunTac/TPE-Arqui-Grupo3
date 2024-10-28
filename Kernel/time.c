@@ -1,5 +1,5 @@
 #include <time.h>
-#include <interrupts.asm>
+#include <interrupts.h>
 #include <keyboard.h>
 
 static unsigned long ticks = 0;

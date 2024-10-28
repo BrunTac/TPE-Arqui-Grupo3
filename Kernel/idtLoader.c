@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include <idtLoader.h>
 #include <defs.h>
 #include <interrupts.h>

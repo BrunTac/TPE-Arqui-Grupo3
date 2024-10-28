@@ -87,9 +87,9 @@ void newLine(){
     sys_write_char(STDOUT, '\n', WHITE, BLACK);
 }
 
-void printfColor(const char * format, Color color, ...){
+void printfColor(const char * format, Color font, Color background, ...){
     va_list args;
-    va_start(args, color);
+    va_start(args, background);
 
     for (const char *ptr = format; *ptr != '\0'; ptr++) {
         if (*ptr == '%' && *(ptr + 1) != '\0') {
@@ -97,7 +97,7 @@ void printfColor(const char * format, Color color, ...){
             if (*ptr == 'd') {
                 int num = va_arg(args, int);
                 if (num < 0) {
-                    putcharColor('-', color);
+                    putcharColor('-', font, background);
                     num = -num;
                 }
                 // Convert int to string and print
@@ -108,12 +108,12 @@ void printfColor(const char * format, Color color, ...){
                     num /= 10;
                 } while (num > 0);
                 while (i > 0) {
-                    putcharColor(buffer[--i], color);
+                    putcharColor(buffer[--i], font, background);
                 }
             } else if (*ptr == 's') {
                 char *str = va_arg(args, char*);
                 while (*str) {
-                    putcharColor(*str++, color);
+                    putcharColor(*str++, font, background);
                 }
             } else if (*ptr == 'n'){
                 newLine();

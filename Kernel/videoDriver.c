@@ -131,7 +131,7 @@ void print(const char c, Color fnt, Color bgd){
     }
 }
 
-static void scrollUp (){
+void scrollUp (){
     Color* pixel, *next;
     for (int i = 0 ; i < current_Y + HEIGHT_FONT ; i++){
         for (int j = 0 ; j < VBE_mode_info->width ; j++){
@@ -142,10 +142,7 @@ static void scrollUp (){
     }
 }
 
-static uint32_t* getPixelPtr(uint16_t x, uint16_t y) {
-    uint8_t pixelwidth = VBE_mode_info->bpp/8;     //la cantidad de bytes hasta el siguiente pixel a la derecha (bpp: BITS per px)
-    uint16_t pixelHeight = VBE_mode_info->pitch;   //la cantidad de bytes hasta el pixel hacia abajo
-
+uint32_t* getPixelPtr(uint16_t x, uint16_t y) {
     uintptr_t pixelPtr = (uintptr_t)(VBE_mode_info->framebuffer) + x + y;
     return (uint32_t*)pixelPtr;
 }

@@ -1,13 +1,16 @@
 #ifndef LIBC_H
 #define LIBC_H
 
+#include <color.h>
+#include <sys_calls.h>
+
 void printf(const char *format, ...);
 void scanf(const char *format, void * variable);
 void putchar(char character);
-int getchar(void);
+char getchar(void);
 void newLine(void);
-void printfColor(const char * format, Color color, ...);
-void putcharColor(char character, Color color);
+void printfColor(const char * format, Color font, Color background, ...);
+void putcharColor(char character, Color font, Color background);
 
 int strcmp(const char * s1, const char * s2);
 void strcpy(char * destination, const char * source);

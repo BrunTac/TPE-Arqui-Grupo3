@@ -7,6 +7,9 @@
 void initialize();
 void terminal();
 
+void getCommandline();
+void commandline_handler();
+
 void help();
 void clear();
 void changeusername();
