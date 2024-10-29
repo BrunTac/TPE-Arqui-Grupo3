@@ -1,4 +1,7 @@
 #include <view.h>
+#include <libc.h>
+
+
 
 
 int main() {

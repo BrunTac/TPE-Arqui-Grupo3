@@ -53,6 +53,10 @@ Color BLACK = {0,0,0};
 Color RED = {255, 0, 0};
 
 
+void printcheck(){
+	prints("lol", BLACK, WHITE);
+}
+
 void putPixel(Color color, uint64_t x, uint64_t y) {
     
     if (x >= VBE_mode_info->width || y >= VBE_mode_info->height){
@@ -116,7 +120,7 @@ void printHex(const uint64_t num, Color fnt, Color bgd) {
 }
 
 void print(const char c, Color fnt, Color bgd){
-    switch (c) {
+	switch (c) {
         case '\n':
             print_newline();
         	break;
@@ -126,6 +130,7 @@ void print(const char c, Color fnt, Color bgd){
         case '\0':
         	break;
         default:
+
             putChar(c, current_X , current_Y , fnt , bgd);
         	break;
     }

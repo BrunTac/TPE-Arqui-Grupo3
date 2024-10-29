@@ -21,9 +21,9 @@ int tokens = 0;
 int exited = 0;
 
 void initialize(){
-    
+    putchar('a');
     printf("Ingrese su nombre de usuario: ");
-    scanf("%s", &user);
+    //scanf("%s", &user);
 
     if(strcmp(user, "") == 0){
         strcpy(user, "user");

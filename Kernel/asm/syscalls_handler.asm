@@ -2,6 +2,7 @@ section .text
 
 EXTERN print
 EXTERN getKey
+EXTERN printcheck
 
 GLOBAL syscalls_handler
 
@@ -11,8 +12,8 @@ syscalls_handler:
     cmp rax, 3
     je sys_read
     cmp rax, 4
-    je sys_write_char
-
+    je sys_write
+    
     ret
 
 
@@ -26,7 +27,7 @@ sys_read:
     call getKey
     ret
 
-sys_write_char:
+sys_write:
     pushState
 
     cmp rdi, 1
@@ -38,9 +39,11 @@ sys_write_char:
 
 
 .stdout:
+    
     mov rdi, rsi
     mov rsi, rdx
     mov rdx, rcx
+    
     call print
 
     jmp .end
