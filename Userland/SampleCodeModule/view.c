@@ -157,14 +157,15 @@ void changeusername(){
 
 void whoami(){
     if(checkArguments(0)){
-        printf("%s", user);
+        printf("USER: %s", user);
     }
 }
 
 void time(){
     if(checkArguments(0)){
-        //printf("%d:%d:%d", sys_hours(), sys_minutes(), sys_seconds());
-        printf("Time");
+        int time[3];
+        time = (int *) sys_time();
+        printf("[Time]: %d:%d:%d", time[0], time[1], time[2]);
     }
 }
 

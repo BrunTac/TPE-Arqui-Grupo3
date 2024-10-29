@@ -1,17 +1,23 @@
-GLOBAL sys_write
+GLOBAL sys_time
 GLOBAL sys_read
+GLOBAL sys_write
 GLOBAL sys_clear
 GLOBAL sys_show_registers
 
 section .text
 
-sys_write:
-    mov rax, 4
+sys_time:
+    mov rax, 2
     int 80h
     ret
 
 sys_read:
     mov rax, 3
+    int 80h
+    ret
+
+sys_write:
+    mov rax, 4
     int 80h
     ret
 
