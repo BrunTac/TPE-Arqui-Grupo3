@@ -22,7 +22,7 @@ int exited = 0;
 
 void initialize(){
     printHeader();
-    printf("%n%nIngrese su nombre de usuario: ");
+    printf("%nIngrese su nombre de usuario: ");
     scanf("%s", &user);
 
     if(strcmp(user, "") == 0){
@@ -207,19 +207,22 @@ void test_divzero_exep(){
 }
 
 void printHeader(){
-    printLine();
-    printf("%nBienvenido a la terminal de Cuervazos SO%n");
-    printLine();
+    printDashLine();
+    printDashLine();
+    printf("%nBienvenido a la terminal de Cuervazos SO%n%n");
+    printDashLine();
+    printDashLine();
 }
 
-void printLine(){
-    printf("%n--------------------------------------------------------------------------------------------------------%n");
+void printDashLine(){
+    printf("--------------------------------------------------------------------------------------------------------------------------------%n");
 }
 
 void printMenu(){
-    printLine();
-    printf("%nMENU DE COMANDOS%n");
-    printLine();
+    newLine();
+    printDashLine();
+    printf("MENU DE COMANDOS%n");
+    printDashLine();
     printf("- help............................imprime el menu de comandos%n");
     printf("- whoami..........................imprime el nombre de usuario%n");
     printf("- changeusername..................recibe como argumento el nuevo nombre de usuario%n");
@@ -227,10 +230,10 @@ void printMenu(){
     printf("- showregisters...................imprime los valores actuales de todos los registros%n");
     printf("- clear...........................vacia la pantalla%n");
     printf("- test_exception..................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
-    printf("    - opcode....................prueba la excepcion 'invalid opcode'%n");
-    printf("    - divzero...................prueba la excepcion generada al dividir por cero%n");
+    printf("    -opcode.......................prueba la excepcion 'invalid opcode'%n");
+    printf("    -divzero......................prueba la excepcion generada al dividir por cero%n");
     printf("- snake...........................llama al juego snake%n");
-    printf("- exit............................sale de la terminal%n");
+    printf("- exit............................sale de la terminal%n%n");
 }
 
 
