@@ -52,14 +52,14 @@ getSeconds:
 	ret
 	
 getRegisters:
-		saveRegisters
+		call saveRegisters
 		mov rax, registerState
 		ret 
 
 
 
 
-%macro saveRegisters 0
+ saveRegisters 
 	push rax
 	call rip
 	rip:
@@ -89,7 +89,7 @@ getRegisters:
 	pop rax
 	mov [registerState+136], rax
 	pop rax
-%endmacro
+	ret
 
 SECTION .bss
 	registerState resq 18
