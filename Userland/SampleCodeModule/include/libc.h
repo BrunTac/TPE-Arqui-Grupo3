@@ -6,11 +6,11 @@
 
 void printf(const char *format, ...);
 void scanf(const char *format, void * variable);
-void putchar(char character);
-char getchar(void);
+void putChar(char character);
+char getChar(void);
 void newLine(void);
 void printfColor(const char * format, Color font, Color background, ...);
-void putcharColor(char character, Color font, Color background);
+void putCharColor(char character, Color font, Color background);
 
 int strcmp(const char * s1, const char * s2);
 void strcpy(char * destination, const char * source);

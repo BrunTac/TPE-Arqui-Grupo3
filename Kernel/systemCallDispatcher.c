@@ -11,6 +11,25 @@ extern Color BLACK;
 
 static void sys_write(int fd, char c, Color font, Color background) {
 
-    c = getKey();
+    print(c, font, background);
 
+}
+
+static void sys_read(int fd, char * c) {
+
+    *(c) = getKey();
+
+}
+
+uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2) {
+
+    switch(id) {
+        case 3:
+            sys_read((int) arg1, (char *) arg2);
+            return 3;
+        case 4:
+            sys_write((int) arg1,(char) arg2, WHITE, BLACK);
+            return 4;
+    }
+    return 0;
 }

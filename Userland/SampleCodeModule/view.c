@@ -52,23 +52,23 @@ void getCommandline(){
     char c;
     int read = 0;
     tokens = 0;
-    while((c = getchar()) != '\n' && tokens < MAX_TOKENS && read < MAX_BUFFER){
+    while((c = getChar()) != '\n' && tokens < MAX_TOKENS && read < MAX_BUFFER){
         if(c == '\b'){
             if(read > 0){
                 read--;
-                putchar(c);
+                putChar(c);
             }
         }else if(c == ' ' || c == '\t'){
             cmdtoken[read] = '\0';
             read = 0;
             strcpy(cmdline[tokens++], cmdtoken);
-            putchar(c);
-            while((c = getchar()) == ' ' || c == '\t'){
-                putchar(c);
-            }
+            putChar(c);
+            // while((c = getChar()) == ' ' || c == '\t'){
+            //    putChar(c);                               que es esto? lo comente y me funciona mejor que antes
+            //}
         }else{
             cmdtoken[read++] = c;
-            putchar(c);
+            putChar(c);
         }
         
     }
@@ -199,8 +199,7 @@ void test_opcode_exep(){
     //NO SE QUE LA TIRA :P
 }
 void test_divzero_exep(){
-    // esto seria asi??
-    // int a = 5 / 0;
+    int a = 5 / 0;
 }
 
 

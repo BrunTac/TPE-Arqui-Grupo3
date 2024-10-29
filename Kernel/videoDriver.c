@@ -119,16 +119,15 @@ void print(const char c, Color fnt, Color bgd){
     switch (c) {
         case '\n':
             print_newline();
-        break;
+        	break;
         case '\b':
             print_backspace(fnt, bgd);
-        break;
+        	break;
         case '\0':
-            /* nada, no imprime nada */
-        break;
+        	break;
         default:
             putChar(c, current_X , current_Y , fnt , bgd);
-        break;
+        	break;
     }
 }
 
@@ -168,6 +167,6 @@ void print_backspace(Color fnt, Color bgd){
     } else {
         current_X = 0;
     }
-    putChar(current_X, current_Y , ' ' , fnt , bgd);
+    putChar(' ', current_X, current_Y, fnt, bgd);
     current_X -= WIDTH_FONT;
 }

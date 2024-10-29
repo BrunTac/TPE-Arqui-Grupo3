@@ -73,8 +73,6 @@ int main()
 {	
 	load_idt();
 
-	prints("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", BLACK, WHITE);
-
 	((EntryPoint)sampleCodeModuleAddress)();
 
 	return 0;

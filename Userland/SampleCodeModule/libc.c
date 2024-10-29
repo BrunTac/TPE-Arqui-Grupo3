@@ -18,7 +18,7 @@ void printf(const char *format, ...){
             if (*ptr == 'd') {
                 int num = va_arg(args, int);
                 if (num < 0) {
-                    putchar('-');
+                    putChar('-');
                     num = -num;
                 }
                 // Convert int to string and print
@@ -29,18 +29,18 @@ void printf(const char *format, ...){
                     num /= 10;
                 } while (num > 0);
                 while (i > 0) {
-                    putchar(buffer[--i]);
+                    putChar(buffer[--i]);
                 }
             } else if (*ptr == 's') {
                 char *str = va_arg(args, char*);
                 while (*str) {
-                    putchar(*str++);
+                    putChar(*str++);
                 }
             } else if (*ptr == 'n'){
                 newLine();
             }
         } else {
-            putchar(*ptr);
+            putChar(*ptr);
         }
     }
     va_end(args);
@@ -48,7 +48,7 @@ void printf(const char *format, ...){
 }
 
 
-void scanf(const char *format, void * variable){
+void scanf(const char *format, void *variable) {
     for (const char *ptr = format; *ptr != '\0'; ptr++) {
         if (*ptr == '%' && *(ptr + 1) != '\0') {
             ptr++;
@@ -56,30 +56,39 @@ void scanf(const char *format, void * variable){
                 int *num = (int*)variable;
                 *num = 0;
                 int ch;
-                while ((ch = getchar()) >= '0' && ch <= '9') {
+
+                // Read characters until a non-digit is encountered
+                while ((ch = getChar()) >= '0' && ch <= '9') {
                     *num = *num * 10 + (ch - '0');
+                    putChar(ch); // Echo the digit to the output
                 }
+                
             } else if (*ptr == 's') {
                 char *str = (char*)variable;
                 int count = 0;
                 char ch;
-                while (count < MAX_BUFFER - 1 && (ch = getchar()) != ' ' && ch != '\n') { // que onda los checkeos de newline y space
+
+                while (count < MAX_BUFFER - 1 && (ch = getChar()) != ' ' && ch != '\n') {
                     *str++ = ch;
                     count++;
+                    putChar(ch); // Echo the character to the output
                 }
-                *str = '\0';
+                *str = '\0'; // Null-terminate the string
             }
         }
     }
     return;
 }
 
-void putchar(char character){
+void putChar(char character){
     sys_write(STDOUT, character, WHITE, BLACK);
 }
 
-char getchar(){
-    return sys_read(STDIN);
+char getChar(){
+    char c = '\0';
+    while(c == '\0')
+        sys_read(STDIN, &c);
+    return c;
 }
 
 void newLine(){
@@ -96,7 +105,7 @@ void printfColor(const char * format, Color font, Color background, ...){
             if (*ptr == 'd') {
                 int num = va_arg(args, int);
                 if (num < 0) {
-                    putcharColor('-', font, background);
+                    putCharColor('-', font, background);
                     num = -num;
                 }
                 // Convert int to string and print
@@ -107,25 +116,25 @@ void printfColor(const char * format, Color font, Color background, ...){
                     num /= 10;
                 } while (num > 0);
                 while (i > 0) {
-                    putcharColor(buffer[--i], font, background);
+                    putCharColor(buffer[--i], font, background);
                 }
             } else if (*ptr == 's') {
                 char *str = va_arg(args, char*);
                 while (*str) {
-                    putcharColor(*str++, font, background);
+                    putCharColor(*str++, font, background);
                 }
             } else if (*ptr == 'n'){
                 newLine();
             }
         } else {
-            putchar(*ptr);
+            putChar(*ptr);
         }
     }
     va_end(args);
     return;
 }
 
-void putcharColor(char character, Color font, Color background){
+void putCharColor(char character, Color font, Color background){
     sys_write(STDOUT, character, font, background);
 }   
 

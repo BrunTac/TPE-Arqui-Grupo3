@@ -18,6 +18,7 @@ GLOBAL _exception0Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+EXTERN sysCallDispatcher
 
 SECTION .text
 
@@ -177,8 +178,16 @@ _irq05Handler:
 
 ;Sys_calls
 _irq60Handler:
-	sti
-	irqHandlerMaster 60
+	pushState ; preservo registros
+
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, rax ; muevo mis registros por un lugar en el lugar de ingreso para que RAX sea mi primer argumento (id del syscall)
+	call sysCallDispatcher
+
+	popState ; restauro registros
+
+	iretq
 
 ;Zero Division Exception
 _exception0Handler:

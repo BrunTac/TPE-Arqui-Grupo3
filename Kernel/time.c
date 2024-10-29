@@ -7,9 +7,7 @@ static unsigned long ticks = 0;
 void timer_handler() {
 	ticks++;
 	_sti();
-	if(ticks % 2 == 0){
-		emptyBuffer();
-	}
+	emptyBuffer();
 }
 
 int ticks_elapsed() {

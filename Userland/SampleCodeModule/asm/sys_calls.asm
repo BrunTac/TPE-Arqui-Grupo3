@@ -10,11 +10,9 @@ sys_write:
     int 80h
     ret
 
-
 sys_read:
     mov rax, 3
     int 80h
-
     ret
 
 sys_clear:
