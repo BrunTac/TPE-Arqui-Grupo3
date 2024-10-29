@@ -1,11 +1,14 @@
 #include <videoDriver.h>
 #include <keyboard.h>
 #include <stdint.h>
+#include <lib.h>
+
 
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
 
+uint64_t * getRegisters();
 extern Color WHITE;
 extern Color BLACK;
 
@@ -27,6 +30,12 @@ static void sys_clear(){
 
 }
 
+static void sys_printRegisters(){
+
+    printRegisters();
+
+}
+
 uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2) {
 
     switch(id) {
@@ -39,6 +48,9 @@ uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2) {
         case 5:
             sys_clear();
             return 5;    
+        case 6:
+            sys_printRegisters();
+            return 6;
     }
     return 0;
 }

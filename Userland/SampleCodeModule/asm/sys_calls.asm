@@ -21,6 +21,8 @@ sys_clear:
     ret
 
 sys_show_registers:
+    mov rax, 6
+    int 80h
     ret
 
 

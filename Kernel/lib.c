@@ -1,5 +1,10 @@
 #include <stdint.h>
+#include <videoDriver.h>
 
+#define REGISTER_AMOUNT 18
+extern Color RED, BLACK;
+
+uint64_t * getRegisters();
 void * memset(void * destination, int32_t c, uint64_t length)
 {
 	uint8_t chr = (uint8_t)c;
@@ -9,6 +14,25 @@ void * memset(void * destination, int32_t c, uint64_t length)
 		dst[length] = chr;
 
 	return destination;
+}
+
+char * registerNames[] = {"Instruction pointer: ", "RAX: ", "RBX: ", "RCX: ", "RDX: ", "RBP: ", 
+			"RSI: ", "RDI: ", "RSP: ", "R8: ", "R9: ", "R10: ", "R11: ", "R12: ", 
+			"R13: ", "R14: ", "R15: ", "RFLAGS: " };
+
+void printRegisters(){
+
+	const uint64_t * registers = getRegisters();
+
+	print_newline();
+
+    for(int i = 0 ; i < REGISTER_AMOUNT ; i++) {
+		prints(registerNames[i], RED, BLACK); 
+		printHex(registers[i], RED, BLACK);
+		print_newline();
+	}
+
+
 }
 
 void * memcpy(void * destination, const void * source, uint64_t length)

@@ -50,7 +50,7 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 Color WHITE = {255, 255, 255};
 Color BLACK = {0,0,0};
-Color RED = {255, 0, 0};
+Color RED = {0, 0, 255};
 
 
 void printcheck(){
