@@ -205,7 +205,7 @@ void test_opcode_exep(){
 void test_divzero_exep(){
     int a = 5 / 0;
 }
-9
+
 void printHeader(){
     
 }
