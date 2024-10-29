@@ -25,7 +25,7 @@ void test_opcode_exep();
 void test_divzero_exep();
 
 void printHeader();
-void printLine();
+void printDashLine();
 void printMenu();
 
 #endif

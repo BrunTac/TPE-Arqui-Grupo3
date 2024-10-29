@@ -84,7 +84,7 @@ void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 {
 	int cx,cy;
 	int mask[8]={1,2,4,8,16,32,64,128};
-	unsigned char *glyph=font+(int)c*16;
+	unsigned char *glyph=font+4+(int)c*16;
 
 	if (current_X >= VBE_mode_info->width) {
 		current_X = 0;
