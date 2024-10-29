@@ -16,6 +16,8 @@ sys_read:
     ret
 
 sys_clear:
+    mov rax, 5
+    int 80h
     ret
 
 sys_show_registers:
