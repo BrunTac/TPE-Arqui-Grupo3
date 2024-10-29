@@ -13,3 +13,5 @@
 #No access
 .bash_history
 build_script.sh
+*.sh
+build_script.sh
