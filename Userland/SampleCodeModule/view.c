@@ -51,31 +51,36 @@ void terminal(){
 void getCommandline(){
     char c;
     int read = 0;
-    int prevRead = 0;
+    int readBefore = 0;
+    int afterSpace = 0;
     tokens = 0;
     while((c = getChar()) != '\n' && tokens < MAX_TOKENS && read < MAX_BUFFER){
         if(c == '\b'){
             if(read > 0){
-                read--;
+                //si borro la primera letra de una palabra que no sea la primera, el anterior es un espacio
+                if(read == 1 && tokens > 0){
+                    afterSpace = 1;
+                }
+                read--; 
             }else{
                 tokens--;
-                read = prevRead;
+                read = readBefore;
             }
             putChar(c);
         }else if(c == ' ' || c == '\t'){
-            cmdtoken[read] = '\0';
-            prevRead = read;
-            read = 0;
-            strcpy(cmdline[tokens++], cmdtoken);
-            putChar(c);
-            while((c = getChar()) == ' ' || c == '\t'){
-                putChar(c);
+            if(!afterSpace){
+                cmdtoken[read] = '\0';
+                readBefore = read;
+                read = 0;
+                strcpy(cmdline[tokens++], cmdtoken);
+                afterSpace = 1;
             }
+            putChar(c);
         }else{
             cmdtoken[read++] = c;
             putChar(c);
-        }
-        
+            afterSpace = 0;
+        } 
     }
     // guardo la ultima, solo si se termino por un \n
     if(c == '\n'){
