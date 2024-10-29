@@ -60,6 +60,5 @@ int main()
 
 	((EntryPoint)sampleCodeModuleAddress)();
 
-	_hlt();
 	return 0;
 }

@@ -59,7 +59,7 @@ getRegisters:
 
 
 
- saveRegisters 
+saveRegisters:
 	push rax
 	call rip
 	rip:
