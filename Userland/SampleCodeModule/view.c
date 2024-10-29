@@ -29,7 +29,7 @@ void initialize(){
         strcpy(user, "user");
     }
 
-    printf("%nHola %s! Bienvenido a la terminal de Cuervazos SO%n", user);
+    printf("%nHola %s! Bienvenido a la terminal de Millonarios SO%n", user);
     printMenu();    
 }
 

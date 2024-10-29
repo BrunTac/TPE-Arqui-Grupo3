@@ -6,6 +6,7 @@
 #include <videoDriver.h>
 #include <keyboard.h>
 #include <idtLoader.h>
+#include <interrupts.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -71,7 +72,10 @@ void * initializeKernelBinary()
 int main()
 {	
 	load_idt();
-	prints("test", BLACK, WHITE);
+
+	prints("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", BLACK, WHITE);
+
+	((EntryPoint)sampleCodeModuleAddress)();
 
 	return 0;
 }

@@ -14,7 +14,7 @@ void printRegisters(const uint64_t * registers) { // aca se llamaria un syscall 
 	for(int i = 0 ; i < REGISTER_AMOUNT ; i++) {
 		prints(registerNames[i], RED, BLACK); 
 		printHex(registers[i], RED, BLACK);
-		print('\n', WHITE, BLACK);
+		print_newline();
 	}
 }
 

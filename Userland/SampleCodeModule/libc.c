@@ -8,7 +8,6 @@
 #define MAX_BUFFER 256 // esto seria el maximo de un string que le puedo pasar a scanf?
 
 
-
 void printf(const char *format, ...){
     va_list args;
     va_start(args, format);
@@ -76,7 +75,7 @@ void scanf(const char *format, void * variable){
 }
 
 void putchar(char character){
-    sys_write_char(STDOUT, character, WHITE, BLACK);
+    sys_write(STDOUT, character, WHITE, BLACK);
 }
 
 char getchar(){
@@ -84,7 +83,7 @@ char getchar(){
 }
 
 void newLine(){
-    sys_write_char(STDOUT, '\n', WHITE, BLACK);
+    sys_write(STDOUT, '\n', WHITE, BLACK);
 }
 
 void printfColor(const char * format, Color font, Color background, ...){
@@ -127,7 +126,7 @@ void printfColor(const char * format, Color font, Color background, ...){
 }
 
 void putcharColor(char character, Color font, Color background){
-    sys_write_char(STDOUT, character, font, background);
+    sys_write(STDOUT, character, font, background);
 }   
 
  int strcmp(const char * s1, const char * s2){
