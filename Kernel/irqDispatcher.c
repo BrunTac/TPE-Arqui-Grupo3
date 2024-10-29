@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <keyboard.h>
 #include <syscalls_handler.h>
+#include <videoDriver.h>
 
 static void int_20();
 static void int_21();

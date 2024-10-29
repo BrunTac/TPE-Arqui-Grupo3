@@ -8,6 +8,7 @@
 #define MAX_BUFFER 256 // esto seria el maximo de un string que le puedo pasar a scanf?
 
 
+
 void printf(const char *format, ...){
     va_list args;
     va_start(args, format);

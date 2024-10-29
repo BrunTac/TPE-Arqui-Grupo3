@@ -177,7 +177,6 @@ _irq05Handler:
 
 ;Sys_calls
 _irq60Handler:
-	sti
 	irqHandlerMaster 60
 
 ;Zero Division Exception

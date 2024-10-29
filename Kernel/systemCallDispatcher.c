@@ -10,7 +10,5 @@ extern Color WHITE;
 extern Color BLACK;
 
 static void sys_write(int fd, char c, Color font, Color background) {
-
-    c = getKey();
-
+    print(c, font, background);
 }

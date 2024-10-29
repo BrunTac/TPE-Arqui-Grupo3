@@ -1,9 +1,12 @@
 #include <view.h>
+#include <libc.h>
+
+
 
 
 int main() {
-
-	//initialize();
+	printf("hola");
+	initialize();
 	//terminal();
 
 	return 0;

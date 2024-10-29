@@ -20,5 +20,6 @@ void scrollUp();
 uint32_t* getPixelPtr(uint16_t x, uint16_t y);
 void print_newline();
 void print_backspace(Color fnt, Color bgd);
+void printcheck();
 
 #endif
