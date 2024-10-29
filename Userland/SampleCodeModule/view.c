@@ -53,11 +53,14 @@ void getCommandline(){
     char c;
     while((c = getChar()) != '\n' && read < MAX_BUFFER){
         if(c == '\b'){
-            if(read > 0) read--;
+            if(read > 0){
+                read--;
+                putChar(c);
+            } 
         }else{
             cmdline[read++] = c;
+            putChar(c);
         }
-        putChar(c);
     }
     cmdline[read] = '\0';
     tokenize();
