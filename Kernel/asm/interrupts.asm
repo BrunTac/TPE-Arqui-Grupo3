@@ -15,7 +15,10 @@ GLOBAL _irq05Handler
 GLOBAL _irq60Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 
+EXTERN getStackBase
+EXTERN main
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN sysCallDispatcher
@@ -76,12 +79,15 @@ SECTION .text
 
 
 %macro exceptionHandler 1
-	pushState
 
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 
-	popState
+
+	call getStackBase
+	mov rsp, rax
+	call main
+
 	iretq
 %endmacro
 
@@ -157,6 +163,10 @@ _irq60Handler:
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+
+;Invalid Opcode Exception
+_exception6Handler:
+	exceptionHandler 6
 
 haltcpu:
 	cli

@@ -2,6 +2,7 @@
 #include <libc.h>
 #include <sys_calls.h>
 
+extern void opcodeError();
 //FALTA: printMenu (facil pero paja), todas las sys_ (kernel), los test_ y snake obvioooooooooooo
 //OBS: le puse sys_algo a todas las funciones que van a estar en kernel. pero no se si decirles sys_calls. capaz les cambiamos el nombre
 // y la de time no estoy segura si se hace en kernel o aca. hice que el kernel da los valores y esto imprime. creo que es lo mejor pero not sure.
@@ -203,7 +204,7 @@ void invalid_command(){
 
 
 void test_opcode_exep(){
-    //NO SE QUE LA TIRA :P
+    opcodeError();
 }
 void test_divzero_exep(){
     int a = 5 / 0;

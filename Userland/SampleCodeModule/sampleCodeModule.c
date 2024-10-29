@@ -3,9 +3,8 @@
 
 
 
-
 int main() {
-
+		
 	initialize();
 	terminal();
 
