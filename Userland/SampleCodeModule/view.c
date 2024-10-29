@@ -164,7 +164,7 @@ void whoami(){
 void time(){
     if(checkArguments(0)){
         int time[3];
-        time = (int *) sys_time();
+        sys_time(time);
         printf("[Time]: %d:%d:%d", time[0], time[1], time[2]);
     }
 }

@@ -17,14 +17,11 @@ uint64_t getHours();
 extern Color WHITE;
 extern Color BLACK;
 
-static int * sys_time(){
-    char buffer[MAX_BUFFER];
-    int time[3];
+static void sys_time(int time[3]){
+    char buffer[BUFFER_SIZE];
     time[0] = uintToBase(getHours(), buffer, 16);
     time[1] = uintToBase(getMinutes(), buffer, 16);
     time[2] = uintToBase(getSeconds(), buffer, 16);
-
-    return time;
 }
 
 static void sys_write(int fd, char c, Color font, Color background) {
@@ -55,7 +52,8 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2) {
 
     switch(id) {
         case 2:
-            return sys_time();
+            sys_time((int *)arg1);
+            break ;
         case 3:
             sys_read((int) arg1, (char *) arg2);
             break ;

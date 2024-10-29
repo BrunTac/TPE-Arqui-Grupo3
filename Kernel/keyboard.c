@@ -1,7 +1,6 @@
 #include <keyboard.h>
 #include <stdint.h>
 
-#define BUFFER_SIZE 256
 
 char buffer[BUFFER_SIZE];
 int head = 0;
