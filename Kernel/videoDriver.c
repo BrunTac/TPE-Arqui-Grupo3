@@ -170,7 +170,8 @@ void print_backspace(Color fnt, Color bgd){
     if (current_X >= WIDTH_FONT){
 	current_X -= WIDTH_FONT;
     } else {
-        current_X = 0;
+        current_X = VBE_mode_info->width - WIDTH_FONT;
+	current_Y -= HEIGHT_FONT;
     }
     putChar(' ', current_X, current_Y, fnt, bgd);
     current_X -= WIDTH_FONT;
