@@ -58,7 +58,7 @@ void scanf(const char *format, void *variable) {
                 *num = 0;
                 int ch;
 
-                while ((ch = getChar()) >= '0' && ch <= '9' || ch == '\b') {
+                while (((ch = getChar()) >= '0' && ch <= '9' )|| ch == '\b') {
                     if (ch == '\b') {
                         *num /= 10; // Remover el último dígito
                     } else if (ch >= '0' && ch <= '9') {
