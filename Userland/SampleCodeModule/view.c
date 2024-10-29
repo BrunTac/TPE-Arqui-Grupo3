@@ -15,8 +15,8 @@
 
 
 char user[MAX_BUFFER];
-char cmdtoken[MAX_BUFFER];
-char cmdline[MAX_TOKENS][MAX_BUFFER];
+char cmdline[MAX_BUFFER];
+char cmdtokens[MAX_TOKENS][MAX_BUFFER];
 int tokens = 0;
 int exited = 0;
 
@@ -37,11 +37,11 @@ void terminal(){
     while(!exited){
         printf("%s-$ > ", user);
 
-        cmdline[0][0] = '\0';
+        cmdtokens[0][0] = '\0';
         getCommandline();   
 
         // si se ingreso por lo menos un caracter     
-        if(cmdline[0][0] != '\0'){
+        if(cmdtokens[0][0] != '\0'){
             commandline_handler();
         }
         newLine();
@@ -49,49 +49,39 @@ void terminal(){
 }
 
 void getCommandline(){
-    char c;
     int read = 0;
-    int readBefore = 0;
-    int afterSpace = 0;
-    tokens = 0;
-    while((c = getChar()) != '\n' && tokens < MAX_TOKENS && read < MAX_BUFFER){
+    char c;
+    while((c = getChar()) != '\n' && read < MAX_BUFFER){
         if(c == '\b'){
-            if(read > 0){
-                //si borro la primera letra de una palabra que no sea la primera, el anterior es un espacio
-                if(read == 1 && tokens > 0){
-                    afterSpace = 1;
-                }
-                read--; 
-            }else{
-                tokens--;
-                read = readBefore;
-            }
-            putChar(c);
-        }else if(c == ' ' || c == '\t'){
-            if(!afterSpace){
-                cmdtoken[read] = '\0';
-                readBefore = read;
-                read = 0;
-                strcpy(cmdline[tokens++], cmdtoken);
-                afterSpace = 1;
-            }
-            putChar(c);
+            if(read > 0) read--;
         }else{
-            cmdtoken[read++] = c;
-            putChar(c);
-            afterSpace = 0;
-        } 
+            cmdline[read++] = c;
+        }
+        putChar(c);
     }
-    // guardo la ultima, solo si se termino por un \n
-    if(c == '\n'){
-        cmdtoken[read] = '\0';
-        strcpy(cmdline[tokens++], cmdtoken);
+    cmdline[read] = '\0';
+    tokenize();
+}
+
+void tokenize(){
+    tokens = 0;
+    int j = 0;
+    for(int i = 0; cmdline[i] != '\0'; i++){
+        if(cmdline[i] == ' ' || cmdline[i] == '\t'){
+            if(j > 0){
+                cmdtokens[tokens++][j] = '\0';
+                j = 0;
+            }
+        }else{
+            cmdtokens[tokens][j++] = cmdline[i];
+        }
     }
+    cmdtokens[tokens++][j] = '\0';
 }
 
 void commandline_handler(){
     newLine();
-    char * cmd = cmdline[0];
+    char * cmd = cmdtokens[0];
     if(strcmp(cmd, "help") == 0){
         help();
     }else if(strcmp(cmd, "clear") == 0){
@@ -116,14 +106,14 @@ void commandline_handler(){
 }
 
 void notEnoughArguments(int arguments){
-    printf("%nError: faltan argumentos. El comando '%s' necesita %d argumento%s.%n", cmdline[0], arguments, arguments == 1? "" : "s");
+    printf("%nError: faltan argumentos. El comando '%s' necesita %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
 }
 
 void tooManyArguments(int arguments){
     if(arguments == 0){
-        printf("%nError: el comando '%s' no acepta argumentos.%n", cmdline[0]);
+        printf("%nError: el comando '%s' no acepta argumentos.%n", cmdtokens[0]);
     }else{
-        printf("%nError: el comando '%s' solo acepta %d argumento%s.%n", cmdline[0], arguments, arguments == 1? "" : "s");
+        printf("%nError: el comando '%s' solo acepta %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
     }
 }
 
@@ -154,7 +144,7 @@ void clear(){
 
 void changeusername(){
     if(checkArguments(1)){
-        strcpy(user, cmdline[1]);    
+        strcpy(user, cmdtokens[1]);    
         printf("%nListo %s! Su nombre de usuario ha sido actualizado correctamente%n", user);
     }
 }
@@ -180,7 +170,7 @@ void showregisters(){
 
 void test_exception(){
     if(checkArguments(1)){
-        char * arg = cmdline[1];
+        char * arg = cmdtokens[1];
         if(strcmp(arg, "opcode") == 0){
             test_opcode_exep();
         }else if(strcmp(arg, "divzero") == 0){
@@ -202,7 +192,7 @@ void exit(){
 }
 
 void invalid_command(){
-    printf("Error. El comando '%s' es invalido.%n", cmdline[0]);
+    printf("Error. El comando '%s' es invalido.%n", cmdtokens[0]);
     printf("%nPara ver el menu de opciones utilice el comando: 'help'");
 }
 
