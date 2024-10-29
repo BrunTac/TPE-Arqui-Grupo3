@@ -9,8 +9,23 @@
 #define STDERR 2
 
 uint64_t * getRegisters();
+uint64_t getSeconds();
+uint64_t getMinutes();
+uint64_t getHours();
+
+
 extern Color WHITE;
 extern Color BLACK;
+
+static int * sys_time(){
+    char buffer[MAX_BUFFER];
+    int time[3];
+    time[0] = uintToBase(getHours(), buffer, 16);
+    time[1] = uintToBase(getMinutes(), buffer, 16);
+    time[2] = uintToBase(getSeconds(), buffer, 16);
+
+    return time;
+}
 
 static void sys_write(int fd, char c, Color font, Color background) {
 
@@ -36,21 +51,23 @@ static void sys_printRegisters(){
 
 }
 
-uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2) {
+void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2) {
 
     switch(id) {
+        case 2:
+            return sys_time();
         case 3:
             sys_read((int) arg1, (char *) arg2);
-            return 3;
+            break ;
         case 4:
             sys_write((int) arg1,(char) arg2, WHITE, BLACK);
-            return 4;
+            break ;
         case 5:
             sys_clear();
-            return 5;    
+            break ;
         case 6:
             sys_printRegisters();
-            return 6;
+            break ;
     }
     return 0;
 }

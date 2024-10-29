@@ -1,7 +1,7 @@
 GLOBAL cpuVendor
-GLOBAL getHs
-GLOBAL getMins
-GLOBAL getSecs
+GLOBAL getHours
+GLOBAL getMinutes
+GLOBAL getSeconds
 GLOBAL getRegisters
 section .text
 	
@@ -30,30 +30,31 @@ cpuVendor:
 	ret
 
 
-getHs
+getHours:
 	mov al, 0x04
 	out 70h, al
 	in al, 71h
 	movzx rax, al
 	ret
 
-getMins
+getMinutes:
 	mov al, 0x02
 	out 70h, al
 	in al, 71h
 	movzx rax, al
 	ret
-getSecs
+
+getSeconds:
 	mov al, 0
 	out 70h, al
 	in al, 71h
 	movzx rax, al
 	ret
 	
-getRegisters
-		saveRegisters
-		mov rax, registerState
-		ret 
+getRegisters:
+	saveRegisters
+	mov rax, registerState
+	ret 
 
 
 
