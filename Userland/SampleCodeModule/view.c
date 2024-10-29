@@ -28,7 +28,7 @@ void initialize(){
         strcpy(user, "user");
     }
 
-    printf("%nHola %s! Bienvenido a la terminal de Millonarios SO%n", user);
+    printf("%nHola %s! Bienvenido a la terminal de Cuervazos SO%n", user);
     printMenu();    
 }
 
@@ -55,8 +55,10 @@ void getCommandline(){
         if(c == '\b'){
             if(read > 0){
                 read--;
-                putChar(c);
+            }else{
+                tokens--;
             }
+            putChar(c);
         }else if(c == ' ' || c == '\t'){
             cmdtoken[read] = '\0';
             read = 0;
@@ -74,7 +76,7 @@ void getCommandline(){
     // guardo la ultima, solo si se termino por un \n
     if(c == '\n'){
         cmdtoken[read] = '\0';
-        strcpy(cmdline[tokens], cmdtoken);
+        strcpy(cmdline[tokens++], cmdtoken);
     }
 }
 
