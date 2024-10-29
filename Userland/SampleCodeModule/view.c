@@ -161,7 +161,7 @@ void whoami(){
 void time(){
     if(checkArguments(0)){
         //printf("%d:%d:%d", sys_hours(), sys_minutes(), sys_seconds());
-        printf("Time");
+        printf("%nTime");
     }
 }
 
@@ -179,7 +179,7 @@ void test_exception(){
         }else if(strcmp(arg, "divzero") == 0){
             test_divzero_exep();
         }else{
-            printf("Argumento invalido. Por favor ingresar una se las siguientes opciones:%n");
+            printf("%nArgumento invalido. Por favor ingresar una se las siguientes opciones:%n");
             printf("1. opcode%n2. divzero%n");
         }
     }
@@ -194,8 +194,8 @@ void exit(){
 }
 
 void invalid_command(){
-    printf("Error. El comando '%s' es invalido.%n", cmdline[0]);
-    printf("Para ver el menu de opciones utilice el comando: 'help'");
+    printf("%nError. El comando '%s' es invalido.%n", cmdline[0]);
+    printf("%nPara ver el menu de opciones utilice el comando: 'help'");
 }
 
 
@@ -205,17 +205,32 @@ void test_opcode_exep(){
 void test_divzero_exep(){
     int a = 5 / 0;
 }
-9
+
 void printHeader(){
-    
+    printLine();
+    printf("%nBienvenido a la terminal de Cuervazos SO%n");
+    printLine();
 }
 
 void printLine(){
-    printf("-------------------------------------------------------------------------------");
+    printf("%n--------------------------------------------------------------------------------------------------------%n");
 }
 
 void printMenu(){
-
+    printLine();
+    printf("%nMENU DE COMANDOS%n");
+    printLine();
+    printf("help............................imprime el menu de comandos%n");
+    printf("whoami..........................imprime el nombre de usuario%n");
+    printf("changeusername..................recibe como argumento el nuevo nombre de usuario%n");
+    printf("time............................imprime la hora actual%n");
+    printf("showregisters...................imprime los valores actuales de todos los registros%n");
+    printf("clear...........................vacia la pantalla%n");
+    printf("test_exception..................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
+    printf("    - opcode....................prueba la excepcion 'invalid opcode'%n");
+    printf("    - divzero...................prueba la excepcion generada al dividir por cero%n");
+    printf("snake...........................llama al juego snake%n");
+    printf("exit............................sale de la terminal%n");
 }
 
 
