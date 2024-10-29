@@ -50,7 +50,7 @@ getSecs
 	movzx rax, al
 	ret
 	
-getRegisters
+getRegisters:
 		saveRegisters
 		mov rax, registerState
 		ret 

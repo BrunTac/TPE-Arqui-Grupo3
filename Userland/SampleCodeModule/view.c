@@ -2,6 +2,8 @@
 #include <libc.h>
 #include <sys_calls.h>
 
+
+
 extern void opcodeError();
 //FALTA: printMenu (facil pero paja), todas las sys_ (kernel), los test_ y snake obvioooooooooooo
 //OBS: le puse sys_algo a todas las funciones que van a estar en kernel. pero no se si decirles sys_calls. capaz les cambiamos el nombre

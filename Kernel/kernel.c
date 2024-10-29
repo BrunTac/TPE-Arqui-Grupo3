@@ -53,7 +53,10 @@ void * initializeKernelBinary()
 
 int main()
 {	
+
+
 	load_idt();
+	printHex(0x023A1, BLACK, WHITE);
 
 	((EntryPoint)sampleCodeModuleAddress)();
 

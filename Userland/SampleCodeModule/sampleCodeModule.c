@@ -2,9 +2,9 @@
 #include <libc.h>
 
 
-
 int main() {
-		
+	
+
 	initialize();
 	terminal();
 
