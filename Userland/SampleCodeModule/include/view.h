@@ -8,6 +8,7 @@ void initialize();
 void terminal();
 
 void getCommandline();
+void tokenize();
 void commandline_handler();
 
 void help();

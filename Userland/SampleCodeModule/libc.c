@@ -58,23 +58,33 @@ void scanf(const char *format, void *variable) {
                 *num = 0;
                 int ch;
 
-                // Read characters until a non-digit is encountered
-                while ((ch = getChar()) >= '0' && ch <= '9') {
-                    *num = *num * 10 + (ch - '0');
-                    putChar(ch); // Echo the digit to the output
+                while ((ch = getChar()) >= '0' && ch <= '9' || ch == '\b') {
+                    if (ch == '\b') {
+                        *num /= 10; // Remover el último dígito
+                    } else if (ch >= '0' && ch <= '9') {
+                        *num = *num * 10 + (ch - '0');
+                    }
+                    putChar(ch);
                 }
-                
             } else if (*ptr == 's') {
                 char *str = (char*)variable;
                 int count = 0;
                 char ch;
 
                 while (count < MAX_BUFFER - 1 && (ch = getChar()) != ' ' && ch != '\n') {
-                    *str++ = ch;
-                    count++;
-                    putChar(ch); // Echo the character to the output
+                    if (ch == '\b') {
+                        if (count > 0) {
+                            str--;
+                            count--;
+                            putChar(ch);
+                        }
+                    }else {
+                        *str++ = ch;
+                        count++;
+                        putChar(ch);
+                    }
                 }
-                *str = '\0'; // Null-terminate the string
+                *str = '\0';
             }
         }
     }
