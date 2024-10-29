@@ -52,10 +52,12 @@ Color WHITE = {255, 255, 255};
 Color BLACK = {0,0,0};
 Color RED = {255, 0, 0};
 
+
 void putPixel(Color color, uint64_t x, uint64_t y) {
     
-    if (x >= VBE_mode_info->width || y >= VBE_mode_info->height)
-        return;
+    if (x >= VBE_mode_info->width || y >= VBE_mode_info->height){
+		return;
+	}
 	
     Color* pixel = (Color*) getPixelPtr(x, y);
 
@@ -83,8 +85,8 @@ void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 	if (current_X >= VBE_mode_info->width) {
 		current_X = 0;
         	if (current_Y + HEIGHT_FONT > VBE_mode_info->height) {
-			current_Y -= HEIGHT_FONT;
-            		scrollUp();
+				current_Y -= HEIGHT_FONT;
+            	scrollUp();
         	} else {
             		current_Y += HEIGHT_FONT;
         	}
@@ -93,7 +95,6 @@ void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 	for(cy=0;cy<HEIGHT_FONT;cy++){
 		for(cx=0;cx<WIDTH_FONT;cx++){
 			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, current_X + (8 - cx), current_Y + cy);
-
 		}
 	}	
 	current_X += WIDTH_FONT;
@@ -143,7 +144,10 @@ void scrollUp (){
 }
 
 uint32_t* getPixelPtr(uint16_t x, uint16_t y) {
-    uintptr_t pixelPtr = (uintptr_t)(VBE_mode_info->framebuffer) + x + y;
+    uint8_t pixelwidth = VBE_mode_info->bpp/8;
+    uint16_t pixelHeight = VBE_mode_info->pitch;  
+
+    uintptr_t pixelPtr = (uintptr_t)(VBE_mode_info->framebuffer) + (x * pixelwidth) + (y * pixelHeight);
     return (uint32_t*)pixelPtr;
 }
 

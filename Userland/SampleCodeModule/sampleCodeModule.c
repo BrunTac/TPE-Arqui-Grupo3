@@ -3,8 +3,8 @@
 
 int main() {
 
-	initialize();
-	terminal();
+	//initialize();
+	//terminal();
 
 	return 0;
 }

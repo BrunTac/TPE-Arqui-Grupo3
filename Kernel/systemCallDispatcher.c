@@ -14,5 +14,3 @@ static void sys_write(int fd, char c, Color font, Color background) {
     c = getKey();
 
 }
-
-uint
