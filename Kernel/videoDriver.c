@@ -119,6 +119,14 @@ void printHex(const uint64_t num, Color fnt, Color bgd) {
 	prints(toPrint, fnt, bgd);
 }
 
+void clear(){
+
+	while(current_X != 0 || current_Y != 0){
+		print_backspace(BLACK, BLACK);
+	}
+
+}
+
 void print(const char c, Color fnt, Color bgd){
 	switch (c) {
         case '\n':

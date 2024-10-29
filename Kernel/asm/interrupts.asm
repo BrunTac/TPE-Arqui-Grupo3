@@ -93,7 +93,6 @@ SECTION .text
 %macro irqHandlerMaster 1
 	pushState
 
-	mov r9, rdi
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
 

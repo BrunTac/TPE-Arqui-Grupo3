@@ -24,6 +24,8 @@ void invalid_command();
 void test_opcode_exep();
 void test_divzero_exep();
 
+void printHeader();
+void printLine();
 void printMenu();
 
 #endif
