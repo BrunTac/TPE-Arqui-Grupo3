@@ -21,20 +21,23 @@ int tokens = 0;
 int exited = 0;
 
 void initialize(){
-    printf("Ingrese su nombre de usuario: ");
+    printHeader();
+    printf("%n%nIngrese su nombre de usuario: ");
     scanf("%s", &user);
 
     if(strcmp(user, "") == 0){
         strcpy(user, "user");
     }
 
-    printf("%nHola %s! Bienvenido a la terminal de Cuervazos SO%n", user);
+    printf("%n%nHola %s! Estos son los comandos que puedes llamar%n", user);
+    
+    
     printMenu();    
 }
 
 void terminal(){
     while(!exited){
-        printf("%s$> ", user);
+        printf("%s-$ > ", user);
 
         cmdline[0][0] = '\0';
         getCommandline();   
@@ -106,14 +109,14 @@ void commandline_handler(){
 }
 
 void notEnoughArguments(int arguments){
-    printf("Error: faltan argumentos. El comando '%s' necesita %d argumentos.", cmdline[0], arguments);
+    printf("%nError: faltan argumentos. El comando '%s' necesita %d argumentos.", cmdline[0], arguments);
 }
 
 void tooManyArguments(int arguments){
     if(arguments == 0){
-        printf("Error: el comando '%s' no acepta argumentos.", cmdline[0]);
+        printf("%nError: el comando '%s' no acepta argumentos.", cmdline[0]);
     }else{
-        printf("Error: el comando '%s' solo acepta %d argumentos.", cmdline[0], arguments);
+        printf("%nError: el comando '%s' solo acepta %d argumentos.", cmdline[0], arguments);
     }
 }
 
@@ -202,7 +205,14 @@ void test_opcode_exep(){
 void test_divzero_exep(){
     int a = 5 / 0;
 }
+9
+void printHeader(){
+    
+}
 
+void printLine(){
+    printf("-------------------------------------------------------------------------------");
+}
 
 void printMenu(){
 
