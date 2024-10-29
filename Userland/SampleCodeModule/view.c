@@ -220,17 +220,17 @@ void printMenu(){
     printLine();
     printf("%nMENU DE COMANDOS%n");
     printLine();
-    printf("help............................imprime el menu de comandos%n");
-    printf("whoami..........................imprime el nombre de usuario%n");
-    printf("changeusername..................recibe como argumento el nuevo nombre de usuario%n");
-    printf("time............................imprime la hora actual%n");
-    printf("showregisters...................imprime los valores actuales de todos los registros%n");
-    printf("clear...........................vacia la pantalla%n");
-    printf("test_exception..................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
+    printf("- help............................imprime el menu de comandos%n");
+    printf("- whoami..........................imprime el nombre de usuario%n");
+    printf("- changeusername..................recibe como argumento el nuevo nombre de usuario%n");
+    printf("- time............................imprime la hora actual%n");
+    printf("- showregisters...................imprime los valores actuales de todos los registros%n");
+    printf("- clear...........................vacia la pantalla%n");
+    printf("- test_exception..................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
     printf("    - opcode....................prueba la excepcion 'invalid opcode'%n");
     printf("    - divzero...................prueba la excepcion generada al dividir por cero%n");
-    printf("snake...........................llama al juego snake%n");
-    printf("exit............................sale de la terminal%n");
+    printf("- snake...........................llama al juego snake%n");
+    printf("- exit............................sale de la terminal%n");
 }
 
 
