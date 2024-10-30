@@ -1,4 +1,5 @@
-#include <stdint.h>
+ /* 
+ #include <stdint.h>
 
 
  //Play sound using built-in speaker
@@ -33,3 +34,4 @@
  	 nosound();
           //set_PIT_2(old_frequency);
  }
+ */

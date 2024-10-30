@@ -49,3 +49,8 @@ sys_scrWidth:
     int 80h
     ret
 
+sys_sleep:
+    mov rax, 10
+    int 80h
+    ret
+

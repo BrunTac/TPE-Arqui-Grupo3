@@ -3,6 +3,8 @@ GLOBAL getHours
 GLOBAL getMinutes
 GLOBAL getSeconds
 GLOBAL getRegisters
+GLOBAL inb
+GLOBAL outb
 section .text
 	
 cpuVendor:
@@ -55,8 +57,7 @@ getRegisters:
 		call saveRegisters
 		mov rax, registerState
 		ret 
-
-
+	
 
 
 saveRegisters:

@@ -2,6 +2,7 @@
 #include <keyboard.h>
 #include <stdint.h>
 #include <lib.h>
+#include <time.h>
 
 
 #define STDIN 0
@@ -56,6 +57,13 @@ static void sys_drawSquare(Color color, int x, int y){
 
 }
 
+static void sys_sleep(int ticks) {
+
+    int elapsed = ticks_elapsed();
+    while(elapsed < ticks_elapsed() + ticks);
+
+}
+ 
 void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 
     switch(id) {
@@ -75,7 +83,7 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_printRegisters();
             break ;
         case 7:
-            sys_drawSquare((Color) arg1, (int)arg2, (int)arg3)
+            sys_drawSquare((Color) arg1, (int)arg2, (int)arg3);
             break ;
         case 8:
             sys_scrHeight();
@@ -83,6 +91,8 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
         case 9:
             sys_scrWidth();
             break ;
+        case 10:
+            sys_sleep((int) arg1);
 
     }
     return 0;
