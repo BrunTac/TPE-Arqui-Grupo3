@@ -78,8 +78,6 @@ void tokenize(){
     cmdtokens[tokens++][j] = '\0';
 }
 
-void snake(){}
-
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];

@@ -5,6 +5,7 @@ GLOBAL sys_clear
 GLOBAL sys_show_registers
 GLOBAL sys_scrHeight
 GLOBAL sys_scrWidth
+GLOBAL sys_drawSquare
 
 section .text
 
