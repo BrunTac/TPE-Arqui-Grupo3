@@ -15,6 +15,7 @@ int exited = 0;
 
 void initialize(){
     printHeader();
+    putChar('c');
     printf("%nIngrese su nombre de usuario: ");
     scanf("%s", &user);
 

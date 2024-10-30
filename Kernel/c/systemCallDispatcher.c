@@ -14,10 +14,6 @@ uint64_t getMinutes();
 uint64_t getHours();
 
 
-extern Color WHITE;
-extern Color BLACK;
-extern Color RED;
-
 static void sys_time(char time[3][3]){
     uintToBase(getHours(), time[0], 16);
     uintToBase(getMinutes(), time[1], 16);
@@ -56,6 +52,14 @@ static void sys_drawSquare(Color color, int x, int y){
 
 }
 
+static void sys_scrHeight(){
+
+}
+
+static void sys_scrWidth(){
+
+}
+
 void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 
     switch(id) {
@@ -75,7 +79,7 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_printRegisters();
             break ;
         case 7:
-            sys_drawSquare((Color) arg1, (int)arg2, (int)arg3)
+            sys_drawSquare((Color) arg1, (int)arg2, (int)arg3);
             break ;
         case 8:
             sys_scrHeight();
