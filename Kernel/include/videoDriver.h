@@ -7,6 +7,7 @@ typedef struct {
     uint8_t g;
     uint8_t r;
 } Color;
+
 extern Color WHITE;
 extern Color BLACK;
 extern Color RED;

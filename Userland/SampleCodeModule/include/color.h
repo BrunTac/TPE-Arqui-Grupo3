@@ -11,6 +11,7 @@ typedef struct {
 
 #define WHITE (Color){255, 255, 255}
 #define BLACK (Color){0, 0, 0}
+#define RED = (Color){0, 0, 255}
 
 
 #endif
