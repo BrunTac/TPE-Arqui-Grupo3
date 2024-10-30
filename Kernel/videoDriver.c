@@ -48,26 +48,17 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
-Color WHITE = {255, 255, 255};
-Color BLACK = {0,0,0};
-Color RED = {0, 0, 255};
-
-
-void printcheck(){
-	prints("lol", BLACK, WHITE);
-}
 
 void putPixel(Color color, uint64_t x, uint64_t y) {
     
     if (x >= VBE_mode_info->width || y >= VBE_mode_info->height){
 		return;
 	}
-	
-    Color* pixel = (Color*) getPixelPtr(x, y);
-
-    pixel->r = color.r;
-    pixel->g = color.g;
-    pixel->b = color.b;
+    uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+    uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
+    framebuffer[offset]     =  (color) & 0xFF;
+    framebuffer[offset+1]   =  (color >> 8) & 0xFF; 
+    framebuffer[offset+2]   =  (color >> 16) & 0xFF;
 }
 
 // inicio del bitmap

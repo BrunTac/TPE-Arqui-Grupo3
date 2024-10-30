@@ -2,15 +2,14 @@
 #define VIDEO_DRIVER_H
 
 #include <stdint.h>
-typedef struct {
-    uint8_t b;
-    uint8_t g;
-    uint8_t r;
-} Color;
 
-extern Color WHITE;
-extern Color BLACK;
-extern Color RED;
+typedef uint32_t Color;
+
+enum{
+    WHITE = 0xFFFFFF,
+    BLACK = 0x000000,
+    RED = 0xFF0000
+};
 
 void putPixel(Color color, uint64_t x, uint64_t y);
 void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor);
