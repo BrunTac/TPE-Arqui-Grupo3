@@ -108,14 +108,14 @@ void commandline_handler(){
 }
 
 void notEnoughArguments(int arguments){
-    printf("%nError: faltan argumentos. El comando '%s' necesita %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
+    printError("Error: faltan argumentos. El comando '%s' necesita %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
 }
 
 void tooManyArguments(int arguments){
     if(arguments == 0){
-        printf("%nError: el comando '%s' no acepta argumentos.%n", cmdtokens[0]);
+        printError("Error: el comando '%s' no acepta argumentos.%n", cmdtokens[0]);
     }else{
-        printf("%nError: el comando '%s' solo acepta %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
+        printError("Error: el comando '%s' solo acepta %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
     }
 }
 
@@ -182,7 +182,7 @@ void exit(){
 }
 
 void invalid_command(){
-    printf("Error. El comando '%s' es invalido.%n", cmdtokens[0]);
+    printError("Error. El comando '%s' es invalido.%n", cmdtokens[0]);
     printf("%nPara ver el menu de opciones utilice el comando: 'menu'");
 }
 

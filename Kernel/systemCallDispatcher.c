@@ -30,13 +30,12 @@ static void sys_write(int fd, char c, Color font, Color background) {
     }else if(fd == 2){
         print(c, RED, BLACK);
     }
-    
 }
 
 static void sys_read(int fd, char * c) {
-
-    *(c) = getKey();
-
+    if(fd == 0){
+         *(c) = getKey();
+    }
 }
 
 static void sys_clear(){
@@ -51,7 +50,7 @@ static void sys_printRegisters(){
 
 }
 
-void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
+void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 
     switch(id) {
         case 2:
@@ -61,7 +60,7 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_read((int) arg1, (char *) arg2);
             break ;
         case 4:
-            sys_write((int) arg1,(char) arg2, (Color) arg3, (Color) arg4);
+            sys_write((int) arg1,(char) arg2, WHITE, BLACK);
             break ;
         case 5:
             sys_clear();
