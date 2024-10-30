@@ -172,9 +172,6 @@ void test_exception(){
     }
 }
 
-void snake(){
-
-}
 
 void exit(){
     printf("%nHasta pronto %s!", user);

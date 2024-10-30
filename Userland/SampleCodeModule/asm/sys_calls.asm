@@ -3,6 +3,8 @@ GLOBAL sys_read
 GLOBAL sys_write
 GLOBAL sys_clear
 GLOBAL sys_show_registers
+GLOBAL sys_scrHeight
+GLOBAL sys_scrWidth
 
 section .text
 
@@ -31,4 +33,19 @@ sys_show_registers:
     int 80h
     ret
 
+
+sys_drawSquare:
+    mov rax, 7
+    int 80h
+    ret    
+
+sys_scrHeight:
+    mov rax, 8
+    int 80h
+    ret
+
+sys_scrWidth:
+    mov rax, 9
+    int 80h
+    ret
 

@@ -24,6 +24,8 @@ static void sys_time(char time[3][3]){
     uintToBase(getSeconds(), time[2], 16); 
 }
 
+
+
 static void sys_write(int fd, char c, Color font, Color background) {
     if(fd == 1){
         print(c, font, background);
@@ -51,6 +53,12 @@ static void sys_printRegisters(){
 
 }
 
+static void sys_drawSquare(Color color, int x, int y){
+
+    drawSquare(color, x , y);
+
+}
+
 void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
 
     switch(id) {
@@ -61,7 +69,7 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_read((int) arg1, (char *) arg2);
             break ;
         case 4:
-            sys_write((int) arg1,(char) arg2, (Color) arg3, (Color) arg4);
+            sys_write((int) arg1,(char) arg2, WHITE, BLACK);
             break ;
         case 5:
             sys_clear();
@@ -69,6 +77,16 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
         case 6:
             sys_printRegisters();
             break ;
+        case 7:
+            sys_drawSquare((Color) arg1, (int)arg2, (int)arg3)
+            break ;
+        case 8:
+            sys_scrHeight();
+            break ;
+        case 9:
+            sys_scrWidth();
+            break ;
+
     }
     return 0;
 }
