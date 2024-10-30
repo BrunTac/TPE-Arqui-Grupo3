@@ -14,17 +14,19 @@ uint64_t getMinutes();
 uint64_t getHours();
 
 
+extern Color WHITE;
+extern Color BLACK;
+extern Color RED;
+
 static void sys_time(char time[3][3]){
     uintToBase(getHours(), time[0], 16);
     uintToBase(getMinutes(), time[1], 16);
     uintToBase(getSeconds(), time[2], 16); 
 }
 
-
-
 static void sys_write(int fd, char c, Color font, Color background) {
     if(fd == 1){
-        print(c, WHITE, BLACK);
+        print(c, font, background);
     }else if(fd == 2){
         print(c, RED, BLACK);
     }
@@ -54,20 +56,6 @@ static void sys_drawSquare(Color color, int x, int y){
 
 }
 
-static int sys_scrHeight(){
-
-    return getHeight();
-
-}
-
-static int sys_scrWidth(){
-
-    return getWidth();
-
-}
-
-
-
 void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 
     switch(id) {
@@ -78,7 +66,7 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_read((int) arg1, (char *) arg2);
             break ;
         case 4:
-            sys_write((int) arg1,(char) arg2, (Color) arg3, (Color) arg4);
+            sys_write((int) arg1,(char) arg2, WHITE, BLACK);
             break ;
         case 5:
             sys_clear();

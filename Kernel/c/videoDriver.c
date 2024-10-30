@@ -27,7 +27,6 @@ struct vbe_mode_info_structure {
 	uint8_t bank_size;		// deprecated; size of a bank, almost always 64 KB but may be 16 KB...
 	uint8_t image_pages;
 	uint8_t reserved0;
- 
 	uint8_t red_mask;
 	uint8_t red_position;
 	uint8_t green_mask;
@@ -135,6 +134,20 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	return digits;
 }
 
+
+void drawSquare(Color color, int x, int y){
+
+	for (size_t i = 0; i < 32; i++)
+	{
+		for (size_t j = 0; j < 32; j++)
+		{
+			putPixel(color, x+j, y+i);
+		}
+		
+	}
+
+}
+
 void printHex(const uint64_t num, Color fnt, Color bgd) {
 
 	static char buffer[64] = { '0' };
@@ -145,6 +158,8 @@ void printHex(const uint64_t num, Color fnt, Color bgd) {
 
 void clear(){
 
+	current_X = VBE_mode_info->width;
+	current_Y = VBE_mode_info->height;
 	while(current_X != 0 || current_Y != 0){
 		print_backspace(BLACK, BLACK);
 	}
@@ -207,4 +222,12 @@ void print_backspace(Color fnt, Color bgd){
     }
     putChar(' ', current_X, current_Y, fnt, bgd);
     current_X -= WIDTH_FONT;
+}
+
+int getHeight(){
+	return VBE_mode_info->height;
+}
+
+int getWidth(){
+	return VBE_mode_info->width;
 }

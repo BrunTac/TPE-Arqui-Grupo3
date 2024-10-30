@@ -23,5 +23,8 @@ void print_backspace(Color fnt, Color bgd);
 void printcheck();
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 void clear();
+void drawSquare(Color color, int x, int y);
+int getHeight();
+int getWidth();
 
 #endif
