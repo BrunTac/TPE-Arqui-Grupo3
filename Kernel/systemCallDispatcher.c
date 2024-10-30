@@ -20,9 +20,11 @@ static void sys_time(char time[3][3]){
     uintToBase(getSeconds(), time[2], 16); 
 }
 
+
+
 static void sys_write(int fd, char c, Color font, Color background) {
     if(fd == 1){
-        print(c, font, background);
+        print(c, WHITE, BLACK);
     }else if(fd == 2){
         print(c, RED, BLACK);
     }
@@ -52,13 +54,19 @@ static void sys_drawSquare(Color color, int x, int y){
 
 }
 
-static void sys_scrHeight(){
+static int sys_scrHeight(){
+
+    return getHeight();
 
 }
 
-static void sys_scrWidth(){
+static int sys_scrWidth(){
+
+    return getWidth();
 
 }
+
+
 
 void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 

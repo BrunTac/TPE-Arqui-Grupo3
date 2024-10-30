@@ -15,7 +15,6 @@ int exited = 0;
 
 void initialize(){
     printHeader();
-    putChar('c');
     printf("%nIngrese su nombre de usuario: ");
     scanf("%s", &user);
 
@@ -78,6 +77,8 @@ void tokenize(){
     }
     cmdtokens[tokens++][j] = '\0';
 }
+
+void snake(){}
 
 void commandline_handler(){
     newLine();
@@ -189,7 +190,7 @@ void printHeader(){
     printDashLine();
     printDashLine();
     printf("%nBienvenido a la terminal de ");
-    printfColor("Cuervazos SO%n%n", BLUE, RED);
+    printfColor("Cuervazos SO%n%n", RED, BLUE);
     printDashLine();
     printDashLine();
 }

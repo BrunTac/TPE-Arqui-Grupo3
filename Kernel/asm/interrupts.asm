@@ -151,6 +151,7 @@ _irq05Handler:
 _irq60Handler:
 	pushState ; preservo registros
 
+	mov r8, rcx
 	mov rcx, rdx
 	mov rdx, rsi
 	mov rsi, rdi
