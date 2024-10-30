@@ -1,5 +1,4 @@
 #include <libc.h>
-#include <stdarg.h>
 #include <sys_calls.h>
 
 #define STDIN 0
@@ -13,37 +12,7 @@ void printf(const char *format, ...){
     va_list args;
     va_start(args, format);
 
-    for (const char *ptr = format; *ptr != '\0'; ptr++) {
-        if (*ptr == '%' && *(ptr + 1) != '\0') {
-            ptr++;
-            if (*ptr == 'd') {
-                int num = va_arg(args, int);
-                if (num < 0) {
-                    putChar('-');
-                    num = -num;
-                }
-                // Convert int to string and print
-                char buffer[10];
-                int i = 0;
-                do {
-                    buffer[i++] = '0' + (num % 10);
-                    num /= 10;
-                } while (num > 0);
-                while (i > 0) {
-                    putChar(buffer[--i]);
-                }
-            } else if (*ptr == 's') {
-                char *str = va_arg(args, char*);
-                while (*str) {
-                    putChar(*str++);
-                }
-            } else if (*ptr == 'n'){
-                newLine();
-            }
-        } else {
-            putChar(*ptr);
-        }
-    }
+    printfd(1, format, WHITE, BLACK, args);
     va_end(args);
     return;
 }
@@ -52,60 +21,33 @@ void printfColor(const char * format, Color font, Color background, ...){
     va_list args;
     va_start(args, background);
 
-    for (const char *ptr = format; *ptr != '\0'; ptr++) {
-        if (*ptr == '%' && *(ptr + 1) != '\0') {
-            ptr++;
-            if (*ptr == 'd') {
-                int num = va_arg(args, int);
-                if (num < 0) {
-                    putCharColor('-', font, background);
-                    num = -num;
-                }
-                // Convert int to string and print
-                char buffer[10];
-                int i = 0;
-                do {
-                    buffer[i++] = '0' + (num % 10);
-                    num /= 10;
-                } while (num > 0);
-                while (i > 0) {
-                    putCharColor(buffer[--i], font, background);
-                }
-            } else if (*ptr == 's') {
-                char *str = va_arg(args, char*);
-                while (*str) {
-                    putCharColor(*str++, font, background);
-                }
-            } else if (*ptr == 'n'){
-                newLine();
-            }
-        } else {
-            putCharColor(*ptr, font, background);
-        }
-    }
+    printfd(1, format, font, background, args);
+
     va_end(args);
-    return;
-}
-
-void putChar(char c){
-    putCharColor(c, WHITE, BLACK);
-}
-
-void putCharColor(char character, Color font, Color background){
-    sys_write(STDOUT, character, font, background);
 }
 
 void printError(const char *format, ...){
     va_list args;
     va_start(args, format);
 
+    printfd(2, format, WHITE, BLACK, args);
+
+    va_end(args);
+}
+
+void putChar(char c){
+    write(1, c, WHITE, BLACK);
+}
+
+void printfd(int fd, const char * format, Color font, Color background, va_list args){
+   
     for (const char *ptr = format; *ptr != '\0'; ptr++) {
         if (*ptr == '%' && *(ptr + 1) != '\0') {
             ptr++;
             if (*ptr == 'd') {
                 int num = va_arg(args, int);
                 if (num < 0) {
-                    putCharError('-');
+                    write(fd, '-', font, background);
                     num = -num;
                 }
                 // Convert int to string and print
@@ -116,26 +58,24 @@ void printError(const char *format, ...){
                     num /= 10;
                 } while (num > 0);
                 while (i > 0) {
-                    putCharError(buffer[--i]);
+                    write(fd, buffer[--i], font, background);
                 }
             } else if (*ptr == 's') {
                 char *str = va_arg(args, char*);
                 while (*str) {
-                    putCharError(*str++);
+                    write(fd, *str++, font, background);
                 }
             } else if (*ptr == 'n'){
                 newLine();
             }
         } else {
-            putCharError(*ptr);
+            write(fd, *ptr, font, background);
         }
     }
-    va_end(args);
-    return;
 }
 
-void putCharError(char c){
-    sys_write(2, c, WHITE, BLACK);
+void write(int fd, char character, Color font, Color background){
+    sys_write(fd, character, font, background);
 }
 
 

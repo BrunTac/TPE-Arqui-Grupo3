@@ -2,7 +2,6 @@
 #include <videoDriver.h>
 
 #define REGISTER_AMOUNT 18
-extern Color RED, BLACK;
 
 uint64_t * getRegisters();
 

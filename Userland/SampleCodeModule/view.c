@@ -5,16 +5,6 @@
 
 
 extern void opcodeError();
-//FALTA: printMenu (facil pero paja), todas las sys_ (kernel), los test_ y snake obvioooooooooooo
-//OBS: le puse sys_algo a todas las funciones que van a estar en kernel. pero no se si decirles sys_calls. capaz les cambiamos el nombre
-// y la de time no estoy segura si se hace en kernel o aca. hice que el kernel da los valores y esto imprime. creo que es lo mejor pero not sure.
-// en la de los registros se lo dejo todo al kernel, asi que no se que criterio usar!! y si cambiar criterio
-
-//chequeo que no se manden argumentos extras al hacer los comandos; si se mandan de mas, no se hace (y avisa). capaz es mejor ignorar esto y que se haga igual
-
-//podriamos cambiar algunos de estos printf para que impriman a color!! no se si rojo pero algun color para error
-
-//no se bien que va en los testeos de las excepciones 
 
 
 char user[MAX_BUFFER];
@@ -65,6 +55,9 @@ void getCommandline(){
             putChar(c);
         }
     }
+    while(read > 0 && (cmdline[read - 1] == ' ' || cmdline[read - 1] == '\t')){
+        read--;
+    }
     cmdline[read] = '\0';
     tokenize();
 }
@@ -84,6 +77,8 @@ void tokenize(){
     }
     cmdtokens[tokens++][j] = '\0';
 }
+
+void snake(){}
 
 void commandline_handler(){
     newLine();
@@ -194,7 +189,8 @@ void test_divzero_exep(){
 void printHeader(){
     printDashLine();
     printDashLine();
-    printf("%nBienvenido a la terminal de Cuervazos SO%n%n");
+    printf("%nBienvenido a la terminal de ");
+    printfColor("Cuervazos SO%n%n", RED, BLUE);
     printDashLine();
     printDashLine();
 }

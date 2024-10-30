@@ -4,7 +4,6 @@
 #define ZERO_EXCEPTION_ID 0
 #define INVALID_OP_CODE 6
 
-extern Color RED, BLACK, WHITE;
 
 void exceptionDispatcher(int exception) {
 	switch(exception) {

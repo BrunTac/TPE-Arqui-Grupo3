@@ -3,15 +3,13 @@
 
 #include <stdint.h>
 
-typedef struct {
-    uint8_t b;
-    uint8_t g;
-    uint8_t r;
-} Color;
+typedef uint32_t Color;
 
-#define WHITE (Color){255, 255, 255}
-#define BLACK (Color){0, 0, 0}
-#define RED = (Color){0, 0, 255}
-
+enum{
+    WHITE = 0xFFFFFF,
+    BLACK = 0x000000,
+    RED = 0xFF0000,
+    BLUE = 0x0000FF
+};
 
 #endif
