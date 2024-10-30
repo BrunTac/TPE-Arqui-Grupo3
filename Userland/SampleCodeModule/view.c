@@ -88,14 +88,10 @@ void tokenize(){
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
-    if(strcmp(cmd, "help") == 0){
-        help();
+    if(strcmp(cmd, "menu") == 0){
+        menu();
     }else if(strcmp(cmd, "clear") == 0){
         clear();
-    }else if(strcmp(cmd, "changeusername") == 0){
-        changeusername();
-    }else if(strcmp(cmd, "whoami") == 0){
-        whoami();
     }else if(strcmp(cmd, "time") == 0){
         time();
     }else if(strcmp(cmd, "showregisters") == 0){
@@ -135,7 +131,7 @@ int checkArguments(int arguments){
     return 1;
 }
 
-void help(){
+void menu(){
     if(checkArguments(0)){
         printMenu();
     }
@@ -145,19 +141,6 @@ void clear(){
     if (checkArguments(0)){
         // vacia la pantalla y ubica los punteros de posicion en el principio
         sys_clear();
-    }
-}
-
-void changeusername(){
-    if(checkArguments(1)){
-        strcpy(user, cmdtokens[1]);    
-        printf("%nListo %s! Su nombre de usuario ha sido actualizado correctamente%n", user);
-    }
-}
-
-void whoami(){
-    if(checkArguments(0)){
-        printf("USER: %s", user);
     }
 }
 
@@ -200,7 +183,7 @@ void exit(){
 
 void invalid_command(){
     printf("Error. El comando '%s' es invalido.%n", cmdtokens[0]);
-    printf("%nPara ver el menu de opciones utilice el comando: 'help'");
+    printf("%nPara ver el menu de opciones utilice el comando: 'menu'");
 }
 
 
@@ -228,9 +211,7 @@ void printMenu(){
     printDashLine();
     printf("MENU DE COMANDOS%n");
     printDashLine();
-    printf("- help............................imprime el menu de comandos%n");
-    printf("- whoami..........................imprime el nombre de usuario%n");
-    printf("- changeusername..................recibe como argumento el nuevo nombre de usuario%n");
+    printf("- menu............................imprime el menu de comandos%n");
     printf("- time............................imprime la hora actual%n");
     printf("- showregisters...................imprime los valores actuales de todos los registros%n");
     printf("- clear...........................vacia la pantalla%n");
