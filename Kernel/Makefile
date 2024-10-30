@@ -1,7 +1,7 @@
 include Makefile.inc
 
 KERNEL=kernel.bin
-SOURCES=$(wildcard *.c)
+SOURCES=$(wildcard c/*.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
 OBJECTS=$(SOURCES:.c=.o) font.o 		# agregamos font.o a los objetos, para que se genere en el make
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
@@ -29,6 +29,6 @@ font.o: font.psf
 	objcopy -O elf64-x86-64 -B i386 -I binary font.psf font.o
 
 clean:
-	rm -rf asm/*.o *.o *.bin
+	rm -rf asm/*.o c/*.o *.bin
 
 .PHONY: all clean
