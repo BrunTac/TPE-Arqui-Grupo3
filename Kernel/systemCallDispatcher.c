@@ -16,6 +16,7 @@ uint64_t getHours();
 
 extern Color WHITE;
 extern Color BLACK;
+extern Color RED;
 
 static void sys_time(char time[3][3]){
     uintToBase(getHours(), time[0], 16);
@@ -26,6 +27,8 @@ static void sys_time(char time[3][3]){
 static void sys_write(int fd, char c, Color font, Color background) {
     if(fd == 1){
         print(c, font, background);
+    }else if(fd == 2){
+        print(c, RED, BLACK);
     }
     
 }
