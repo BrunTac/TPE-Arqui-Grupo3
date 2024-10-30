@@ -32,13 +32,12 @@ static void sys_write(int fd, char c, Color font, Color background) {
     }else if(fd == 2){
         print(c, RED, BLACK);
     }
-    
 }
 
 static void sys_read(int fd, char * c) {
-
-    *(c) = getKey();
-
+    if(fd == 0){
+         *(c) = getKey();
+    }
 }
 
 static void sys_clear(){
@@ -59,7 +58,7 @@ static void sys_drawSquare(Color color, int x, int y){
 
 }
 
-void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
+void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 
     switch(id) {
         case 2:

@@ -151,6 +151,7 @@ _irq05Handler:
 _irq60Handler:
 	pushState ; preservo registros
 
+	mov rcx, rdx
 	mov rdx, rsi
 	mov rsi, rdi
 	mov rdi, rax ; muevo mis registros por un lugar en el lugar de ingreso para que RAX sea mi primer argumento (id del syscall)

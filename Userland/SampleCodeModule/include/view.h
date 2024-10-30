@@ -11,10 +11,8 @@ void getCommandline();
 void tokenize();
 void commandline_handler();
 
-void help();
+void menu();
 void clear();
-void changeusername();
-void whoami();
 void time();
 void showregisters();
 void test_exception();
