@@ -58,6 +58,20 @@ static void sys_drawSquare(Color color, int x, int y){
 
 }
 
+static int sys_scrHeight(){
+
+    return getHeight();
+
+}
+
+static int sys_scrWidth(){
+
+    return getWidth();
+
+}
+
+
+
 void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 
     switch(id) {
