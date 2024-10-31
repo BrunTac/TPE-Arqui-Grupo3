@@ -5,6 +5,8 @@ GLOBAL sys_clear
 GLOBAL sys_show_registers
 GLOBAL sys_scrHeight
 GLOBAL sys_scrWidth
+GLOBAL sys_sleep
+GLOBAL sys_beep
 
 section .text
 
@@ -54,3 +56,7 @@ sys_sleep:
     int 80h
     ret
 
+sys_beep:
+    mov rax, 11
+    int 80h
+    ret

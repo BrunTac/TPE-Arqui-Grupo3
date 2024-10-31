@@ -1,17 +1,19 @@
- /* 
  #include <stdint.h>
+ #include <time.h>
 
+extern void outb(uint16_t port, uint8_t value);
+extern uint8_t inb(uint16_t port);
 
  //Play sound using built-in speaker
- static void play_sound(uint32_t nFrequence) {
- 	uint32_t Div;
+static void play_sound(uint32_t frequency) {
+ 	uint32_t divisor;
  	uint8_t tmp;
  
         //Set the PIT to the desired frequency
- 	Div = 1193180 / nFrequence;
+ 	divisor = 1193180 / frequency;
  	outb(0x43, 0xb6);
- 	outb(0x42, (uint8_t) (Div) );
- 	outb(0x42, (uint8_t) (Div >> 8));
+ 	outb(0x42, (uint8_t) (divisor) );
+ 	outb(0x42, (uint8_t) (divisor >> 8));
  
         //And play the sound using the PC speaker
  	tmp = inb(0x61);
@@ -26,12 +28,11 @@
      
  	outb(0x61, tmp);
  }
- 
+
  //Make a beep
  void beep() {
  	 play_sound(1000);
- 	 timer_wait(10);
+ 	 sleep(70);
  	 nosound();
           //set_PIT_2(old_frequency);
  }
- */

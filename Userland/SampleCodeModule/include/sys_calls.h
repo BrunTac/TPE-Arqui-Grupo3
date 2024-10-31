@@ -12,4 +12,6 @@ void sys_show_registers();
 void sys_drawSquare(Color color, int x, int y);
 int sys_scrWidth();
 int sys_scrHeight();
+void sys_beep();
+
 #endif

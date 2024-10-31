@@ -95,7 +95,9 @@ void commandline_handler(){
         test_exception();
     }else if(strcmp(cmd, "snake") == 0){
         snake();
-    }else if(strcmp(cmd, "exit") == 0){
+    }else if(strcmp(cmd, "beep") == 0){
+        beep();
+    }else if(strcmp(cmd, "exit") == 0) {
         exit();
     }else{
         invalid_command();
@@ -167,6 +169,11 @@ void test_exception(){
     }
 }
 
+void beep() {
+    if(checkArguments(0)) {
+        sys_beep();
+    }
+}
 
 void exit(){
     printf("%nHasta pronto %s!", user);
