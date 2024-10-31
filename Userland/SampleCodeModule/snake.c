@@ -20,7 +20,6 @@ void snake(){
     Player * player1; 
     spawnPlayer(BLOCKSIZE, BLOCKSIZE, body1, player1);
 
-    spawnApple();
     if (cantPlayers == 2)
     {
         Coordinates body2[100];
@@ -28,19 +27,16 @@ void snake(){
         spawnPlayer(BLOCKSIZE, sys_scrHeight() - BLOCKSIZE, body2, player2);
     }
 
+    spawnApple();
+
     int lost = 0;
 
     while (!lost)
     {
-        for(int i = 0; i < 1000000; i++){}
-        //sys_sleep();
-        if (canMove(player1))
-        {
-            updateDirection(player1);
-            lost = movePlayer(player1);
-            
-            
-        }
+        sys_sleep(10000);
+
+        updateDirection(player1);
+        lost = movePlayer(player1);
     }
     clear();
 }

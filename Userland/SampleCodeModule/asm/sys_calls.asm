@@ -6,6 +6,7 @@ GLOBAL sys_show_registers
 GLOBAL sys_scrHeight
 GLOBAL sys_scrWidth
 GLOBAL sys_drawSquare
+GLOBAL sys_sleep
 
 section .text
 
@@ -47,6 +48,11 @@ sys_scrHeight:
 
 sys_scrWidth:
     mov rax, 9
+    int 80h
+    ret
+
+sys_sleep:
+    mov rax, 10
     int 80h
     ret
 
