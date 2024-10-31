@@ -3,11 +3,12 @@
 #include <sys_calls.h>
 #include <libc.h>
 #include <stdlib.h>
-#include <view.h>
 
 
 #define BLOCKSIZE 32
 #define STDIN 0
+#define LEVEL1_TICKS 12
+#define MAX_LENGTH_SNAKE 100
 
 static Coordinates apple;
 
@@ -15,21 +16,22 @@ static int scrHeight;
 static int scrWidth;
 
 void snake(){
-    scrHeight = sys_scrHeight();
-    scrWidth = sys_scrWidth();
 
+    sys_scrHeight(&scrHeight);
+    sys_scrWidth(&scrWidth);
+    
     int cantPlayers = menuSnake();
-
+    int speed = LEVEL1_TICKS / getLevel();
 
     drawMap();
 
-    Coordinates body1[100];
+    Coordinates body1[MAX_LENGTH_SNAKE];
     Player * player1; 
     spawnPlayer(BLOCKSIZE, BLOCKSIZE, body1, player1);
 
     if (cantPlayers == 2)
     {
-        Coordinates body2[100];
+        Coordinates body2[MAX_LENGTH_SNAKE];
         Player * player2;
         spawnPlayer(BLOCKSIZE, scrHeight - BLOCKSIZE, body2, player2);
     }
@@ -40,12 +42,12 @@ void snake(){
 
     while (!lost)
     {
-        sys_sleep(10000);
+        sys_sleep(speed);
 
         updateDirection(player1);
         lost = movePlayer(player1);
     }
-    clear();
+    sys_clear();
 }
 
 void spawnPlayer(int x, int y, Coordinates body[100], Player * player){
@@ -58,6 +60,7 @@ void spawnPlayer(int x, int y, Coordinates body[100], Player * player){
     player->head = 2;
     player->tail = 0;
     player->size = 3;
+    player->currentDirection = RIGHT;
 
     for (int i = 0; i < player->size; i++)
     {
@@ -70,18 +73,13 @@ int menuSnake(){
     return 1;
 }
 
-
-
 void drawMap(){
 
-	int width = 1024; // sys_scrWidth();
-    int height = 1024; // sys_scrHeight();
-
-	for (int i = 0; i < width; i += BLOCKSIZE * 2)
+	for (int i = 0; i < scrWidth; i += BLOCKSIZE * 2)
 	{
-		for (int j = 0; j < height; j += BLOCKSIZE)
+		for (int j = 0; j < scrHeight; j += BLOCKSIZE)
 		{
-			if (j%64 == 0)
+			if (j%(2 * BLOCKSIZE) == 0)
 			{
 				sys_drawSquare(DARK_GREEN, i, j);
 				sys_drawSquare(GREEN, i+BLOCKSIZE, j);
@@ -95,7 +93,8 @@ void drawMap(){
 
 void updateDirection(Player * player){
 
-    char c = getCharSnake();
+    char c;
+    sys_readLastPressed(STDIN, &c);
 
     switch (c)
     {
@@ -122,7 +121,7 @@ int movePlayer(Player * player){
     
     Coordinates prev = player->body[player->head];
 
-    if(player->head == 100 - 1){
+    if(player->head == MAX_LENGTH_SNAKE - 1){
         player->head = 0;
     }else{
         player->head += 1;
@@ -160,7 +159,7 @@ int movePlayer(Player * player){
             sys_drawSquare(GREEN, tailX, tailY);
         }
     
-        if(player->tail == 100 - 1){
+        if(player->tail == MAX_LENGTH_SNAKE - 1){
            player->tail = 0;
         }else{
             player->tail += 1;
@@ -169,7 +168,7 @@ int movePlayer(Player * player){
         return 1;
     }else if (Collision == 1)
     {
-        if (((apple.x + apple.y) % 64 == 0))
+        if (((apple.x + apple.y) % (2 * BLOCKSIZE) == 0))
         {
             sys_drawSquare(DARK_GREEN, apple.x, apple.y);
         }else{
@@ -192,8 +191,8 @@ int checkCollision(Player * player){
     }
     
 
-    if (player->body[player->head].x >= 1024 || player->body[player->head].y >= 1024
-        || player->body[player->head].x < 0 || player->body[player->tail].y < 0){
+    if (player->body[player->head].x >= scrWidth || player->body[player->head].y >= scrHeight
+        || player->body[player->head].x < 0 || player->body[player->head].y < 0){
         return -1;
     }
 
@@ -205,7 +204,7 @@ int checkCollision(Player * player){
             return -1;
         }
 
-        if (i == 99){
+        if (i == MAX_LENGTH_SNAKE - 1){
             i = 0;
         }else{
             i++;
@@ -215,8 +214,9 @@ int checkCollision(Player * player){
 }
 
 void spawnApple(){
-    apple.x = 23 * BLOCKSIZE;
-    apple.y = 5 * BLOCKSIZE;
+    int rand = getRandomNumber();
+    apple.x = (rand % (scrWidth / BLOCKSIZE)) * BLOCKSIZE;
+    apple.y = (rand % (scrHeight / BLOCKSIZE))  * BLOCKSIZE;
     sys_drawSquare(BLUE, apple.x, apple.y);
 }
 
@@ -224,4 +224,14 @@ char getCharSnake(){
     char c;
     sys_read(STDIN, &c);
     return c;
+}
+
+int getLevel(){
+    return 2;
+}
+
+int getRandomNumber(){
+    int rand;
+    sys_ticksElapsed(&rand);
+    return rand;
 }

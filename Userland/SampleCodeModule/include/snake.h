@@ -34,6 +34,8 @@ int checkCollision(Player * player);
 void spawnApple();
 
 char getCharSnake();
+int getRandomNumber();
+int getLevel();
 
 
 

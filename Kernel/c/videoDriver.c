@@ -224,10 +224,10 @@ void print_backspace(Color fnt, Color bgd){
     current_X -= WIDTH_FONT;
 }
 
-int getHeight(){
-	return VBE_mode_info->height;
+uint64_t getHeight(){
+	return (uint64_t)(VBE_mode_info->height);
 }
 
-int getWidth(){
-	return VBE_mode_info->width;
+uint64_t getWidth(){
+	return (uint64_t)(VBE_mode_info->width);
 }

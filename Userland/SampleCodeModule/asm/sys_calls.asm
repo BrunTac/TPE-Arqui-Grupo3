@@ -8,6 +8,8 @@ GLOBAL sys_scrWidth
 GLOBAL sys_sleep
 GLOBAL sys_beep
 GLOBAL sys_drawSquare
+GLOBAL sys_readLastPressed
+GLOBAL sys_ticksElapsed
 
 section .text
 
@@ -59,5 +61,15 @@ sys_sleep:
 
 sys_beep:
     mov rax, 11
+    int 80h
+    ret
+
+sys_readLastPressed:
+    mov rax, 12
+    int 80h
+    ret
+
+sys_ticksElapsed:
+    mov rax, 13
     int 80h
     ret

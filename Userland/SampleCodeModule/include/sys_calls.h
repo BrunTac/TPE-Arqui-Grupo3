@@ -10,9 +10,11 @@ void sys_write(int fd, char c, Color font, Color background);
 void sys_clear();
 void sys_show_registers();
 void sys_drawSquare(Color color, int x, int y);
-int sys_scrWidth();
-int sys_scrHeight();
-void sys_sleep();
+void sys_scrWidth(int * ans);
+void sys_scrHeight(int * ans);
+void sys_sleep(int ticks);
 void sys_beep();
+void sys_readLastPressed(int fd, char * c);
+void sys_ticksElapsed(int * ans);
 
 #endif

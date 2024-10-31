@@ -6,6 +6,7 @@ char buffer[BUFFER_SIZE];
 int head = 0;
 int tail = 0;
 int shiftOn = 0;
+char lastPressed = '\0';
 
 extern uint8_t readKey();
 
@@ -43,7 +44,6 @@ void bufferKey(char key) {
 
                 buffer[head] = key;
                 head = (head + 1) % BUFFER_SIZE;
-
         }
 }
 
@@ -70,6 +70,7 @@ void keyboard_handler() {
                 key = scanCodeToAscii_shiftOff[scanCode];
 
         bufferKey(key);
+        lastPressed = key;
 
 }
 
@@ -86,4 +87,12 @@ char getKey() {
 void emptyBuffer(){
         head = 0;
         head = tail;
+}
+
+char getLastPressed(){
+        return lastPressed;
+}
+
+void clearLastPressed(){
+        lastPressed = '\0';
 }
