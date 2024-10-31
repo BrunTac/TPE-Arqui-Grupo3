@@ -19,4 +19,6 @@ void newLine(void);
 int strcmp(const char * s1, const char * s2);
 void strcpy(char * destination, const char * source);
 
+char getCharSnake();
+
 #endif

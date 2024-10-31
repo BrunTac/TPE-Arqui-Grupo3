@@ -128,6 +128,12 @@ char getChar(){
     return c;
 }
 
+char getCharSnake(){
+    char c;
+    sys_read(STDIN, &c);
+    return c;
+}
+
 void newLine(){
     sys_write(STDOUT, '\n', WHITE, BLACK);
 }
