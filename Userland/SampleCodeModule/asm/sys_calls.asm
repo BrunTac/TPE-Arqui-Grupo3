@@ -7,6 +7,7 @@ GLOBAL sys_scrHeight
 GLOBAL sys_scrWidth
 GLOBAL sys_sleep
 GLOBAL sys_beep
+GLOBAL sys_drawSquare
 
 section .text
 

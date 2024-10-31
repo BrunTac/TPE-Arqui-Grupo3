@@ -35,4 +35,4 @@ static void play_sound(uint32_t frequency) {
  	 sleep(70);
  	 nosound();
           //set_PIT_2(old_frequency);
- }
+ }*/
