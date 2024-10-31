@@ -2,13 +2,14 @@
 #include <keyboard.h>
 #include <stdint.h>
 #include <lib.h>
-
+#include <time.h>
+#include <soundDriver.h>
 
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
 
-uint64_t * getRegisters();
+uint64_t * showRegisters();
 uint64_t getSeconds();
 uint64_t getMinutes();
 uint64_t getHours();
@@ -40,9 +41,9 @@ static void sys_clear(){
 
 }
 
-static void sys_printRegisters(){
+static void sys_showRegisters(){
 
-    printRegisters();
+    showRegisters();
 
 }
 
@@ -52,6 +53,18 @@ static void sys_drawSquare(Color color, int x, int y){
 
 }
 
+static void sys_sleep(int ticks) {
+
+    sleep(ticks);
+
+}
+
+static void sys_beep() {
+
+    beep();
+
+}
+ 
 static void sys_scrHeight(){
 
 }
@@ -76,7 +89,7 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_clear();
             break ;
         case 6:
-            sys_printRegisters();
+            sys_showRegisters();
             break ;
         case 7:
             sys_drawSquare((Color) arg1, (int)arg2, (int)arg3);
@@ -87,6 +100,12 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
         case 9:
             sys_scrWidth();
             break ;
+        case 10:
+            sys_sleep((int) arg1);
+            break ;
+        case 11:
+            sys_beep();
+            break;
 
     }
     return 0;

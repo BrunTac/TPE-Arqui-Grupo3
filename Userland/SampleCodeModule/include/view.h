@@ -17,6 +17,7 @@ void time();
 void showregisters();
 void test_exception();
 void snake();
+void beep();
 void exit();
 void invalid_command();
 

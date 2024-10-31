@@ -81,8 +81,45 @@ SECTION .text
 %macro exceptionHandler 1
 
 	mov rdi, %1 ; pasaje de parametro
-	call exceptionDispatcher
+	
+	; guardo el estado de mis registros en un arreglo de enteros de 64 bits
 
+	push rax
+	mov rax, [rsp+8]
+	mov [registerState], rax
+	pop rax ; hasta aca es para guardar RIP
+
+	push rax
+	mov rax, [rsp+16]
+	mov [registerState+8], rax
+	pop rax ; hasta aca es para guardar CS
+
+	mov [registerState+8*2], rax
+	mov [registerState+8*3], rbx
+	mov [registerState+8*4], rcx
+	mov [registerState+8*5], rdx
+	mov [registerState+8*6], rsp
+	mov [registerState+8*7], rbp
+	mov [registerState+8*8], rdi
+	mov [registerState+8*9], rsi
+	mov [registerState+8*10], r8
+	mov [registerState+8*11], r9
+	mov [registerState+8*12], r10
+	mov [registerState+8*13], r11
+	mov [registerState+8*14], r12
+	mov [registerState+8*15], r13
+	mov [registerState+8*16], r14
+	mov [registerState+8*17], r15
+
+	push rax
+	pushfq
+	pop rax
+	mov [registerState+8*18], rax
+	pop rax ; hasta aca para guardar rflags
+	
+	mov rsi, registerState ; se lo paso como parametro a exceptionDispatcher
+
+	call exceptionDispatcher
 
 	call getStackBase
 	mov rsp, rax
@@ -179,3 +216,4 @@ haltcpu:
 
 SECTION .bss
 	aux resq 1
+	registerState resq 19
