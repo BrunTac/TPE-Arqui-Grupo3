@@ -3,13 +3,20 @@
 #include <sys_calls.h>
 #include <libc.h>
 #include <stdlib.h>
+#include <view.h>
 
 
 #define BLOCKSIZE 32
+#define STDIN 0
 
 static Coordinates apple;
 
+static int scrHeight;
+static int scrWidth;
+
 void snake(){
+    scrHeight = sys_scrHeight();
+    scrWidth = sys_scrWidth();
 
     int cantPlayers = menuSnake();
 
@@ -24,7 +31,7 @@ void snake(){
     {
         Coordinates body2[100];
         Player * player2;
-        spawnPlayer(BLOCKSIZE, sys_scrHeight() - BLOCKSIZE, body2, player2);
+        spawnPlayer(BLOCKSIZE, scrHeight - BLOCKSIZE, body2, player2);
     }
 
     spawnApple();
@@ -121,31 +128,27 @@ int movePlayer(Player * player){
         player->head += 1;
     }
 
-
-
     switch (player->currentDirection)
     {
     case UP:
-        Coordinates aux = {prev.x, prev.y - BLOCKSIZE};
-        player->body[player->head] = aux;
-        break;
-    case DOWN:
-        Coordinates aux1 = {prev.x, prev.y + BLOCKSIZE};
+        Coordinates aux1 = {prev.x, prev.y - BLOCKSIZE};
         player->body[player->head] = aux1;
         break;
-    case LEFT:
-        Coordinates aux2 = {prev.x - BLOCKSIZE, prev.y};
+    case DOWN:
+        Coordinates aux2 = {prev.x, prev.y + BLOCKSIZE};
         player->body[player->head] = aux2;
         break;
-    case RIGHT:
-        Coordinates aux3 = {prev.x + BLOCKSIZE, prev.y};
+    case LEFT:
+        Coordinates aux3 = {prev.x - BLOCKSIZE, prev.y};
         player->body[player->head] = aux3;
+        break;
+    case RIGHT:
+        Coordinates aux4 = {prev.x + BLOCKSIZE, prev.y};
+        player->body[player->head] = aux4;
         break;
     }
     
     int Collision = checkCollision(player);
-
-
 
     if (Collision == 0){
         int tailX = player->body[player->tail].x;
@@ -162,7 +165,6 @@ int movePlayer(Player * player){
         }else{
             player->tail += 1;
         }
-        
     }else if (Collision == -1){
         return 1;
     }else if (Collision == 1)
@@ -176,15 +178,10 @@ int movePlayer(Player * player){
         spawnApple();
     }
     
-    
-   
     sys_drawSquare(RED, player->body[player->head].x, player->body[player->head].y);
     return 0;
 }
 
-int canMove(Player * player){
-    return 1;
-}
 
 int checkCollision(Player * player){
 
@@ -221,4 +218,10 @@ void spawnApple(){
     apple.x = 23 * BLOCKSIZE;
     apple.y = 5 * BLOCKSIZE;
     sys_drawSquare(BLUE, apple.x, apple.y);
+}
+
+char getCharSnake(){
+    char c;
+    sys_read(STDIN, &c);
+    return c;
 }

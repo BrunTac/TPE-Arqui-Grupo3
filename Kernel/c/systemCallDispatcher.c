@@ -38,39 +38,34 @@ static void sys_read(int fd, char * c) {
 static void sys_clear(){
 
     clear();
-
 }
 
 static void sys_showRegisters(){
 
     showRegisters();
-
 }
 
 static void sys_drawSquare(Color color, int x, int y){
 
     drawSquare(color, x , y);
-
 }
 
 static void sys_sleep(int ticks) {
 
     sleep(ticks);
-
 }
 
 static void sys_beep() {
 
     beep();
-
 }
  
-static void sys_scrHeight(){
-
+static int sys_scrHeight(){
+    return getHeight();
 }
 
-static void sys_scrWidth(){
-
+static int sys_scrWidth(){
+    return getWidth();
 }
 
 void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {

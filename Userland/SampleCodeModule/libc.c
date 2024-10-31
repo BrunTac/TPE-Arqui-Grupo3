@@ -4,8 +4,7 @@
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
-#define MAX_BUFFER 256 // esto seria el maximo de un string que le puedo pasar a scanf?
-
+#define MAX_BUFFER 256
 
 
 void printf(const char *format, ...){
@@ -128,12 +127,6 @@ char getChar(){
     return c;
 }
 
-char getCharSnake(){
-    char c;
-    sys_read(STDIN, &c);
-    return c;
-}
-
 void newLine(){
     sys_write(STDOUT, '\n', WHITE, BLACK);
 }
@@ -152,8 +145,6 @@ void newLine(){
 	}
 
 	return s1[r1] - s2[r2];
-	
-
 }
 
  void strcpy(char * destination, const char * source){
