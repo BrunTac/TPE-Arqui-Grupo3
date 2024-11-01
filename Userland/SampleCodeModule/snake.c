@@ -26,6 +26,8 @@ static int boardWidth;
 
 static int headerY;
 
+static int playing;
+
 void snake(){
 
     sys_scrHeight(&scrHeight);
@@ -39,81 +41,85 @@ void snake(){
  
     headerY = borderSizeY - BLOCKSIZE * 1.4;
     
-    int cantPlayers = menuSnake();
-    int speed = LEVEL1_TICKS / getLevel();
+    playing = 1;
+    while(playing){
+        int cantPlayers = menuSnake();
+        int speed = LEVEL1_TICKS / getLevel();
 
-    drawMap(cantPlayers);
+        drawMap(cantPlayers);
 
-    Player player1; 
-    Player player2;
+        Player player1; 
+        Player player2;
 
-    int posX = BLOCKSIZE + borderSizeX;
-    int posY = BLOCKSIZE + borderSizeY;
+        int posX = BLOCKSIZE + borderSizeX;
+        int posY = BLOCKSIZE + borderSizeY;
 
-    Coordinates aux1 = {posX, posY};
-    player1.body[0] = aux1;
-    Coordinates aux2 = {posX + BLOCKSIZE, posY};
-    player1.body[1] = aux2;
-    Coordinates aux3 = {posX+ 2*BLOCKSIZE, posY};
-    player1.body[2] = aux3;
-    player1.head = 2;
-    player1.tail = 0;
-    player1.size = 3;
-    player1.currentDirection = RIGHT;
-    player1.color = RED;
-    player1.points = 0;
+        Coordinates aux1 = {posX, posY};
+        player1.body[0] = aux1;
+        Coordinates aux2 = {posX + BLOCKSIZE, posY};
+        player1.body[1] = aux2;
+        Coordinates aux3 = {posX+ 2*BLOCKSIZE, posY};
+        player1.body[2] = aux3;
+        player1.head = 2;
+        player1.tail = 0;
+        player1.size = 3;
+        player1.currentDirection = RIGHT;
+        player1.color = RED;
+        player1.points = 0;
 
-    spawnPlayer(posX, posY, &player1, player1.color);
+        spawnPlayer(posX, posY, &player1, player1.color);
 
-    if (cantPlayers == 2)
-    { 
-        posY = scrHeight - BLOCKSIZE * 2 - borderSizeY;
-        Coordinates aux4 = {posX, posY};
-        player2.body[0] = aux4;
-        Coordinates aux5 = {posX + BLOCKSIZE, posY};
-        player2.body[1] = aux5;
-        Coordinates aux6 = {posX + 2*BLOCKSIZE, posY};
-        player2.body[2] = aux6;
-        player2.head = 2;
-        player2.tail = 0;
-        player2.size = 3;
-        player2.currentDirection = RIGHT;
-        player2.color = BLUE;
-        player2.points = 0;
+        if (cantPlayers == 2)
+        { 
+            posY = scrHeight - BLOCKSIZE * 2 - borderSizeY;
+            Coordinates aux4 = {posX, posY};
+            player2.body[0] = aux4;
+            Coordinates aux5 = {posX + BLOCKSIZE, posY};
+            player2.body[1] = aux5;
+            Coordinates aux6 = {posX + 2*BLOCKSIZE, posY};
+            player2.body[2] = aux6;
+            player2.head = 2;
+            player2.tail = 0;
+            player2.size = 3;
+            player2.currentDirection = RIGHT;
+            player2.color = BLUE;
+            player2.points = 0;
 
-        spawnPlayer(posX, posY, &player2, player2.color);
-    }
+            spawnPlayer(posX, posY, &player2, player2.color);
+        }
 
-    spawnApple(&player1, &player2, cantPlayers);
+        spawnApple(&player1, &player2, cantPlayers);
 
-    int lost1 = 0;
-    int lost2 = 0;
+        int lost1 = 0;
+        int lost2 = 0;
 
-    while (!lost1 && !lost2)
-    {
-        printPoints(cantPlayers, player1, player2);
-        sys_sleep(speed);
+        while (!lost1 && !lost2)
+        {
+            printPoints(cantPlayers, &player1, &player2);
+            sys_sleep(speed);
+            
+            updateDirection(&player1, &player2, cantPlayers);
+            lost1 = movePlayer(&player1, &player2, cantPlayers);
+            if(cantPlayers == 2){
+                lost2 = movePlayer(&player2, &player1, cantPlayers);
+            }
+        }
+
+        sys_clear();
         
-        updateDirection(player1, player2, cantPlayers);
-        lost1 = movePlayer(player1, player2, cantPlayers);
-        if(cantPlayers == 2){
-            lost2 = movePlayer(player2, player1, cantPlayers);
+        char c;
+        if (cantPlayers == 1){
+            c = defeatScreen1(&player1);
+        }else if (lost2){
+            c = defeatScreen2(&player1, &player2);
+        }else {
+            c = defeatScreen3(&player1, &player2);
+        }
+        if(c != ' '){
+            playing = 0;
         }
     }
-
-    clear();
     sys_changeFont(1);
-
-    if (cantPlayers == 1){
-        defeatScreen1(player1);
-    }else if (lost2){
-        defeatScreen2(player1, player2);
-    }else {
-        defeatScreen3(player1, player2);
-    }
-    
-    
-
     sys_clear();
 }
 
@@ -134,7 +140,6 @@ int menuSnake(){
     }
 
     printf("%n%n%n%n%n%n%n%n%n");
-    //printfColor("________________________________________________________________________________________________________________________________%n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                sssss n    n  aaa  k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
@@ -151,7 +156,6 @@ int menuSnake(){
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    //printfColor("|______________________________________________________________________________________________________________________________|%n", ICE_GREEN, PINE_GREEN);
 
 
     for(int i = 0; i < scrWidth; i += BLOCKSIZE){
@@ -425,7 +429,7 @@ void printPoints(int cantPlayers, Player * player1, Player * player2){
 
 
 
-void defeatScreen1(Player * player){
+char defeatScreen1(Player * player){
 
     
 
@@ -442,15 +446,19 @@ void defeatScreen1(Player * player){
     printf("|                                                                                                                              |%n");
     printf("|                                                         Score : %d                                                            |%n", player->points);
     printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione cualquier tecla para salir                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|______________________________________________________________________________________________________________________________|%n");
 
+    return getChar();
 }
 
-void defeatScreen2(Player * player1, Player * player2){
+char defeatScreen2(Player * player1, Player * player2){
 
  
 
@@ -469,20 +477,20 @@ void defeatScreen2(Player * player1, Player * player2){
     printf("|                                                                                                                              |%n");
     printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
     printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione cualquier tecla para salir                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|______________________________________________________________________________________________________________________________|%n");
 
 
-    getChar();
-
-
-
+    return getChar();
 }
 
-void defeatScreen3(Player * player1, Player * player2){
+char defeatScreen3(Player * player1, Player * player2){
 
     printf("________________________________________________________________________________________________________________________________%n");
     printf("|                                                                                                                              |%n");
@@ -499,14 +507,16 @@ void defeatScreen3(Player * player1, Player * player2){
     printf("|                                                                                                                              |%n");
     printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
     printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione cualquier tecla para salir                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|______________________________________________________________________________________________________________________________|%n");
 
 
-    getChar();
-
+    return getChar();
 }
 
