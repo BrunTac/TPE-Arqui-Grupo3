@@ -54,17 +54,24 @@ void snake(){
 
     int lost1 = 0;
     int lost2 = 0;
+    int ticks;
+
 
     while (!lost1 && !lost2)
     {
         printPoints(cantPlayers, player1, player2);
-        sys_sleep(speed);
         
         updateDirection(player1, player2, cantPlayers);
-        lost1 = movePlayer(player1, player2, cantPlayers);
-        if(cantPlayers == 2){
-            lost2 = movePlayer(player2, player1, cantPlayers);
+        sys_ticksElapsed(&ticks);
+        if (ticks % 200 == 0){
+            lost1 = movePlayer(player1, player2, cantPlayers);
+            if(cantPlayers == 2){
+                lost2 = movePlayer(player2, player1, cantPlayers);
+            }
+            ticks++;
         }
+        
+        
     }
     sys_changeFont(1);
     sys_clear();
@@ -96,7 +103,31 @@ void spawnPlayer(int x, int y, Player * player, Color color){
 }
 
 int menuSnake(){
-    return 1;
+    clear();
+
+    printf("________________________________________________________________________________________________________________________________%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                               sssss n    n  aaa  k   k eeeee                                                 |%n");
+    printf("|                                              s      nn   n a   a k  k  e                                                     |%n");
+    printf("|                                               ssss  n  n n aaaaa kkk   eee                                                   |%n");
+    printf("|                                                   s n   nn a   a k  k  e                                                     |%n");
+    printf("|                                              sssss  n    n a   a k   k eeeee                                                 |%n");
+    printf("	                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                               presione 1 para modo un jugador                                                |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione 2 para modo dos jugadores                                               |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|______________________________________________________________________________________________________________________________|%n");
+
+
+    char c = getChar();
+    return c - '0';
+
 }
 
 void drawMap(int cantPlayers){
