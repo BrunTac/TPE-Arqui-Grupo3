@@ -40,6 +40,9 @@ void spawnApple(Player * player1, Player * player2, int cantPlayers);
 int getRandomNumber();
 int getLevel();
 void printPoints(int cantPlayers, Player * player1, Player * player2);
+void defeatScreen1(Player * player);
+void defeatScreen2(Player * player1, Player * player2);
+void defeatScreen3(Player * player1, Player * player2);
 
 
 
