@@ -433,7 +433,7 @@ char defeatScreen1(Player * player){
 
     
 
-     printf("________________________________________________________________________________________________________________________________%n");
+    printf("________________________________________________________________________________________________________________________________%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                   |%n");
@@ -450,7 +450,6 @@ char defeatScreen1(Player * player){
     printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                             presione cualquier tecla para salir                                              |%n");
-    printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|______________________________________________________________________________________________________________________________|%n");
