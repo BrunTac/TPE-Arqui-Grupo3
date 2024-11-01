@@ -19,6 +19,7 @@ void test_exception();
 void fontsize();
 void snake();
 void beep();
+void fontsize();
 void exit();
 void invalid_command();
 
