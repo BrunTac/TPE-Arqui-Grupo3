@@ -54,26 +54,32 @@ void snake(){
 
     int lost1 = 0;
     int lost2 = 0;
-    int ticks;
-
 
     while (!lost1 && !lost2)
     {
         printPoints(cantPlayers, player1, player2);
+        sys_sleep(speed);
         
         updateDirection(player1, player2, cantPlayers);
-        sys_ticksElapsed(&ticks);
-        if (ticks % 200 == 0){
-            lost1 = movePlayer(player1, player2, cantPlayers);
-            if(cantPlayers == 2){
-                lost2 = movePlayer(player2, player1, cantPlayers);
-            }
-            ticks++;
+        lost1 = movePlayer(player1, player2, cantPlayers);
+        if(cantPlayers == 2){
+            lost2 = movePlayer(player2, player1, cantPlayers);
         }
-        
-        
     }
+
+    clear();
     sys_changeFont(1);
+
+    if (cantPlayers == 1){
+        defeatScreen1(player1);
+    }else if (lost2){
+        defeatScreen2(player1, player2);
+    }else {
+        defeatScreen3(player1, player2);
+    }
+    
+    
+
     sys_clear();
 }
 
@@ -381,3 +387,91 @@ void printPoints(int cantPlayers, Player * player1, Player * player2){
         sys_writeInPos(aux, scrWidth - (borderSizeX + BLOCKSIZE * 1.2), borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
     }
 }
+
+
+
+void defeatScreen1(Player * player){
+
+    
+
+     printf("________________________________________________________________________________________________________________________________%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                   |%n");
+    printf("|                                  y   y  o   o  u   u        l     o   o  s        t     !!                                   |%n");
+    printf("|                                   yyy   o   o  u   u        l     o   o   ssss    t     !!                                   |%n");
+    printf("|                                    y    o   o  u   u        l     o   o       s   t                                          |%n");
+    printf("|                                    y     ooo    uuu         llll   oooo   ssss    t     !!                                   |%n");
+    printf("	                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                         Score : %d                                                            |%n", player->points);
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|______________________________________________________________________________________________________________________________|%n");
+
+}
+
+void defeatScreen2(Player * player1, Player * player2){
+
+ 
+
+    printf("________________________________________________________________________________________________________________________________%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                      ppp    l      aaaa   y   y  eeee  rrrr       11        w     w  i  n   n   ssss   !!                    |%n");
+    printf("|                      p  p   l      a  a    y y   e     r   r    1111        w     w  i  nn  n  s       !!                    |%n");
+    printf("|                      ppp    l      aaaa     y    eee   rrrr       11        w  w  w  i  n n n   sss    !!                    |%n");
+    printf("|                      p      l      a  a     y    e     r r        11         w w w   i  n  nn      s                         |%n");
+    printf("|                      p      llll   a  a     y    eeee  r  rr    111111        w w    i  n   n  ssss    !!                    |%n");
+    printf("	                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                   Player 1 Score : %d                                                         |%n", player1->points);
+    printf("|                                                                                                                              |%n");
+    printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|______________________________________________________________________________________________________________________________|%n");
+
+
+    getChar();
+
+
+
+}
+
+void defeatScreen3(Player * player1, Player * player2){
+
+    printf("________________________________________________________________________________________________________________________________%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                          ppp    l      aaaa   y   y  eeee  rrrr     2222       w     w  i  n   n   ssss   !!                 |%n");
+    printf("|                          p  p   l      a  a    y y   e     r   r        2      w     w  i  nn  n  s       !!                 |%n");
+    printf("|                          ppp    l      aaaa     y    eee   rrrr      2222      w  w  w  i  n n n   sss    !!                 |%n");
+    printf("|                          p      l      a  a     y    e     r r      2           w w w   i  n  nn      s                      |%n");
+    printf("|                          p      llll   a  a     y    eeee  r  rr    22222        w w    i  n   n  ssss    !!                 |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                   Player 1 Score : %d                                                         |%n", player1->points);
+    printf("|                                                                                                                              |%n");
+    printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|______________________________________________________________________________________________________________________________|%n");
+
+
+    getChar();
+
+}
+
