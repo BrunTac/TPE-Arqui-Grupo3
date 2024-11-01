@@ -16,6 +16,7 @@ void clear();
 void time();
 void showregisters();
 void test_exception();
+void fontsize();
 void snake();
 void beep();
 void fontsize();
