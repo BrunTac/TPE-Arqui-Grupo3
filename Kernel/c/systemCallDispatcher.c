@@ -59,9 +59,16 @@ static void sys_sleep(int ticks) {
     sleep(ticks);
 }
 
-static void sys_beep() {
+static void sys_beep(uint32_t frequency) {
 
-    beep();
+    beep(frequency);
+
+}
+
+static void sys_changeFont(int size) {
+
+    updateSize(size);
+
 }
  
 static void sys_scrHeight(int* ans){
@@ -117,13 +124,16 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             sys_sleep((int) arg1);
             break ;
         case 11:
-            sys_beep();
+            sys_beep((uint32_t) arg1);
             break ;
         case 12:
             sys_readLastPressed((int) arg1, (char *) arg2);
             break ;
         case 13:
             sys_ticksElapsed((int *) arg1);
+            break ;
+        case 14:
+            sys_changeFont((int) arg1);
             break ;
     }
 }

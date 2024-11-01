@@ -9,6 +9,7 @@ GLOBAL sys_scrWidth
 GLOBAL sys_sleep
 GLOBAL sys_beep
 GLOBAL sys_drawSquare
+GLOBAL sys_changeFont
 GLOBAL sys_readLastPressed
 GLOBAL sys_ticksElapsed
 
@@ -77,5 +78,10 @@ sys_readLastPressed:
 
 sys_ticksElapsed:
     mov rax, 13
+    int 80h
+    ret
+
+sys_changeFont:
+    mov rax, 14
     int 80h
     ret
