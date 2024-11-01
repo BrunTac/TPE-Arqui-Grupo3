@@ -8,6 +8,7 @@
 #define BLOCKSIZE 32
 #define STDIN 0
 #define LEVEL1_TICKS 6
+#define MOVESPEED 1500
 
 #define POINTS_STR_1 "Player1: "
 #define POINTS_STR_2 "Player2: "
@@ -27,6 +28,7 @@ static int boardWidth;
 static int headerY;
 
 static int playing;
+static int speed;
 
 void snake(){
 
@@ -44,7 +46,7 @@ void snake(){
     playing = 1;
     while(playing){
         int cantPlayers = menuSnake();
-        int speed = LEVEL1_TICKS / getLevel();
+        speed = LEVEL1_TICKS / getLevel();
 
         drawMap(cantPlayers);
 
@@ -92,17 +94,20 @@ void snake(){
 
         int lost1 = 0;
         int lost2 = 0;
+        int count = 0;
 
         while (!lost1 && !lost2)
         {
-            printPoints(cantPlayers, &player1, &player2);
-            sys_sleep(speed);
-            
+            printPoints(cantPlayers, &player1, &player2);            
             updateDirection(&player1, &player2, cantPlayers);
-            lost1 = movePlayer(&player1, &player2, cantPlayers);
-            if(cantPlayers == 2){
-                lost2 = movePlayer(&player2, &player1, cantPlayers);
+            if (count % (speed * MOVESPEED) == 0 ){
+                lost1 = movePlayer(&player1, &player2, cantPlayers);
+                if(cantPlayers == 2){
+                    lost2 = movePlayer(&player2, &player1, cantPlayers);
+                }
             }
+            count++;
+            
         }
 
         sys_clear();
@@ -345,6 +350,11 @@ int movePlayer(Player * player, Player * otherPlayer, int cantPlayers){
         }else{
             sys_drawSquare(GREEN, apple.x, apple.y);
         }
+        if (player->points % 3 == 0)
+        {
+            speed--;
+        }
+        
         spawnApple(player, otherPlayer, cantPlayers);
     }
     
