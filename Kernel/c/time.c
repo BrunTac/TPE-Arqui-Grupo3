@@ -9,6 +9,9 @@ void timer_handler() {
 	ticks++;
 	_sti();
 	emptyBuffer();
+	if(ticks % 30 == 0){
+		clearLastPressed();
+	}
 }
 
 void sleep(int period) {

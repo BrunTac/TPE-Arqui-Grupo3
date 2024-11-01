@@ -38,25 +38,21 @@ static void sys_read(int fd, char * c) {
 static void sys_clear(){
 
     clear();
-
 }
 
 static void sys_showRegisters(){
 
     showRegisters();
-
 }
 
 static void sys_drawSquare(Color color, int x, int y){
 
     drawSquare(color, x , y);
-
 }
 
 static void sys_sleep(int ticks) {
 
     sleep(ticks);
-
 }
 
 static void sys_beep(uint32_t frequency) {
@@ -71,15 +67,28 @@ static void sys_changeFont(int size) {
 
 }
  
-static void sys_scrHeight(){
+static void sys_scrHeight(int* ans){
 
+    *ans = getHeight();
 }
 
-static void sys_scrWidth(){
+static void sys_scrWidth(int* ans){
 
+    *ans = getWidth();
 }
 
-void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
+static void sys_readLastPressed(int fd, char * c) {
+    if(fd == 0){
+         *(c) = getLastPressed();
+    }
+}
+
+static void sys_ticksElapsed(int * ans){
+    
+    *ans = ticks_elapsed();
+}
+
+void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
 
     switch(id) {
         case 2:
@@ -101,21 +110,23 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_drawSquare((Color) arg1, (int)arg2, (int)arg3);
             break ;
         case 8:
-            sys_scrHeight();
-            break ;
+            return sys_scrHeight((int*) arg1);
         case 9:
-            sys_scrWidth();
-            break ;
+            return sys_scrWidth((int*) arg1);
         case 10:
             sys_sleep((int) arg1);
             break ;
         case 11:
             sys_beep((uint32_t) arg1);
-            break;
+            break ;
+        case 12:
+            sys_readLastPressed((int) arg1, (char *) arg2);
+            break ;
+        case 13:
+            sys_ticksElapsed((int *) arg1);
+            break ;
         case 14:
             sys_changeFont((int) arg1);
-            break;
-
+            break ;
     }
-    return 0;
 }

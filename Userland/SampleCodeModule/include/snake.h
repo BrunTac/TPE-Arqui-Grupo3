@@ -24,18 +24,19 @@ typedef struct Player
 } Player;
 
 
-
-
-
 void snake();
 int menuSnake();
 void drawMap();
 void spawnPlayer(int x, int y, Coordinates body[100], Player * player);
 void updateDirection(Player * player);
 int movePlayer(Player * player);
-int canMove(Player * player);
 int checkCollision(Player * player);
 void spawnApple();
+
+char getCharSnake();
+int getRandomNumber();
+int getLevel();
+
 
 
 
