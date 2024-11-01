@@ -108,33 +108,7 @@ void spawnPlayer(int x, int y, Player * player, Color color){
 
 }
 
-int menuSnake(){
-    clear();
 
-    printf("________________________________________________________________________________________________________________________________%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                               sssss n    n  aaa  k   k eeeee                                                 |%n");
-    printf("|                                              s      nn   n a   a k  k  e                                                     |%n");
-    printf("|                                               ssss  n  n n aaaaa kkk   eee                                                   |%n");
-    printf("|                                                   s n   nn a   a k  k  e                                                     |%n");
-    printf("|                                              sssss  n    n a   a k   k eeeee                                                 |%n");
-    printf("	                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                               presione 1 para modo un jugador                                                |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                             presione 2 para modo dos jugadores                                               |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|______________________________________________________________________________________________________________________________|%n");
-
-
-    char c = getChar();
-    return c - '0';
-
-}
 
 void drawMap(int cantPlayers){
 
@@ -388,13 +362,44 @@ void printPoints(int cantPlayers, Player * player1, Player * player2){
     }
 }
 
+int menuSnake(){
+    clear();
 
+    printf("________________________________________________________________________________________________________________________________%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                               sssss n    n  aaa  k   k eeeee                                                 |%n");
+    printf("|                                              s      nn   n a   a k  k  e                                                     |%n");
+    printf("|                                               ssss  n  n n aaaaa kkk   eee                                                   |%n");
+    printf("|                                                   s n   nn a   a k  k  e                                                     |%n");
+    printf("|                                              sssss  n    n a   a k   k eeeee                                                 |%n");
+    printf("	                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                               presione 1 para modo un jugador                                                |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione 2 para modo dos jugadores                                               |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|______________________________________________________________________________________________________________________________|%n");
+
+
+    char c = '\0';
+    while (c != '1' && c != '2')
+    {
+        c = getChar();
+    }
+    
+    return c - '0';
+
+}
 
 void defeatScreen1(Player * player){
 
     
 
-     printf("________________________________________________________________________________________________________________________________%n");
+    printf("________________________________________________________________________________________________________________________________%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                   |%n");
@@ -407,11 +412,16 @@ void defeatScreen1(Player * player){
     printf("|                                                                                                                              |%n");
     printf("|                                                         Score : %d                                                            |%n", player->points);
     printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                presione R para volver a jugar                                                |%n");
     printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
+    printf("|                                           presione cualquier otra tecla para volver                                          |%n");    
     printf("|______________________________________________________________________________________________________________________________|%n");
+
+    char c = getChar();
+    if (c == 'r')
+    {
+        snake();
+    }
 
 }
 
@@ -434,15 +444,21 @@ void defeatScreen2(Player * player1, Player * player2){
     printf("|                                                                                                                              |%n");
     printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
     printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                presione R para volver a jugar                                                |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                           presione cualquier otra tecla para volver                                          |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|______________________________________________________________________________________________________________________________|%n");
 
 
-    getChar();
-
+    char c = getChar();
+    if (c == 'r')
+    {
+        snake();
+    }
+    
 
 
 }
@@ -464,14 +480,19 @@ void defeatScreen3(Player * player1, Player * player2){
     printf("|                                                                                                                              |%n");
     printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
     printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para volver                                             |%n");
+    printf("|                                                presione R para volver a jugar                                                |%n");
     printf("|                                                                                                                              |%n");
+    printf("|                                           presione cualquier otra tecla para volver                                          |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|______________________________________________________________________________________________________________________________|%n");
 
 
-    getChar();
+    char c = getChar();
+    if (c == 'r')
+    {
+        snake();
+    }
 
 }
 
