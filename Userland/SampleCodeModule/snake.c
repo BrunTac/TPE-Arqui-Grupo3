@@ -50,9 +50,7 @@ void snake(){
         int cantPlayers = menuSnake();
         speed = DEFAULT_SPEED;
         level = 1;
-        if (cantPlayers == 2){
-           printControlScreen();
-        }
+        printControlScreen(cantPlayers);
         
 
         drawMap(cantPlayers);
@@ -527,40 +525,60 @@ void printBorder(Color dark, Color light, double borderFactor){
 	}
 }
 
-void printControlScreen(){
+void printControlScreen(int cantPlayers){
 
     printCanvas(PINE_GREEN);
 
     printf("%n%n%n%n%n%n%n%n%n%n");
 
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 rrrr  eeeee dddd                      bbbb  ll     u   u eeeee                   %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 r   r e     d   d                     b   b ll     u   u e                       %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 rrrr  eee   d   d                     bbb   ll     u   u eee                     %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 r  r  e     d   d                     b   b ll     u   u e                       %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 r   r eeeee dddd                      bbbb  llllll  uuu  eeeee                   %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                        %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                        %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                        %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                      w     w                                   ii                              %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                      w     w                                                                   %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                      w  w  w                                   ii                              %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                       w w w                                    ii                              %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                        w w                                     ii                              %n", ICE_GREEN, PINE_GREEN);  
-    printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                  aaa    sss   dddd                     jjjjj   k  k   ll                        %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 a   a  s      d   d                       j    k k    ll                        %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 aaaaa   sss   d   d                       j    kk     ll                        %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 a   a      s  d   d                   j   j    k k    ll                        %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                 a   a   sss   dddd                     jjj     k  k   llllll                    %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                     %n%n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                              Presione cualquier tecla para continuar                                  %n", ICE_GREEN, PINE_GREEN);
+    if(cantPlayers == 2){
+        printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 rrrr  eeeee dddd                      bbbb  ll     u   u eeeee                   %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 r   r e     d   d                     b   b ll     u   u e                       %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 rrrr  eee   d   d                     bbb   ll     u   u eee                     %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 r  r  e     d   d                     b   b ll     u   u e                       %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 r   r eeeee dddd                      bbbb  llllll  uuu  eeeee                   %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                      w     w                                   ii                              %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                      w     w                                                                   %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                      w  w  w                                   ii                              %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                       w w w                                    ii                              %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                        w w                                     ii                              %n", ICE_GREEN, PINE_GREEN);  
+        printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                  aaa    sss   dddd                     jjjjj   k  k   ll                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 a   a  s      d   d                       j    k k    ll                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 aaaaa   sss   d   d                       j    kk     ll                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 a   a      s  d   d                   j   j    k k    ll                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                 a   a   sss   dddd                     jjj     k  k   llllll                    %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                     %n%n%n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                          Presione cualquier tecla para continuar                                  %n", ICE_GREEN, PINE_GREEN);
+        printBorder(DARK_GREEN, GREEN, 1);
+    }else{
+        printf("%n%n%n");
+        printfColor("                                                    MOVEMENT OF THE SNAKE                                 %n%n%n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                           w     w                                 %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                           w     w                                %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                           w  w  w                                 %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                            w w w                                   %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                             w w                                                                  %n", ICE_GREEN, PINE_GREEN);  
+        printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                       aaa    sss   dddd                                            %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                      a   a  s      d   d                                            %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                      aaaaa   sss   d   d                                         %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                      a   a      s  d   d                                         %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                      a   a   sss   dddd                                        %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                                                                     %n%n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                             Presione cualquier tecla para continuar                                  %n", ICE_GREEN, PINE_GREEN);
+        printBorder(DARK_GREEN, GREEN, 1.5);
+    }
 
 
-
-    printSnakes(7, 23, DARK_GREEN, GREEN);
+    
     getChar();
 
 }
