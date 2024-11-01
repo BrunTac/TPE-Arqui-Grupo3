@@ -31,12 +31,11 @@ void spawnPlayer(int x, int y, Coordinates body[100], Player * player);
 void updateDirection(Player * player);
 int movePlayer(Player * player);
 int checkCollision(Player * player);
-void spawnApple();
-
-char getCharSnake();
+int checkCollisionWithBody(Player * player, Coordinates point);
+void spawnApple(Player * player);
 int getRandomNumber();
 int getLevel();
-
+void printPoints();
 
 
 

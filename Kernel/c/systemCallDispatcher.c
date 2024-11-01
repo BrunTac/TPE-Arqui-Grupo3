@@ -21,7 +21,11 @@ static void sys_time(char time[3][3]){
     uintToBase(getSeconds(), time[2], 16); 
 }
 
-static void sys_write(int fd, char c, Color font, Color background) {
+static void sys_writeInPos(const char * str, uint64_t x, uint64_t y, Color font, Color background) {
+    printsInPos(str, x, y, font, background);
+}
+
+static void sys_writeChar(int fd, char c, Color font, Color background) {
     if(fd == 1){
         print(c, font, background);
     }else if(fd == 2){
@@ -81,9 +85,12 @@ static void sys_ticksElapsed(int * ans){
     *ans = ticks_elapsed();
 }
 
-void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4) {
+void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5) {
 
     switch(id) {
+        case 1:
+            sys_writeInPos((const char *) arg1,(uint64_t) arg2, (uint64_t) arg3, (Color) arg4, (Color) arg5);
+            break ;
         case 2:
             sys_time((char (*)[3])arg1);
             break ;
@@ -91,7 +98,7 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             sys_read((int) arg1, (char *) arg2);
             break ;
         case 4:
-            sys_write((int) arg1,(char) arg2, (Color) arg3, (Color) arg4);
+            sys_writeChar((int) arg1,(char) arg2, (Color) arg3, (Color) arg4);
             break ;
         case 5:
             sys_clear();

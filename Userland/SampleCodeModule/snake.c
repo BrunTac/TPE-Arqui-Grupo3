@@ -7,7 +7,7 @@
 
 #define BLOCKSIZE 32
 #define STDIN 0
-#define LEVEL1_TICKS 12
+#define LEVEL1_TICKS 6
 #define MAX_LENGTH_SNAKE 100
 
 static Coordinates apple;
@@ -15,35 +15,52 @@ static Coordinates apple;
 static int scrHeight;
 static int scrWidth;
 
+static int borderSizeX;
+static int borderSizeY;
+
+static int boardHeight;
+static int boardWidth;
+
+int points;
+
 void snake(){
 
     sys_scrHeight(&scrHeight);
     sys_scrWidth(&scrWidth);
+
+    borderSizeX = scrWidth / 8;
+    borderSizeY = scrHeight / 8;
+
+    boardWidth = scrWidth - 2 * borderSizeX;
+    boardHeight = scrHeight - 2 * borderSizeY;
     
     int cantPlayers = menuSnake();
     int speed = LEVEL1_TICKS / getLevel();
+
+    points = 0;
 
     drawMap();
 
     Coordinates body1[MAX_LENGTH_SNAKE];
     Player * player1; 
-    spawnPlayer(BLOCKSIZE, BLOCKSIZE, body1, player1);
+    spawnPlayer(BLOCKSIZE + borderSizeX, BLOCKSIZE + borderSizeY, body1, player1);
 
     if (cantPlayers == 2)
     {
-        Coordinates body2[MAX_LENGTH_SNAKE];
+        Coordinates body2[MAX_LENGTH_SNAKE];    
         Player * player2;
-        spawnPlayer(BLOCKSIZE, scrHeight - BLOCKSIZE, body2, player2);
+        spawnPlayer(BLOCKSIZE + borderSizeX, boardHeight - BLOCKSIZE - borderSizeY, body2, player2);
     }
 
-    spawnApple();
+    spawnApple(player1);
 
     int lost = 0;
 
     while (!lost)
     {
+        printPoints();
         sys_sleep(speed);
-
+        
         updateDirection(player1);
         lost = movePlayer(player1);
     }
@@ -79,8 +96,14 @@ void drawMap(){
 	{
 		for (int j = 0; j < scrHeight; j += BLOCKSIZE)
 		{
-			if (j%(2 * BLOCKSIZE) == 0)
-			{
+			if(i >= borderSizeX && i < (boardWidth + borderSizeX) && j >=  borderSizeY - 2 * BLOCKSIZE && j <= borderSizeY - BLOCKSIZE){
+                sys_drawSquare(ICE_GREEN, i, j);
+                sys_drawSquare(ICE_GREEN, i + BLOCKSIZE, j);
+            }else if((i < borderSizeX || i >= (boardWidth + borderSizeX)) || (j < borderSizeY || j >= (boardHeight + borderSizeY))){
+                sys_drawSquare(PINE_GREEN, i, j);
+                sys_drawSquare(PINE_GREEN, i + BLOCKSIZE, j);
+            }
+            else if (j%(2 * BLOCKSIZE) == 0){
 				sys_drawSquare(DARK_GREEN, i, j);
 				sys_drawSquare(GREEN, i+BLOCKSIZE, j);
 			}else{
@@ -89,6 +112,7 @@ void drawMap(){
 			}	
 		}	
 	}
+    sys_writeInPos("Puntos: ", borderSizeX + BLOCKSIZE, borderSizeY - BLOCKSIZE * 1.2, DARK_GRAY, ICE_GREEN);
 }
 
 void updateDirection(Player * player){
@@ -147,9 +171,9 @@ int movePlayer(Player * player){
         break;
     }
     
-    int Collision = checkCollision(player);
+    int collision = checkCollision(player);
 
-    if (Collision == 0){
+    if (collision == 0){
         int tailX = player->body[player->tail].x;
         int tailY = player->body[player->tail].y;
         if (((tailX + tailY) % 64 == 0))
@@ -164,17 +188,18 @@ int movePlayer(Player * player){
         }else{
             player->tail += 1;
         }
-    }else if (Collision == -1){
+    }else if (collision == -1){
         return 1;
-    }else if (Collision == 1)
+    }else if (collision == 1)
     {
+        points++;
         if (((apple.x + apple.y) % (2 * BLOCKSIZE) == 0))
         {
             sys_drawSquare(DARK_GREEN, apple.x, apple.y);
         }else{
             sys_drawSquare(GREEN, apple.x, apple.y);
         }
-        spawnApple();
+        spawnApple(player);
     }
     
     sys_drawSquare(RED, player->body[player->head].x, player->body[player->head].y);
@@ -184,23 +209,50 @@ int movePlayer(Player * player){
 
 int checkCollision(Player * player){
 
-    if (player->body[player->head].x == apple.x &&
-            player->body[player->head].y == apple.y)
-    {
+    if (player->body[player->head].x == apple.x && player->body[player->head].y == apple.y){
         return 1;
     }
-    
-
-    if (player->body[player->head].x >= scrWidth || player->body[player->head].y >= scrHeight
-        || player->body[player->head].x < 0 || player->body[player->head].y < 0){
+    if (player->body[player->head].x >= boardWidth + borderSizeX || player->body[player->head].y >= boardHeight + borderSizeY
+        || player->body[player->head].x < borderSizeX || player->body[player->head].y < borderSizeY){
         return -1;
     }
 
+    return checkCollisionWithBody(player, player->body[player->head]);
+}
+
+void spawnApple(Player * player){
+    int availableSpot = 0;
+    int rand;
+    Coordinates aux;
+    while(!availableSpot){
+        rand = getRandomNumber();
+        aux.x = (rand % ((boardWidth - 1)/ BLOCKSIZE)) * BLOCKSIZE + borderSizeX;
+        aux.y = (rand % ((boardHeight - 1) / BLOCKSIZE)) * BLOCKSIZE + borderSizeY;
+        if(!checkCollisionWithBody(player, aux)){
+            availableSpot = 1;
+        }
+    }
+    apple = aux;
+
+    sys_drawSquare(BLUE, apple.x, apple.y);
+}
+
+int getLevel(){
+    return 2;
+}
+
+int getRandomNumber(){
+    int rand;
+    sys_ticksElapsed(&rand);
+    return rand;
+}
+
+int checkCollisionWithBody(Player * player, Coordinates point){
     int i = player->tail;
     while (i != player->head)
     {
-        if (player->body[player->head].x == player->body[i].x &&
-            player->body[player->head].y == player->body[i].y){
+        if (point.x == player->body[i].x &&
+            point.y == player->body[i].y){
             return -1;
         }
 
@@ -213,25 +265,8 @@ int checkCollision(Player * player){
     return 0;
 }
 
-void spawnApple(){
-    int rand = getRandomNumber();
-    apple.x = (rand % (scrWidth / BLOCKSIZE)) * BLOCKSIZE;
-    apple.y = (rand % (scrHeight / BLOCKSIZE))  * BLOCKSIZE;
-    sys_drawSquare(BLUE, apple.x, apple.y);
-}
-
-char getCharSnake(){
-    char c;
-    sys_read(STDIN, &c);
-    return c;
-}
-
-int getLevel(){
-    return 2;
-}
-
-int getRandomNumber(){
-    int rand;
-    sys_ticksElapsed(&rand);
-    return rand;
+void printPoints(){
+    char aux[MAX_BUFFER];
+    numToStr(points, aux);
+    sys_writeInPos(aux, borderSizeX + BLOCKSIZE + 8 * 8, borderSizeY - BLOCKSIZE * 1.2, DARK_GRAY, ICE_GREEN);
 }

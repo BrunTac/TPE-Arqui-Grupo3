@@ -1,7 +1,7 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#define MAX_BUFFER 256
+
 #define MAX_TOKENS 10
 
 void initialize();

@@ -14,6 +14,7 @@ int tokens = 0;
 int exited = 0;
 
 void initialize(){
+    sys_clear();
     printHeader();
     printf("%nIngrese su nombre de usuario: ");
     scanf("%s", &user);

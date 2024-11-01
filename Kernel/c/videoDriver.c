@@ -70,7 +70,30 @@ uint16_t current_X = 0;
 uint16_t current_Y = 0;
 
 
-void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
+void putCharInPos(unsigned char c, int x, int y, Color fgcolor, Color bgcolor){
+	int cx,cy;
+	int mask[8]={1,2,4,8,16,32,64,128};
+	unsigned char *glyph=font+4+(int)c*16;
+
+	if (x >= VBE_mode_info->width) {
+		x = 0;
+        	if (y + HEIGHT_FONT > VBE_mode_info->height) {
+				y -= HEIGHT_FONT;
+            	scrollUp();
+        	} else {
+            		y += HEIGHT_FONT;
+        	}
+    	}
+
+	for(cy=0;cy<HEIGHT_FONT;cy++){
+		for(cx=0;cx<WIDTH_FONT;cx++){
+			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x + (8 - cx), y + cy);
+		}
+	}	
+	x += WIDTH_FONT;
+}
+
+void putChar(unsigned char c, Color fgcolor, Color bgcolor)
 {
 	int cx,cy;
 	int mask[8]={1,2,4,8,16,32,64,128};
@@ -94,6 +117,20 @@ void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 	current_X += WIDTH_FONT;
 	
 }
+
+void printsInPos(const char * str, uint64_t x, uint64_t y, Color font, Color background){
+	int auxX = 0;
+	int auxY = 0;
+	for (int i = 0 ; str[i] != '\0'; i++ ){
+        if(x + auxX == VBE_mode_info->width){
+			auxX = 0;
+			auxY += HEIGHT_FONT;
+		}
+		putCharInPos(str[i], x + auxX, y + auxY, font, background);
+		auxX += WIDTH_FONT;
+    }
+}
+
 void prints(const char *str, Color fnt, Color bgd){
     for (int i = 0 ; str[i] != '\0'; i++ ){
         print(str[i], fnt, bgd);
@@ -178,7 +215,7 @@ void print(const char c, Color fnt, Color bgd){
         	break;
         default:
 
-            putChar(c, current_X , current_Y , fnt , bgd);
+            putChar(c, fnt , bgd);
         	break;
     }
 }
@@ -220,7 +257,7 @@ void print_backspace(Color fnt, Color bgd){
         current_X = VBE_mode_info->width - WIDTH_FONT;
 	current_Y -= HEIGHT_FONT;
     }
-    putChar(' ', current_X, current_Y, fnt, bgd);
+    putChar(' ', fnt, bgd);
     current_X -= WIDTH_FONT;
 }
 

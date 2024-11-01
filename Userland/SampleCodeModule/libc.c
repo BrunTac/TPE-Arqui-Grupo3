@@ -74,7 +74,30 @@ void printfd(int fd, const char * format, Color font, Color background, va_list 
 }
 
 void write(int fd, char character, Color font, Color background){
-    sys_write(fd, character, font, background);
+    sys_writeChar(fd, character, font, background);
+}
+
+void numToStr(uint64_t num, char * destination){
+    
+    int i = 0;
+
+    if(num == 0){
+        destination[0] = '0';
+        destination[1] = '\0';
+        return ;
+    }
+    while(num != 0){
+        destination[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+    destination[i] = '\0';
+    
+    for(int j = 0; j < i / 2; j++){
+        char aux = destination[j];
+        destination[j] = destination[i = j = 1];
+        destination[i - j - 1] = aux;
+    }
+    
 }
 
 
@@ -128,7 +151,7 @@ char getChar(){
 }
 
 void newLine(){
-    sys_write(STDOUT, '\n', WHITE, BLACK);
+    sys_writeChar(STDOUT, '\n', WHITE, BLACK);
 }
 
  int strcmp(const char * s1, const char * s2){

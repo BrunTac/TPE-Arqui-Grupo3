@@ -12,9 +12,11 @@ enum{
 };
 
 void putPixel(Color color, uint64_t x, uint64_t y);
-void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor);
+void putCharInPos(unsigned char c, int x, int y, Color fgcolor, Color bgcolor);
+void putChar(unsigned char c, Color fgcolor, Color bgcolor);
 void print(const char c, Color fgcolor, Color bgcolor);
 void prints(const char *str, Color fnt, Color bgd);
+void printsInPos(const char * str, uint64_t x, uint64_t y, Color font, Color background);
 void printHex(const uint64_t num, Color fnt, Color bgd);
 void scrollUp();
 uint32_t* getPixelPtr(uint16_t x, uint16_t y);

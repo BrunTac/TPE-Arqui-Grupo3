@@ -1,6 +1,7 @@
 GLOBAL sys_time
 GLOBAL sys_read
-GLOBAL sys_write
+GLOBAL sys_writeInPos
+GLOBAL sys_writeChar
 GLOBAL sys_clear
 GLOBAL sys_show_registers
 GLOBAL sys_scrHeight
@@ -13,6 +14,11 @@ GLOBAL sys_ticksElapsed
 
 section .text
 
+sys_writeInPos:
+    mov rax, 1
+    int 80h
+    ret
+
 sys_time:
     mov rax, 2
     int 80h
@@ -23,7 +29,7 @@ sys_read:
     int 80h
     ret
 
-sys_write:
+sys_writeChar:
     mov rax, 4
     int 80h
     ret
