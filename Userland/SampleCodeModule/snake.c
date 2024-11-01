@@ -9,6 +9,8 @@
 #define STDIN 0
 #define LEVEL1_TICKS 6
 
+#define LINE "____________________________________________________________________________"
+
 #define POINTS_STR_1 "Player1: "
 #define POINTS_STR_2 "Player2: "
 #define LEVEL_STR "Level "
@@ -117,28 +119,46 @@ void spawnPlayer(int x, int y, Player * player, Color color){
 }
 
 int menuSnake(){
-    clear();
+    sys_clear();
+    for(int i = 0; i < scrWidth; i += BLOCKSIZE){
+        for(int j = 0; j < scrHeight; j += BLOCKSIZE){
+            sys_drawSquare(PINE_GREEN, i, j);
+        }
+    }
 
-    printf("________________________________________________________________________________________________________________________________%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                               sssss n    n  aaa  k   k eeeee                                                 |%n");
-    printf("|                                              s      nn   n a   a k  k  e                                                     |%n");
-    printf("|                                               ssss  n  n n aaaaa kkk   eee                                                   |%n");
-    printf("|                                                   s n   nn a   a k  k  e                                                     |%n");
-    printf("|                                              sssss  n    n a   a k   k eeeee                                                 |%n");
-    printf("	                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                               presione 1 para modo un jugador                                                |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                             presione 2 para modo dos jugadores                                               |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|______________________________________________________________________________________________________________________________|%n");
+    printf("%n%n%n%n%n%n%n%n%n");
+    //printfColor("________________________________________________________________________________________________________________________________%n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                sssss n    n  aaa  k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               s      nn   n a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                ssss  n  n n aaaaa kkk   eee                                                    %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                    s n   nn a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               sssss  n    n a   a k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                presione 1 para modo un jugador                                                 %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               presione 2 para modo dos jugadores                                               %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    //printfColor("|______________________________________________________________________________________________________________________________|%n", ICE_GREEN, PINE_GREEN);
 
 
+    for(int i = 0; i < scrWidth; i += BLOCKSIZE){
+        for(int j = 0; j < scrHeight; j += BLOCKSIZE){
+            if(i == 7 * BLOCKSIZE || i == 23 * BLOCKSIZE){
+                if((j / BLOCKSIZE) % 2 == 0){
+                    sys_drawSquare(GREEN, i, j);
+                }else{
+                    sys_drawSquare(DARK_GREEN, i, j);
+                }
+            }
+        }
+    }
+    
     char c = getChar();
     return c - '0';
 
