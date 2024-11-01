@@ -24,6 +24,8 @@ static int borderSizeY;
 static int boardHeight;
 static int boardWidth;
 
+static int headerY;
+
 void snake(){
 
     sys_scrHeight(&scrHeight);
@@ -34,23 +36,55 @@ void snake(){
 
     boardWidth = scrWidth - 2 * borderSizeX;
     boardHeight = scrHeight - 2 * borderSizeY;
+ 
+    headerY = borderSizeY - BLOCKSIZE * 1.4;
     
     int cantPlayers = menuSnake();
     int speed = LEVEL1_TICKS / getLevel();
 
     drawMap(cantPlayers);
 
-    Player * player1; 
-    Player * player2;
+    Player player1; 
+    Player player2;
 
-    spawnPlayer(BLOCKSIZE + borderSizeX, BLOCKSIZE + borderSizeY, player1, RED);
+    int posX = BLOCKSIZE + borderSizeX;
+    int posY = BLOCKSIZE + borderSizeY;
+
+    Coordinates aux1 = {posX, posY};
+    player1.body[0] = aux1;
+    Coordinates aux2 = {posX + BLOCKSIZE, posY};
+    player1.body[1] = aux2;
+    Coordinates aux3 = {posX+ 2*BLOCKSIZE, posY};
+    player1.body[2] = aux3;
+    player1.head = 2;
+    player1.tail = 0;
+    player1.size = 3;
+    player1.currentDirection = RIGHT;
+    player1.color = RED;
+    player1.points = 0;
+
+    spawnPlayer(posX, posY, &player1, player1.color);
 
     if (cantPlayers == 2)
     { 
-        spawnPlayer(BLOCKSIZE + borderSizeX, scrHeight - BLOCKSIZE * 2 - borderSizeY, player2, BLUE);
+        posY = scrHeight - BLOCKSIZE * 2 - borderSizeY;
+        Coordinates aux4 = {posX, posY};
+        player2.body[0] = aux4;
+        Coordinates aux5 = {posX + BLOCKSIZE, posY};
+        player2.body[1] = aux5;
+        Coordinates aux6 = {posX + 2*BLOCKSIZE, posY};
+        player2.body[2] = aux6;
+        player2.head = 2;
+        player2.tail = 0;
+        player2.size = 3;
+        player2.currentDirection = RIGHT;
+        player2.color = BLUE;
+        player2.points = 0;
+
+        spawnPlayer(posX, posY, &player2, player2.color);
     }
 
-    spawnApple(player1, player2, cantPlayers);
+    spawnApple(&player1, &player2, cantPlayers);
 
     int lost1 = 0;
     int lost2 = 0;
@@ -84,23 +118,6 @@ void snake(){
 }
 
 void spawnPlayer(int x, int y, Player * player, Color color){
-    Coordinates aux1 = {x, y};
-    player->body[0] = aux1;
-    Coordinates aux2 = {x + BLOCKSIZE, y};
-    player->body[1] = aux2;
-    Coordinates aux3 = {x + 2*BLOCKSIZE, y};
-    player->body[2] = aux3;
-    // por alguna razon agregarle esto al segundo no deja ejecutar snake dos veces?????? ni ideaaaaaa
-    // despues de jugar, se rompe todo !!! y sin esto en el segundo no. no se por que
-    player->head = 2;
-    player->tail = 0;
-
-    // esto esta ok
-    player->size = 3;
-    player->currentDirection = RIGHT;
-    player->color = color;
-    player->points = 0;
-
     for (int i = 0; i < player->size; i++)
     {
         sys_drawSquare(color, x + i*BLOCKSIZE, y);
@@ -108,7 +125,51 @@ void spawnPlayer(int x, int y, Player * player, Color color){
 
 }
 
+int menuSnake(){
+    sys_clear();
+    for(int i = 0; i < scrWidth; i += BLOCKSIZE){
+        for(int j = 0; j < scrHeight; j += BLOCKSIZE){
+            sys_drawSquare(PINE_GREEN, i, j);
+        }
+    }
 
+    printf("%n%n%n%n%n%n%n%n%n");
+    //printfColor("________________________________________________________________________________________________________________________________%n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                sssss n    n  aaa  k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               s      nn   n a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                ssss  n  n n aaaaa kkk   eee                                                    %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                    s n   nn a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               sssss  n    n a   a k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                presione 1 para modo un jugador                                                 %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               presione 2 para modo dos jugadores                                               %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    //printfColor("|______________________________________________________________________________________________________________________________|%n", ICE_GREEN, PINE_GREEN);
+
+
+    for(int i = 0; i < scrWidth; i += BLOCKSIZE){
+        for(int j = 0; j < scrHeight; j += BLOCKSIZE){
+            if(i == 7 * BLOCKSIZE || i == 23 * BLOCKSIZE){
+                if((j / BLOCKSIZE) % 2 == 0){
+                    sys_drawSquare(GREEN, i, j);
+                }else{
+                    sys_drawSquare(DARK_GREEN, i, j);
+                }
+            }
+        }
+    }
+    
+    char c = getChar();
+    return c - '0';
+
+}
 
 void drawMap(int cantPlayers){
 
@@ -132,24 +193,24 @@ void drawMap(int cantPlayers){
 			}	
 		}	
 	}
-    sys_changeFont(2);
+    //sys_changeFont(2);
     int fontwidth;
     sys_getFontWidth(&fontwidth);
 
     // Print Level
-    sys_writeInPos(LEVEL_STR, borderSizeX + BLOCKSIZE + boardWidth / 2 - strlen(LEVEL_STR) * fontwidth, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+    sys_writeInPos(LEVEL_STR, borderSizeX + BLOCKSIZE + boardWidth / 2 - strlen(LEVEL_STR) * fontwidth, headerY, DARK_GRAY, ICE_GREEN);
 
     char aux[MAX_BUFFER];
     numToStr(getLevel(), aux);
 
-    sys_writeInPos(aux, borderSizeX + BLOCKSIZE + boardWidth / 2, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+    sys_writeInPos(aux, borderSizeX + BLOCKSIZE + boardWidth / 2, headerY, DARK_GRAY, ICE_GREEN);
     
     
     // Print players
-    sys_writeInPos(POINTS_STR_1, borderSizeX + BLOCKSIZE * 0.5, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+    sys_writeInPos(POINTS_STR_1, borderSizeX + BLOCKSIZE * 0.5, headerY, DARK_GRAY, ICE_GREEN);
 
     if(cantPlayers == 2){
-        sys_writeInPos(POINTS_STR_2, scrWidth - (borderSizeX + BLOCKSIZE) - strlen(POINTS_STR_2) * fontwidth, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+        sys_writeInPos(POINTS_STR_2, scrWidth - (borderSizeX + BLOCKSIZE) - strlen(POINTS_STR_2) * fontwidth, headerY, DARK_GRAY, ICE_GREEN);
     }
 }
 
@@ -354,46 +415,14 @@ void printPoints(int cantPlayers, Player * player1, Player * player2){
     sys_getFontWidth(&fontwidth);
     char aux[MAX_BUFFER];
     numToStr(player1->points, aux);
-    sys_writeInPos(aux, borderSizeX + BLOCKSIZE * 0.3 + strlen(POINTS_STR_1) * fontwidth, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+    sys_writeInPos(aux, borderSizeX + BLOCKSIZE * 0.3 + strlen(POINTS_STR_1) * fontwidth, headerY, DARK_GRAY, ICE_GREEN);
 
     if(cantPlayers == 2){
         numToStr(player2->points, aux);
-        sys_writeInPos(aux, scrWidth - (borderSizeX + BLOCKSIZE * 1.2), borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+        sys_writeInPos(aux, scrWidth - (borderSizeX + BLOCKSIZE * 1.2), headerY, DARK_GRAY, ICE_GREEN);
     }
 }
 
-int menuSnake(){
-    clear();
-
-    printf("________________________________________________________________________________________________________________________________%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                               sssss n    n  aaa  k   k eeeee                                                 |%n");
-    printf("|                                              s      nn   n a   a k  k  e                                                     |%n");
-    printf("|                                               ssss  n  n n aaaaa kkk   eee                                                   |%n");
-    printf("|                                                   s n   nn a   a k  k  e                                                     |%n");
-    printf("|                                              sssss  n    n a   a k   k eeeee                                                 |%n");
-    printf("	                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                               presione 1 para modo un jugador                                                |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                             presione 2 para modo dos jugadores                                               |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|______________________________________________________________________________________________________________________________|%n");
-
-
-    char c = '\0';
-    while (c != '1' && c != '2')
-    {
-        c = getChar();
-    }
-    
-    return c - '0';
-
-}
 
 void defeatScreen1(Player * player){
 
