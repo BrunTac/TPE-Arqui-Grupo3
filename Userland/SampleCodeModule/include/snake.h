@@ -43,6 +43,6 @@ char defeatScreen1(Player * player);
 char defeatScreen2(Player * player1, Player * player2);
 char defeatScreen3(Player * player1, Player * player2);
 void printCanvas(Color color);
-void printSnakes(int y1, int y2, Color dark, Color light);
+void printBorder(Color dark, Color light, double borderFactor);
 void printLevel();
 

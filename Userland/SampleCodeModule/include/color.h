@@ -9,7 +9,7 @@ enum{
     WHITE = 0xFFFFFF,
     BLACK = 0x000000,
     RED = 0xFF3B3F,
-    LIGHT_RED = 0xFFA3A1,
+    LIGHT_RED = 0x8B0000,
     BLUE = 0x003566,
     LIGHT_BLUE = 0x7FBFFF,
     GREEN = 0x97C77B,
@@ -18,7 +18,7 @@ enum{
     BROWN = 0x3B3029,
     ICE_GREEN = 0xE0F8E0,
     BEIGE = 0XE6D2B5,
-    DARK_GRAY = 0x2A2A2A,
+    GRAY = 0x2E3B42,
     YELLOW = 0xFFC300
 };
 
