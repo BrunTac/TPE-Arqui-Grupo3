@@ -3,8 +3,9 @@
 
 #define SIZE 16
 
-const uint16_t WIDTH_FONT = 8;
-const uint16_t HEIGHT_FONT = 16;
+const uint16_t DEFAULT_WIDTH = 8;
+const uint16_t DEFAULT_HEIGHT = 16;
+const uint16_t DEFAULT_SCALE = 1;
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -47,6 +48,13 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
+unsigned int scale = DEFAULT_SCALE;
+
+void updateSize(int size) {
+
+	scale = size;
+
+}
 
 void putPixel(Color color, uint64_t x, uint64_t y) {
     
@@ -54,7 +62,7 @@ void putPixel(Color color, uint64_t x, uint64_t y) {
 		return;
 	}
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
-    uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
+    uint64_t offset = (x * (VBE_mode_info->bpp/8)) + (y * (VBE_mode_info->pitch));
     framebuffer[offset]     =  (color) & 0xFF;
     framebuffer[offset+1]   =  (color >> 8) & 0xFF; 
     framebuffer[offset+2]   =  (color >> 16) & 0xFF;
@@ -72,27 +80,30 @@ uint16_t current_Y = 0;
 
 void putChar(unsigned char c, int x, int y, Color fgcolor, Color bgcolor)
 {
-	int cx,cy;
+	int putX, putY;
 	int mask[8]={1,2,4,8,16,32,64,128};
-	unsigned char *glyph=font+4+(int)c*16;
+	unsigned char * symbol = font + 4 + (int) c * 16;
 
 	if (current_X >= VBE_mode_info->width) {
 		current_X = 0;
-        	if (current_Y + HEIGHT_FONT > VBE_mode_info->height) {
-				current_Y -= HEIGHT_FONT;
+        	if (current_Y + DEFAULT_HEIGHT > VBE_mode_info->height) {
+				current_Y -= DEFAULT_HEIGHT*scale;
             	scrollUp();
         	} else {
-            		current_Y += HEIGHT_FONT;
+            		current_Y += DEFAULT_HEIGHT*scale;
         	}
     	}
 
-	for(cy=0;cy<HEIGHT_FONT;cy++){
-		for(cx=0;cx<WIDTH_FONT;cx++){
-			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, current_X + (8 - cx), current_Y + cy);
+	for(putY = 0 ; putY < DEFAULT_HEIGHT ; putY++){
+		for(putX = 0 ; putX < DEFAULT_WIDTH ; putX++){
+				for(int pixelX = 0 ; pixelX < scale ; pixelX++) {
+					for(int pixelY = 0 ; pixelY < scale ; pixelY++)
+						putPixel(symbol[putY] & mask[putX] ? fgcolor : bgcolor, current_X + (8 - putX) * scale + pixelX, current_Y + putY * scale + pixelY);
+				}
 		}
 	}	
-	current_X += WIDTH_FONT;
-	
+	current_X += DEFAULT_WIDTH*scale;
+
 }
 void prints(const char *str, Color fnt, Color bgd){
     for (int i = 0 ; str[i] != '\0'; i++ ){
@@ -185,43 +196,43 @@ void print(const char c, Color fnt, Color bgd){
 
 void scrollUp (){
     Color* pixel, *next;
-    for (int i = 0 ; i < current_Y + HEIGHT_FONT ; i++){
+    for (int i = 0 ; i < current_Y + DEFAULT_HEIGHT*scale ; i++){
         for (int j = 0 ; j < VBE_mode_info->width ; j++){
             pixel = (Color *) getPixelPtr(j,i);
-            next = (Color *) getPixelPtr(j,i+HEIGHT_FONT);
+            next = (Color *) getPixelPtr(j, i+ DEFAULT_HEIGHT*scale);
             *pixel = *next;
         }
     }
 }
 
 uint32_t* getPixelPtr(uint16_t x, uint16_t y) {
-    uint8_t pixelwidth = VBE_mode_info->bpp/8;
+    uint8_t pixelWidth = (VBE_mode_info->bpp/8);
     uint16_t pixelHeight = VBE_mode_info->pitch;  
 
-    uintptr_t pixelPtr = (uintptr_t)(VBE_mode_info->framebuffer) + (x * pixelwidth) + (y * pixelHeight);
+    uintptr_t pixelPtr = (uintptr_t)(VBE_mode_info->framebuffer) + (x * pixelWidth) + (y * pixelHeight);
     return (uint32_t*)pixelPtr;
 }
 
 
 void print_newline(){
     current_X = 0;
-    current_Y += HEIGHT_FONT;
+    current_Y += DEFAULT_HEIGHT * scale;
 
-    if (current_Y + HEIGHT_FONT > VBE_mode_info->height){
-        current_Y -= HEIGHT_FONT;
+    if (current_Y + DEFAULT_HEIGHT * scale > VBE_mode_info->height){
+        current_Y -= DEFAULT_HEIGHT * scale;
         scrollUp();
     }
 }
 
 void print_backspace(Color fnt, Color bgd){
-    if (current_X >= WIDTH_FONT){
-	current_X -= WIDTH_FONT;
+    if (current_X >= DEFAULT_WIDTH * scale){
+	current_X -= DEFAULT_WIDTH * scale;
     } else {
-        current_X = VBE_mode_info->width - WIDTH_FONT;
-	current_Y -= HEIGHT_FONT;
+        current_X = VBE_mode_info->width - DEFAULT_WIDTH * scale;
+		current_Y -= DEFAULT_HEIGHT * scale;
     }
     putChar(' ', current_X, current_Y, fnt, bgd);
-    current_X -= WIDTH_FONT;
+    current_X -= DEFAULT_WIDTH * scale;
 }
 
 int getHeight(){

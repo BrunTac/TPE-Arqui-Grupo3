@@ -8,6 +8,7 @@ GLOBAL sys_scrWidth
 GLOBAL sys_sleep
 GLOBAL sys_beep
 GLOBAL sys_drawSquare
+GLOBAL sys_changeFont
 
 section .text
 
@@ -59,5 +60,10 @@ sys_sleep:
 
 sys_beep:
     mov rax, 11
+    int 80h
+    ret
+
+sys_changeFont:
+    mov rax, 14
     int 80h
     ret

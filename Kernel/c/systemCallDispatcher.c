@@ -59,9 +59,15 @@ static void sys_sleep(int ticks) {
 
 }
 
-static void sys_beep() {
+static void sys_beep(uint32_t frequency) {
 
-    beep();
+    beep(frequency);
+
+}
+
+static void sys_changeFont(int size) {
+
+    updateSize(size);
 
 }
  
@@ -104,7 +110,10 @@ void * sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg
             sys_sleep((int) arg1);
             break ;
         case 11:
-            sys_beep();
+            sys_beep((uint32_t) arg1);
+            break;
+        case 14:
+            sys_changeFont((int) arg1);
             break;
 
     }

@@ -30,9 +30,9 @@ static void play_sound(uint32_t frequency) {
  }
 
  //Make a beep
- void beep() {
- 	 play_sound(1000);
- 	 sleep(70);
+ void beep(uint32_t frequency) {
+ 	 play_sound(frequency);
+ 	 sleep(10);
  	 nosound();
           //set_PIT_2(old_frequency);
- }*/
+ }

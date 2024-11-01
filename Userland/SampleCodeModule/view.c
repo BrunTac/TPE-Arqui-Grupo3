@@ -2,10 +2,7 @@
 #include <libc.h>
 #include <sys_calls.h>
 
-
-
 extern void opcodeError();
-
 
 char user[MAX_BUFFER];
 char cmdline[MAX_BUFFER];
@@ -89,12 +86,12 @@ void commandline_handler(){
         time();
     }else if(strcmp(cmd, "showregisters") == 0){
         showregisters();
-    }else if(strcmp(cmd, "test_exception") == 0){
+    }else if(strcmp(cmd, "exception") == 0){
         test_exception();
     }else if(strcmp(cmd, "snake") == 0){
         snake();
-    }else if(strcmp(cmd, "beep") == 0){
-        beep();
+    }else if(strcmp(cmd, "fontsize") == 0){
+        fontsize();
     }else if(strcmp(cmd, "exit") == 0) {
         exit();
     }else{
@@ -167,10 +164,27 @@ void test_exception(){
     }
 }
 
-void beep() {
-    if(checkArguments(0)) {
-        sys_beep();
+void fontsize() {
+    if(checkArguments(1)) {
+        char * arg = cmdtokens[1];
+        if(strcmp(arg, "1") == 0) {
+            sys_changeFont(1);
+            sys_clear();
+        }else if(strcmp(arg, "2") == 0) {
+            sys_changeFont(2);
+            sys_clear();
+        }else if(strcmp(arg, "3") == 0) { 
+            sys_changeFont(3);
+            sys_clear();
+        }else if(strcmp(arg, "4") == 0) {
+            sys_changeFont(4);
+            sys_clear();
+        }else if(strcmp(arg, "5") == 0) {
+            sys_changeFont(5);
+            sys_clear();
+        }else printf("%nArgumento invalido. Por favor ingresar un numero del 1 al 5");
     }
+
 }
 
 void exit(){
@@ -213,9 +227,10 @@ void printMenu(){
     printf("- time............................imprime la hora actual%n");
     printf("- showregisters...................imprime los valores actuales de todos los registros%n");
     printf("- clear...........................vacia la pantalla%n");
-    printf("- test_exception..................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
+    printf("- exception.......................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
     printf("    -opcode.......................prueba la excepcion 'invalid opcode'%n");
     printf("    -divzero......................prueba la excepcion generada al dividir por cero%n");
+    printf("- fontsize........................cambia el tamaño de letra. Se pueden ingresar numeros del 1 al 5%n");
     printf("- snake...........................llama al juego snake%n");
     printf("- exit............................sale de la terminal%n%n");
 }

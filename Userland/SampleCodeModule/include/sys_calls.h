@@ -13,5 +13,6 @@ void sys_drawSquare(Color color, int x, int y);
 int sys_scrWidth();
 int sys_scrHeight();
 void sys_beep();
+void sys_changeFont(int size);
 
 #endif
