@@ -12,6 +12,7 @@ GLOBAL sys_drawSquare
 GLOBAL sys_changeFont
 GLOBAL sys_readLastPressed
 GLOBAL sys_ticksElapsed
+GLOBAL sys_getFontWidth
 
 section .text
 
@@ -83,5 +84,10 @@ sys_ticksElapsed:
 
 sys_changeFont:
     mov rax, 14
+    int 80h
+    ret
+
+sys_getFontWidth:
+    mov rax, 15
     int 80h
     ret

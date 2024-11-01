@@ -282,3 +282,7 @@ uint64_t getHeight(){
 uint64_t getWidth(){
 	return (uint64_t)(VBE_mode_info->width);
 }
+
+uint64_t getFontWidth(){
+	return DEFAULT_WIDTH * scale;
+}

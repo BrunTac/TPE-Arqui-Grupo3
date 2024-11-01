@@ -16,7 +16,8 @@ enum{
     LIGHT_BROWN = 0XB89E72,
     ICE_GREEN = 0xE0F8E0,
     BEIGE = 0XE6D2B5,
-    DARK_GRAY = 0x2A2A2A
+    DARK_GRAY = 0x2A2A2A,
+    YELLOW = 0xFFC300
 };
 
 #endif

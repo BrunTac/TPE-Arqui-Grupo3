@@ -181,3 +181,13 @@ void newLine(){
 
 	destination[w] = '\0';
  }
+
+
+uint64_t strlen(const char *str) {
+    uint64_t length = 0;
+    while (str[length] != '\0') {
+        length++;
+    }
+    return length;
+}
+

@@ -22,5 +22,6 @@ void newLine(void);
 
 int strcmp(const char * s1, const char * s2);
 void strcpy(char * destination, const char * source);
+uint64_t strlen(const char *str);
 
 #endif

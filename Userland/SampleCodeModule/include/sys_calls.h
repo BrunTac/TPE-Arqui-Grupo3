@@ -18,5 +18,6 @@ void sys_beep();
 void sys_changeFont(int size);
 void sys_readLastPressed(int fd, char * c);
 void sys_ticksElapsed(int * ans);
+void sys_getFontWidth(int * ans);
 
 #endif

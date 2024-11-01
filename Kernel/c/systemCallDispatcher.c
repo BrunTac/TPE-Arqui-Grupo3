@@ -92,6 +92,10 @@ static void sys_ticksElapsed(int * ans){
     *ans = ticks_elapsed();
 }
 
+static void sys_getFontWidth(int * ans){
+    *ans = getFontWidth();
+}
+
 void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5) {
 
     switch(id) {
@@ -134,6 +138,9 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             break ;
         case 14:
             sys_changeFont((int) arg1);
+            break ;
+        case 15:
+            sys_getFontWidth((int *) arg1);
             break ;
     }
 }

@@ -8,7 +8,10 @@
 #define BLOCKSIZE 32
 #define STDIN 0
 #define LEVEL1_TICKS 6
-#define MAX_LENGTH_SNAKE 100
+
+#define POINTS_STR_1 "Player1: "
+#define POINTS_STR_2 "Player2: "
+#define LEVEL_STR "Level "
 
 static Coordinates apple;
 
@@ -20,8 +23,6 @@ static int borderSizeY;
 
 static int boardHeight;
 static int boardWidth;
-
-int points;
 
 void snake(){
 
@@ -37,51 +38,59 @@ void snake(){
     int cantPlayers = menuSnake();
     int speed = LEVEL1_TICKS / getLevel();
 
-    points = 0;
+    drawMap(cantPlayers);
 
-    drawMap();
-
-    Coordinates body1[MAX_LENGTH_SNAKE];
     Player * player1; 
-    spawnPlayer(BLOCKSIZE + borderSizeX, BLOCKSIZE + borderSizeY, body1, player1);
+    Player * player2;
+
+    spawnPlayer(BLOCKSIZE + borderSizeX, BLOCKSIZE + borderSizeY, player1, RED);
 
     if (cantPlayers == 2)
-    {
-        Coordinates body2[MAX_LENGTH_SNAKE];    
-        Player * player2;
-        spawnPlayer(BLOCKSIZE + borderSizeX, boardHeight - BLOCKSIZE - borderSizeY, body2, player2);
+    { 
+        spawnPlayer(BLOCKSIZE + borderSizeX, scrHeight - BLOCKSIZE * 2 - borderSizeY, player2, BLUE);
     }
 
-    spawnApple(player1);
+    spawnApple(player1, player2, cantPlayers);
 
-    int lost = 0;
+    int lost1 = 0;
+    int lost2 = 0;
 
-    while (!lost)
+    while (!lost1 && !lost2)
     {
-        printPoints();
+        printPoints(cantPlayers, player1, player2);
         sys_sleep(speed);
         
-        updateDirection(player1);
-        lost = movePlayer(player1);
+        updateDirection(player1, player2, cantPlayers);
+        lost1 = movePlayer(player1, player2, cantPlayers);
+        if(cantPlayers == 2){
+            lost2 = movePlayer(player2, player1, cantPlayers);
+        }
     }
+    sys_changeFont(1);
     sys_clear();
 }
 
-void spawnPlayer(int x, int y, Coordinates body[100], Player * player){
+void spawnPlayer(int x, int y, Player * player, Color color){
     Coordinates aux1 = {x, y};
     player->body[0] = aux1;
     Coordinates aux2 = {x + BLOCKSIZE, y};
     player->body[1] = aux2;
     Coordinates aux3 = {x + 2*BLOCKSIZE, y};
     player->body[2] = aux3;
+    // por alguna razon agregarle esto al segundo no deja ejecutar snake dos veces?????? ni ideaaaaaa
+    // despues de jugar, se rompe todo !!! y sin esto en el segundo no. no se por que
     player->head = 2;
     player->tail = 0;
+
+    // esto esta ok
     player->size = 3;
     player->currentDirection = RIGHT;
+    player->color = color;
+    player->points = 0;
 
     for (int i = 0; i < player->size; i++)
     {
-        sys_drawSquare(RED, x + i*BLOCKSIZE, y);
+        sys_drawSquare(color, x + i*BLOCKSIZE, y);
     }
 
 }
@@ -90,7 +99,7 @@ int menuSnake(){
     return 1;
 }
 
-void drawMap(){
+void drawMap(int cantPlayers){
 
 	for (int i = 0; i < scrWidth; i += BLOCKSIZE * 2)
 	{
@@ -112,36 +121,97 @@ void drawMap(){
 			}	
 		}	
 	}
-    sys_writeInPos("Puntos: ", borderSizeX + BLOCKSIZE, borderSizeY - BLOCKSIZE * 1.2, DARK_GRAY, ICE_GREEN);
-}
+    sys_changeFont(2);
+    int fontwidth;
+    sys_getFontWidth(&fontwidth);
 
-void updateDirection(Player * player){
+    // Print Level
+    sys_writeInPos(LEVEL_STR, borderSizeX + BLOCKSIZE + boardWidth / 2 - strlen(LEVEL_STR) * fontwidth, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
 
-    char c;
-    sys_readLastPressed(STDIN, &c);
+    char aux[MAX_BUFFER];
+    numToStr(getLevel(), aux);
 
-    switch (c)
-    {
-    case 'w':
-        if (player->currentDirection != DOWN)
-            player->currentDirection = UP;
-        break;
-    case 'a':
-        if (player->currentDirection != RIGHT)    
-            player->currentDirection = LEFT;
-        break;
-    case 'd':
-        if (player->currentDirection != LEFT)
-            player->currentDirection = RIGHT;
-        break;
-    case 's':
-        if (player->currentDirection != UP)    
-            player->currentDirection = DOWN;
-        break;
+    sys_writeInPos(aux, borderSizeX + BLOCKSIZE + boardWidth / 2, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+    
+    
+    // Print players
+    sys_writeInPos(POINTS_STR_1, borderSizeX + BLOCKSIZE * 0.5, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+
+    if(cantPlayers == 2){
+        sys_writeInPos(POINTS_STR_2, scrWidth - (borderSizeX + BLOCKSIZE) - strlen(POINTS_STR_2) * fontwidth, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
     }
 }
 
-int movePlayer(Player * player){
+
+
+void updateDirection(Player * player1, Player * player2, int cantPlayers){
+    
+    char c;
+
+    for(int i = 0; i < 2; i++){
+        
+        sys_readLastPressed(STDIN, &c);
+
+        if(cantPlayers == 2){
+            switch (c){
+            case 'w':
+                if (player1->currentDirection != DOWN)
+                    player1->currentDirection = UP;
+                break;
+            case 'a':
+                if (player1->currentDirection != RIGHT)    
+                    player1->currentDirection = LEFT;
+                break;
+            case 'd':
+                if (player1->currentDirection != LEFT)
+                    player1->currentDirection = RIGHT;
+                break;
+            case 's':
+                if (player1->currentDirection != UP)    
+                    player1->currentDirection = DOWN;
+                break;
+            case 'i':
+                if (player2->currentDirection != DOWN)
+                    player2->currentDirection = UP;
+                break;
+            case 'j':
+                if (player2->currentDirection != RIGHT)    
+                    player2->currentDirection = LEFT;
+                break;
+            case 'l':
+                if (player2->currentDirection != LEFT)
+                    player2->currentDirection = RIGHT;
+                break;
+            case 'k':
+                if (player2->currentDirection != UP)    
+                    player2->currentDirection = DOWN;
+                break;
+            }
+        }else{
+            switch (c){
+            case 'w':
+                if (player1->currentDirection != DOWN)
+                    player1->currentDirection = UP;
+                break;
+            case 'a':
+                if (player1->currentDirection != RIGHT)    
+                    player1->currentDirection = LEFT;
+                break;
+            case 'd':
+                if (player1->currentDirection != LEFT)
+                    player1->currentDirection = RIGHT;
+                break;
+            case 's':
+                if (player1->currentDirection != UP)    
+                    player1->currentDirection = DOWN;
+                break;
+            }
+        }
+    }
+    
+}
+
+int movePlayer(Player * player, Player * otherPlayer, int cantPlayers){
     
     Coordinates prev = player->body[player->head];
 
@@ -171,7 +241,7 @@ int movePlayer(Player * player){
         break;
     }
     
-    int collision = checkCollision(player);
+    int collision = checkCollision(player, otherPlayer, cantPlayers);
 
     if (collision == 0){
         int tailX = player->body[player->tail].x;
@@ -192,22 +262,22 @@ int movePlayer(Player * player){
         return 1;
     }else if (collision == 1)
     {
-        points++;
+        player->points++;
         if (((apple.x + apple.y) % (2 * BLOCKSIZE) == 0))
         {
             sys_drawSquare(DARK_GREEN, apple.x, apple.y);
         }else{
             sys_drawSquare(GREEN, apple.x, apple.y);
         }
-        spawnApple(player);
+        spawnApple(player, otherPlayer, cantPlayers);
     }
     
-    sys_drawSquare(RED, player->body[player->head].x, player->body[player->head].y);
+    sys_drawSquare(player->color, player->body[player->head].x, player->body[player->head].y);
     return 0;
 }
 
 
-int checkCollision(Player * player){
+int checkCollision(Player * player, Player * otherPlayer, int cantPlayers){
 
     if (player->body[player->head].x == apple.x && player->body[player->head].y == apple.y){
         return 1;
@@ -216,11 +286,15 @@ int checkCollision(Player * player){
         || player->body[player->head].x < borderSizeX || player->body[player->head].y < borderSizeY){
         return -1;
     }
-
-    return checkCollisionWithBody(player, player->body[player->head]);
+    int ans = checkCollisionWithBody(player, player->body[player->head]);
+    if(ans == 0 && cantPlayers == 2){
+        ans = checkCollisionWithBody(otherPlayer, player->body[player->head]);
+    }
+    return  ans;
 }
 
-void spawnApple(Player * player){
+
+void spawnApple(Player * player1, Player * player2, int cantPlayers){
     int availableSpot = 0;
     int rand;
     Coordinates aux;
@@ -228,17 +302,17 @@ void spawnApple(Player * player){
         rand = getRandomNumber();
         aux.x = (rand % ((boardWidth - 1)/ BLOCKSIZE)) * BLOCKSIZE + borderSizeX;
         aux.y = (rand % ((boardHeight - 1) / BLOCKSIZE)) * BLOCKSIZE + borderSizeY;
-        if(!checkCollisionWithBody(player, aux)){
+        if(!checkCollisionWithBody(player1, aux) && (cantPlayers == 1 || !checkCollisionWithBody(player2, aux))){
             availableSpot = 1;
         }
     }
     apple = aux;
 
-    sys_drawSquare(BLUE, apple.x, apple.y);
+    sys_drawSquare(YELLOW, apple.x, apple.y);
 }
 
 int getLevel(){
-    return 2;
+    return 1;
 }
 
 int getRandomNumber(){
@@ -255,7 +329,6 @@ int checkCollisionWithBody(Player * player, Coordinates point){
             point.y == player->body[i].y){
             return -1;
         }
-
         if (i == MAX_LENGTH_SNAKE - 1){
             i = 0;
         }else{
@@ -265,8 +338,15 @@ int checkCollisionWithBody(Player * player, Coordinates point){
     return 0;
 }
 
-void printPoints(){
+void printPoints(int cantPlayers, Player * player1, Player * player2){
+    int fontwidth;
+    sys_getFontWidth(&fontwidth);
     char aux[MAX_BUFFER];
-    numToStr(points, aux);
-    sys_writeInPos(aux, borderSizeX + BLOCKSIZE + 8 * 8, borderSizeY - BLOCKSIZE * 1.2, DARK_GRAY, ICE_GREEN);
+    numToStr(player1->points, aux);
+    sys_writeInPos(aux, borderSizeX + BLOCKSIZE * 0.3 + strlen(POINTS_STR_1) * fontwidth, borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+
+    if(cantPlayers == 2){
+        numToStr(player2->points, aux);
+        sys_writeInPos(aux, scrWidth - (borderSizeX + BLOCKSIZE * 1.2), borderSizeY - BLOCKSIZE * 1.4, DARK_GRAY, ICE_GREEN);
+    }
 }
