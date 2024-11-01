@@ -85,20 +85,20 @@ void putCharInPos(unsigned char c, int x, int y, Color fgcolor, Color bgcolor){
 
 	if (x >= VBE_mode_info->width) {
 		x = 0;
-        	if (y + HEIGHT_FONT > VBE_mode_info->height) {
-				y -= HEIGHT_FONT;
+        	if (y + DEFAULT_HEIGHT > VBE_mode_info->height) {
+				y -= DEFAULT_HEIGHT;
             	scrollUp();
         	} else {
-            		y += HEIGHT_FONT;
+            		y += DEFAULT_HEIGHT;
         	}
     	}
 
-	for(cy=0;cy<HEIGHT_FONT;cy++){
-		for(cx=0;cx<WIDTH_FONT;cx++){
+	for(cy=0;cy<DEFAULT_HEIGHT;cy++){
+		for(cx=0;cx<DEFAULT_WIDTH;cx++){
 			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x + (8 - cx), y + cy);
 		}
 	}	
-	x += WIDTH_FONT;
+	x += DEFAULT_WIDTH;
 }
 
 void putChar(unsigned char c, Color fgcolor, Color bgcolor)
@@ -135,10 +135,10 @@ void printsInPos(const char * str, uint64_t x, uint64_t y, Color font, Color bac
 	for (int i = 0 ; str[i] != '\0'; i++ ){
         if(x + auxX == VBE_mode_info->width){
 			auxX = 0;
-			auxY += HEIGHT_FONT;
+			auxY += DEFAULT_HEIGHT;
 		}
 		putCharInPos(str[i], x + auxX, y + auxY, font, background);
-		auxX += WIDTH_FONT;
+		auxX += DEFAULT_WIDTH;
     }
 }
 

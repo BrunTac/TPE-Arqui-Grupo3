@@ -60,7 +60,6 @@ void snake(){
     {
         printPoints();
         sys_sleep(speed);
-        
         updateDirection(player1);
         lost = movePlayer(player1);
     }

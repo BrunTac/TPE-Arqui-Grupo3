@@ -18,6 +18,7 @@ void showregisters();
 void test_exception();
 void snake();
 void beep();
+void fontsize();
 void exit();
 void invalid_command();
 

@@ -210,7 +210,7 @@ void printHeader(){
     printDashLine();
     printDashLine();
     printf("%nBienvenido a la terminal de ");
-    printfColor("Cuervazos SO%n%n", RED, BLUE);
+    printfColor("Cuervazos", RED, BLUE); printf(" "); printfColor("Millonarios", RED, WHITE); printf(" SO%n%n");
     printDashLine();
     printDashLine();
 }
