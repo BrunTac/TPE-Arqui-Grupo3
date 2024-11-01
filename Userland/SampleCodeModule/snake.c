@@ -7,8 +7,8 @@
 
 #define BLOCKSIZE 32
 #define STDIN 0
-#define LEVEL1_TICKS 6
-#define MOVESPEED 1500
+#define DEFAULT_SPEED 4
+#define INCREASE_RATE 5
 
 #define POINTS_STR_1 "Player1: "
 #define POINTS_STR_2 "Player2: "
@@ -29,6 +29,7 @@ static int headerY;
 
 static int playing;
 static int speed;
+static int level;
 
 void snake(){
 
@@ -42,11 +43,13 @@ void snake(){
     boardHeight = scrHeight - 2 * borderSizeY;
  
     headerY = borderSizeY - BLOCKSIZE * 1.4;
+
     
     playing = 1;
     while(playing){
         int cantPlayers = menuSnake();
-        speed = LEVEL1_TICKS / getLevel();
+        speed = DEFAULT_SPEED;
+        level = 1;
 
         drawMap(cantPlayers);
 
@@ -89,25 +92,24 @@ void snake(){
 
             spawnPlayer(posX, posY, &player2, player2.color);
         }
-
         spawnApple(&player1, &player2, cantPlayers);
 
         int lost1 = 0;
         int lost2 = 0;
-        int count = 0;
+        int ticks1, ticks2;
 
         while (!lost1 && !lost2)
-        {
-            printPoints(cantPlayers, &player1, &player2);            
+        {        
+            sys_ticksElapsed(&ticks2);
             updateDirection(&player1, &player2, cantPlayers);
-            if (count % (speed * MOVESPEED) == 0 ){
+            if ((ticks2 - ticks1) >= speed ){
+                printPoints(cantPlayers, &player1, &player2);
                 lost1 = movePlayer(&player1, &player2, cantPlayers);
                 if(cantPlayers == 2){
                     lost2 = movePlayer(&player2, &player1, cantPlayers);
                 }
+                sys_ticksElapsed(&ticks1);
             }
-            count++;
-            
         }
 
         sys_clear();
@@ -133,50 +135,6 @@ void spawnPlayer(int x, int y, Player * player, Color color){
     {
         sys_drawSquare(color, x + i*BLOCKSIZE, y);
     }
-
-}
-
-int menuSnake(){
-    sys_clear();
-    for(int i = 0; i < scrWidth; i += BLOCKSIZE){
-        for(int j = 0; j < scrHeight; j += BLOCKSIZE){
-            sys_drawSquare(PINE_GREEN, i, j);
-        }
-    }
-
-    printf("%n%n%n%n%n%n%n%n%n");
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                sssss n    n  aaa  k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                               s      nn   n a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                ssss  n  n n aaaaa kkk   eee                                                    %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                    s n   nn a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                               sssss  n    n a   a k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                presione 1 para modo un jugador                                                 %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                               presione 2 para modo dos jugadores                                               %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-
-
-    for(int i = 0; i < scrWidth; i += BLOCKSIZE){
-        for(int j = 0; j < scrHeight; j += BLOCKSIZE){
-            if(i == 7 * BLOCKSIZE || i == 23 * BLOCKSIZE){
-                if((j / BLOCKSIZE) % 2 == 0){
-                    sys_drawSquare(GREEN, i, j);
-                }else{
-                    sys_drawSquare(DARK_GREEN, i, j);
-                }
-            }
-        }
-    }
-    
-    char c = getChar();
-    return c - '0';
 
 }
 
@@ -208,11 +166,7 @@ void drawMap(int cantPlayers){
 
     // Print Level
     sys_writeInPos(LEVEL_STR, borderSizeX + BLOCKSIZE + boardWidth / 2 - strlen(LEVEL_STR) * fontwidth, headerY, DARK_GRAY, ICE_GREEN);
-
-    char aux[MAX_BUFFER];
-    numToStr(getLevel(), aux);
-
-    sys_writeInPos(aux, borderSizeX + BLOCKSIZE + boardWidth / 2, headerY, DARK_GRAY, ICE_GREEN);
+    printLevel();
     
     
     // Print players
@@ -220,7 +174,7 @@ void drawMap(int cantPlayers){
 
     if(cantPlayers == 2){
         sys_writeInPos(POINTS_STR_2, scrWidth - (borderSizeX + BLOCKSIZE) - strlen(POINTS_STR_2) * fontwidth, headerY, DARK_GRAY, ICE_GREEN);
-    }
+    }  
 }
 
 
@@ -350,11 +304,12 @@ int movePlayer(Player * player, Player * otherPlayer, int cantPlayers){
         }else{
             sys_drawSquare(GREEN, apple.x, apple.y);
         }
-        if (player->points % 3 == 0)
+        if (player->points % INCREASE_RATE == 0 && speed > 1)
         {
             speed--;
+            level++;
+            printLevel();
         }
-        
         spawnApple(player, otherPlayer, cantPlayers);
     }
     
@@ -397,10 +352,6 @@ void spawnApple(Player * player1, Player * player2, int cantPlayers){
     sys_drawSquare(YELLOW, apple.x, apple.y);
 }
 
-int getLevel(){
-    return 1;
-}
-
 int getRandomNumber(){
     int rand;
     sys_ticksElapsed(&rand);
@@ -437,95 +388,148 @@ void printPoints(int cantPlayers, Player * player1, Player * player2){
     }
 }
 
+void printLevel(){
+    char aux[MAX_BUFFER];
+    numToStr(level, aux);
+
+    sys_writeInPos(aux, borderSizeX + BLOCKSIZE + boardWidth / 2, headerY, DARK_GRAY, ICE_GREEN);
+}
+
 
 
 char defeatScreen1(Player * player){
-
     
+    printCanvas(BROWN);
 
-    printf("________________________________________________________________________________________________________________________________%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                   |%n");
-    printf("|                                  y   y  o   o  u   u        l     o   o  s        t     !!                                   |%n");
-    printf("|                                   yyy   o   o  u   u        l     o   o   ssss    t     !!                                   |%n");
-    printf("|                                    y    o   o  u   u        l     o   o       s   t                                          |%n");
-    printf("|                                    y     ooo    uuu         llll   oooo   ssss    t     !!                                   |%n");
-    printf("	                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                         Score : %d                                                            |%n", player->points);
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para salir                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|______________________________________________________________________________________________________________________________|%n");
-
+    printf("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
+    printfColor("                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                    %n", ICE_GREEN, BROWN);
+    printfColor("                                  y   y  o   o  u   u        l     o    o s        t     !!                                    %n", ICE_GREEN, BROWN);
+    printfColor("                                   yyy   o   o  u   u        l     o    o  ssss    t     !!                                    %n", ICE_GREEN, BROWN);
+    printfColor("                                    y    o   o  u   u        l     o    o      s   t                                           %n", ICE_GREEN, BROWN);
+    printfColor("                                    y     ooo    uuu         llll   oooo   ssss    t     !!                                    %n", ICE_GREEN, BROWN);
+    printf("%n%n%n");
+    printfColor("                                                          Score : %d                                                            %n", ICE_GREEN, BROWN, player->points);
+    printf("%n%n");
+    printfColor("                                            presione SPACE tecla para volver a jugar                                            %n", ICE_GREEN, BROWN);
+    printf("%n");
+    printfColor("                                              presione cualquier tecla para salir                                               %n", ICE_GREEN, BROWN);
+    
+    printSnakes(5, 25, RED, LIGHT_RED);
     return getChar();
 }
 
 char defeatScreen2(Player * player1, Player * player2){
+    printCanvas(BROWN);
 
- 
+    printf("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
+    printfColor("                          ppp    l      aaaa   y   y  eeee  rrrr      11      w     w  i  n   n   ssss   !!                    %n", ICE_GREEN, BROWN);
+    printfColor("                          p  p   l      a  a    y y   e     r   r   1111      w     w  i  nn  n  s       !!                    %n", ICE_GREEN, BROWN);
+    printfColor("                          ppp    l      aaaa     y    eee   rrrr      11      w  w  w  i  n n n   sss    !!                    %n", ICE_GREEN, BROWN);
+    printfColor("                          p      l      a  a     y    e     r r       11       w w w   i  n  nn      s                         %n", ICE_GREEN, BROWN);
+    printfColor("                          p      llll   a  a     y    eeee  r  rr   111111      w w    i  n   n  ssss    !!                    %n", ICE_GREEN, BROWN);
+    printf("%n%n%n%n");
+    printfColor("                                                      Player 1 Score : %d                                                         %n", ICE_GREEN, BROWN, player1->points);
+    printf("%n");
+    printfColor("                                                      Player 2 Score : %d                                                         %n", ICE_GREEN, BROWN, player2->points);
+    printf("%n%n%n");
+    printfColor("                                           presione SPACE tecla para volver a jugar                                            %n", ICE_GREEN, BROWN);
+    printf("%n");
+    printfColor("                                              presione cualquier tecla para salir                                               %n", ICE_GREEN, BROWN);
 
-    printf("________________________________________________________________________________________________________________________________%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                      ppp    l      aaaa   y   y  eeee  rrrr       11        w     w  i  n   n   ssss   !!                    |%n");
-    printf("|                      p  p   l      a  a    y y   e     r   r    1111        w     w  i  nn  n  s       !!                    |%n");
-    printf("|                      ppp    l      aaaa     y    eee   rrrr       11        w  w  w  i  n n n   sss    !!                    |%n");
-    printf("|                      p      l      a  a     y    e     r r        11         w w w   i  n  nn      s                         |%n");
-    printf("|                      p      llll   a  a     y    eeee  r  rr    111111        w w    i  n   n  ssss    !!                    |%n");
-    printf("	                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                   Player 1 Score : %d                                                         |%n", player1->points);
-    printf("|                                                                                                                              |%n");
-    printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para salir                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|______________________________________________________________________________________________________________________________|%n");
-
-
+    printSnakes(4, 27, RED, LIGHT_RED);
     return getChar();
 }
 
 char defeatScreen3(Player * player1, Player * player2){
+    printCanvas(BROWN);
+    
+    printf("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
+    printf("%n");
+    printf("%n");
+    printfColor("                         ppp    l      aaaa   y   y  eeee  rrrr     2222       w     w  i  n   n   ssss   !!                  %n", ICE_GREEN, BROWN);
+    printfColor("                         p  p   l      a  a    y y   e     r   r        2      w     w  i  nn  n  s       !!                  %n", ICE_GREEN, BROWN);
+    printfColor("                         ppp    l      aaaa     y    eee   rrrr      2222      w  w  w  i  n n n   sss    !!                  %n", ICE_GREEN, BROWN);
+    printfColor("                         p      l      a  a     y    e     r r      2           w w w   i  n  nn      s                       %n", ICE_GREEN, BROWN);
+    printfColor("                         p      llll   a  a     y    eeee  r  rr    22222        w w    i  n   n  ssss    !!                  %n", ICE_GREEN, BROWN);
+    printf("%n");
+    printf("%n");
+    printf("%n");
+    printfColor("                                                     Player 1 Score : %d                                                          %n", ICE_GREEN, BROWN, player1->points);
+    printf("%n");
+    printfColor("                                                     Player 2 Score : %d                                                          %n", ICE_GREEN, BROWN, player2->points);
+    printf("%n");
+    printf("%n");
+    printf("%n");
+    printfColor("                                           presione SPACE tecla para volver a jugar                                            %n", ICE_GREEN, BROWN);
+    printf("%n");
+    printfColor("                                              presione cualquier tecla para salir                                               %n", ICE_GREEN, BROWN);
 
-    printf("________________________________________________________________________________________________________________________________%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                          ppp    l      aaaa   y   y  eeee  rrrr     2222       w     w  i  n   n   ssss   !!                 |%n");
-    printf("|                          p  p   l      a  a    y y   e     r   r        2      w     w  i  nn  n  s       !!                 |%n");
-    printf("|                          ppp    l      aaaa     y    eee   rrrr      2222      w  w  w  i  n n n   sss    !!                 |%n");
-    printf("|                          p      l      a  a     y    e     r r      2           w w w   i  n  nn      s                      |%n");
-    printf("|                          p      llll   a  a     y    eeee  r  rr    22222        w w    i  n   n  ssss    !!                 |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                   Player 1 Score : %d                                                         |%n", player1->points);
-    printf("|                                                                                                                              |%n");
-    printf("|                                                   Player 2 Score : %d                                                         |%n", player2->points);
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                             presione cualquier tecla para salir                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|                                                                                                                              |%n");
-    printf("|______________________________________________________________________________________________________________________________|%n");
-
-
+    
+    printSnakes(4, 27, BLUE, LIGHT_BLUE);
     return getChar();
 }
 
+int menuSnake(){
+    printCanvas(PINE_GREEN);
+
+    printf("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                sssss n    n  aaa  k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               s      nn   n a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                ssss  n  n n aaaaa kkk   eee                                                    %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                    s n   nn a   a k  k  e                                                      %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               sssss  n    n a   a k   k eeeee                                                  %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                presione 1 para modo un jugador                                                 %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                               presione 2 para modo dos jugadores                                               %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
+
+    
+    printSnakes(7, 23, DARK_GREEN, GREEN);
+    char c = getChar();
+    return c - '0';
+
+}
+
+void printCanvas(Color color){
+    sys_clear();
+    for(int i = 0; i < scrWidth; i += BLOCKSIZE){
+        for(int j = 0; j < scrHeight; j += BLOCKSIZE){
+            sys_drawSquare(color, i, j);
+        }
+    }
+}
+
+void printSnakes(int y1, int y2, Color dark, Color light){
+    /* for(int j = 0; j < scrHeight; j += BLOCKSIZE){
+        if((j / BLOCKSIZE) % 2 == 0){
+            sys_drawSquare(light, y1 * BLOCKSIZE, j);
+            sys_drawSquare(light, y2 * BLOCKSIZE, j);
+        }else{
+            sys_drawSquare(dark, y1 * BLOCKSIZE, j);
+            sys_drawSquare(dark, y2 * BLOCKSIZE, j);
+        }
+    
+    } */
+    for (int i = 0; i < scrWidth; i += BLOCKSIZE * 2)
+	{
+		for (int j = 0; j < scrHeight; j += BLOCKSIZE)
+		{
+            if((i < borderSizeX * 1.5 || i >= (scrWidth - borderSizeX * 1.5)) || (j < borderSizeY * 1.5 || j >= scrHeight - borderSizeY * 2)){
+                if (j%(2 * BLOCKSIZE) == 0){
+                    sys_drawSquare(dark, i, j);
+                    sys_drawSquare(light, i+BLOCKSIZE, j);
+                }else{
+                    sys_drawSquare(light, i, j);
+                    sys_drawSquare(dark, i+BLOCKSIZE, j);
+                }
+            }	
+		}	
+	}
+}

@@ -38,11 +38,11 @@ int checkCollision(Player * player, Player * otherPlayer, int cantPlayers);
 int checkCollisionWithBody(Player * player, Coordinates point);
 void spawnApple(Player * player1, Player * player2, int cantPlayers);
 int getRandomNumber();
-int getLevel();
 void printPoints(int cantPlayers, Player * player1, Player * player2);
 char defeatScreen1(Player * player);
 char defeatScreen2(Player * player1, Player * player2);
 char defeatScreen3(Player * player1, Player * player2);
-
-
+void printCanvas(Color color);
+void printSnakes(int y1, int y2, Color dark, Color light);
+void printLevel();
 
