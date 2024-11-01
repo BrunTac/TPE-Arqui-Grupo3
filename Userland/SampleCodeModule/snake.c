@@ -398,23 +398,30 @@ void printLevel(){
 
 
 char defeatScreen1(Player * player){
-    
-    printCanvas(BROWN);
 
-    printf("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
-    printfColor("                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                    %n", ICE_GREEN, BROWN);
-    printfColor("                                  y   y  o   o  u   u        l     o    o s        t     !!                                    %n", ICE_GREEN, BROWN);
-    printfColor("                                   yyy   o   o  u   u        l     o    o  ssss    t     !!                                    %n", ICE_GREEN, BROWN);
-    printfColor("                                    y    o   o  u   u        l     o    o      s   t                                           %n", ICE_GREEN, BROWN);
-    printfColor("                                    y     ooo    uuu         llll   oooo   ssss    t     !!                                    %n", ICE_GREEN, BROWN);
-    printf("%n%n%n");
-    printfColor("                                                          Score : %d                                                            %n", ICE_GREEN, BROWN, player->points);
-    printf("%n%n");
-    printfColor("                                            presione SPACE tecla para volver a jugar                                            %n", ICE_GREEN, BROWN);
-    printf("%n");
-    printfColor("                                              presione cualquier tecla para salir                                               %n", ICE_GREEN, BROWN);
     
-    printSnakes(5, 25, RED, LIGHT_RED);
+
+    printf("________________________________________________________________________________________________________________________________%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                   |%n");
+    printf("|                                  y   y  o   o  u   u        l     o   o  s        t     !!                                   |%n");
+    printf("|                                   yyy   o   o  u   u        l     o   o   ssss    t     !!                                   |%n");
+    printf("|                                    y    o   o  u   u        l     o   o       s   t                                          |%n");
+    printf("|                                    y     ooo    uuu         llll   oooo   ssss    t     !!                                   |%n");
+    printf("	                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                         Score : %d                                                            |%n", player->points);
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                           presione SPACE tecla para volver a jugar                                           |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                             presione cualquier tecla para salir                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|                                                                                                                              |%n");
+    printf("|______________________________________________________________________________________________________________________________|%n");
+
     return getChar();
 }
 
