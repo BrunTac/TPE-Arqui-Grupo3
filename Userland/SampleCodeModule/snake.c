@@ -9,8 +9,6 @@
 #define STDIN 0
 #define LEVEL1_TICKS 6
 
-#define LINE "____________________________________________________________________________"
-
 #define POINTS_STR_1 "Player1: "
 #define POINTS_STR_2 "Player2: "
 #define LEVEL_STR "Level "
