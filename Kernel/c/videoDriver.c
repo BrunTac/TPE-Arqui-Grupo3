@@ -79,26 +79,29 @@ uint16_t current_Y = 0;
 
 
 void putCharInPos(unsigned char c, int x, int y, Color fgcolor, Color bgcolor){
-	int cx,cy;
+	int putX, putY;
 	int mask[8]={1,2,4,8,16,32,64,128};
-	unsigned char *glyph=font+4+(int)c*16;
+	unsigned char * symbol = font + 4 + (int) c * 16;
 
 	if (x >= VBE_mode_info->width) {
 		x = 0;
-        	if (y + HEIGHT_FONT > VBE_mode_info->height) {
-				y -= HEIGHT_FONT;
+        	if (y + DEFAULT_HEIGHT > VBE_mode_info->height) {
+				y -= DEFAULT_HEIGHT*scale;
             	scrollUp();
         	} else {
-            		y += HEIGHT_FONT;
+            		y += DEFAULT_HEIGHT*scale;
         	}
     	}
 
-	for(cy=0;cy<HEIGHT_FONT;cy++){
-		for(cx=0;cx<WIDTH_FONT;cx++){
-			putPixel(glyph[cy] & mask[cx] ? fgcolor : bgcolor, x + (8 - cx), y + cy);
+	for(putY = 0 ; putY < DEFAULT_HEIGHT ; putY++){
+		for(putX = 0 ; putX < DEFAULT_WIDTH ; putX++){
+				for(int pixelX = 0 ; pixelX < scale ; pixelX++) {
+					for(int pixelY = 0 ; pixelY < scale ; pixelY++)
+						putPixel(symbol[putY] & mask[putX] ? fgcolor : bgcolor, x + (8 - putX) * scale + pixelX, y + putY * scale + pixelY);
+				}
 		}
 	}	
-	x += WIDTH_FONT;
+	x += DEFAULT_WIDTH*scale;
 }
 
 void putChar(unsigned char c, Color fgcolor, Color bgcolor)
@@ -135,10 +138,10 @@ void printsInPos(const char * str, uint64_t x, uint64_t y, Color font, Color bac
 	for (int i = 0 ; str[i] != '\0'; i++ ){
         if(x + auxX == VBE_mode_info->width){
 			auxX = 0;
-			auxY += HEIGHT_FONT;
+			auxY += DEFAULT_HEIGHT*scale;
 		}
 		putCharInPos(str[i], x + auxX, y + auxY, font, background);
-		auxX += WIDTH_FONT;
+		auxX += DEFAULT_WIDTH*scale;
     }
 }
 

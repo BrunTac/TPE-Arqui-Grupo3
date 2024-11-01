@@ -94,7 +94,7 @@ void numToStr(uint64_t num, char * destination){
     
     for(int j = 0; j < i / 2; j++){
         char aux = destination[j];
-        destination[j] = destination[i = j = 1];
+        destination[j] = destination[i - j - 1];
         destination[i - j - 1] = aux;
     }
     

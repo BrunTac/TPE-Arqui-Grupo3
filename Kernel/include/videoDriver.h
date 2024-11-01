@@ -28,5 +28,6 @@ void clear();
 void drawSquare(Color color, int x, int y);
 uint64_t getHeight();
 uint64_t getWidth();
+void updateSize(int size);
 
 #endif
