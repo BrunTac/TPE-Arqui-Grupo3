@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nombre del contenedor
-NOMBRE="TPE-Arqui-Grupo3"
+NOMBRE="TPE-Arqui"
 
 # Iniciar el contenedor
 docker start $NOMBRE

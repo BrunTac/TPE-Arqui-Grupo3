@@ -45,4 +45,4 @@ char defeatScreen3(Player * player1, Player * player2);
 void printCanvas(Color color);
 void printBorder(Color dark, Color light, double borderFactor);
 void printLevel();
-
+void printControlScreen();
