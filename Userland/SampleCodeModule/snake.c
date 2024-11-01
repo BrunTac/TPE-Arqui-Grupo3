@@ -108,7 +108,7 @@ void snake(){
             }
             count++;
             
-        }
+        }   
 
         sys_clear();
         
@@ -446,11 +446,11 @@ char defeatScreen1(Player * player){
     printf("________________________________________________________________________________________________________________________________%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
-    printf("|                                  y   y   ooo   u   u        l      oooo   ssss  ttttt   !!                                   |%n");
-    printf("|                                  y   y  o   o  u   u        l     o   o  s        t     !!                                   |%n");
-    printf("|                                   yyy   o   o  u   u        l     o   o   ssss    t     !!                                   |%n");
-    printf("|                                    y    o   o  u   u        l     o   o       s   t                                          |%n");
-    printf("|                                    y     ooo    uuu         llll   oooo   ssss    t     !!                                   |%n");
+    printf("|                                  y   y   ooo   u   u        l      oooo    ssss  ttttt   !!                                   |%n");
+    printf("|                                  y   y  o   o  u   u        l     o    o  s        t     !!                                   |%n");
+    printf("|                                   yyy   o   o  u   u        l     o    o   ssss    t     !!                                   |%n");
+    printf("|                                    y    o   o  u   u        l     o    o       s   t                                          |%n");
+    printf("|                                    y     ooo    uuu         llll   oooo    ssss    t     !!                                   |%n");
     printf("	                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
     printf("|                                                                                                                              |%n");
