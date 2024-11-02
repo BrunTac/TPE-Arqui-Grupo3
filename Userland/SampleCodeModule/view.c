@@ -1,6 +1,7 @@
 #include <view.h>
 #include <libc.h>
 #include <sys_calls.h>
+#include <songs.h>
 
 extern void opcodeError();
 
@@ -13,7 +14,9 @@ int exited = 0;
 void initialize(){
     sys_clear();
     printHeader();
+    luffyTune();
     printf("%nIngrese su nombre de usuario: ");
+
     scanf("%s", &user);
 
     if(strcmp(user, "") == 0){
