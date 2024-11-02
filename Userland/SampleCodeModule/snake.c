@@ -7,8 +7,8 @@
 
 #define BLOCKSIZE 32
 #define STDIN 0
-#define DEFAULT_SPEED 4
-#define INCREASE_RATE 5
+#define DEFAULT_SPEED 5
+#define INCREASE_RATE 6
 
 #define POINTS_STR_1 "Player1: "
 #define POINTS_STR_2 "Player2: "
@@ -103,7 +103,6 @@ void snake(){
         while (!lost1 && !lost2)
         {        
             sys_ticksElapsed(&ticks2);
-            updateDirection(&player1, &player2, cantPlayers);
             if ((ticks2 - ticks1) >= speed ){
                 printPoints(cantPlayers, &player1, &player2);
                 lost1 = movePlayer(&player1, &player2, cantPlayers);
@@ -112,6 +111,7 @@ void snake(){
                 }
                 sys_ticksElapsed(&ticks1);
             }
+            updateDirection(&player1, &player2, cantPlayers);
         }
 
         sys_clear();
@@ -128,7 +128,6 @@ void snake(){
             playing = 0;
         }
     }
-    sys_changeFont(1);
     sys_clear();
 }
 
@@ -176,7 +175,8 @@ void drawMap(int cantPlayers){
 
     if(cantPlayers == 2){
         sys_writeInPos(POINTS_STR_2, scrWidth - (borderSizeX + BLOCKSIZE) - strlen(POINTS_STR_2) * fontwidth, headerY, PINE_GREEN, ICE_GREEN);
-    }  
+    }
+    sys_changeFont(1);  
 }
 
 
@@ -185,67 +185,85 @@ void updateDirection(Player * player1, Player * player2, int cantPlayers){
     
     char c;
 
-    for(int i = 0; i < 2; i++){
+    if(cantPlayers == 2){
+        int read1 = 0;
+        int read2 = 0;
+        for(int i = 0; i < 2; i++){
         
-        sys_readLastPressed(STDIN, &c);
+            sys_readLastPressed(STDIN, &c);
 
-        if(cantPlayers == 2){
-            switch (c){
-            case 'w':
-                if (player1->currentDirection != DOWN)
-                    player1->currentDirection = UP;
-                break;
-            case 'a':
-                if (player1->currentDirection != RIGHT)    
-                    player1->currentDirection = LEFT;
-                break;
-            case 'd':
-                if (player1->currentDirection != LEFT)
-                    player1->currentDirection = RIGHT;
-                break;
-            case 's':
-                if (player1->currentDirection != UP)    
-                    player1->currentDirection = DOWN;
-                break;
-            case 'i':
-                if (player2->currentDirection != DOWN)
-                    player2->currentDirection = UP;
-                break;
-            case 'j':
-                if (player2->currentDirection != RIGHT)    
-                    player2->currentDirection = LEFT;
-                break;
-            case 'l':
-                if (player2->currentDirection != LEFT)
-                    player2->currentDirection = RIGHT;
-                break;
-            case 'k':
-                if (player2->currentDirection != UP)    
-                    player2->currentDirection = DOWN;
-                break;
+                switch (c){
+                case 'w':
+                    if (player1->currentDirection != DOWN && !read1){
+                        player1->currentDirection = UP;
+                        read1 = 1;
+                    }
+                    break;
+                case 'a':
+                    if (player1->currentDirection != RIGHT && !read1){
+                        player1->currentDirection = LEFT;
+                        read1 = 1;
+                    }
+                    break;
+                case 'd':
+                    if (player1->currentDirection != LEFT && !read1){
+                        player1->currentDirection = RIGHT;
+                        read1 = 1;
+                    }
+                    break;
+                case 's':
+                    if (player1->currentDirection != UP && !read1){
+                        player1->currentDirection = DOWN;
+                        read1 = 1;
+                    }
+                    break;
+                case 'i':
+                    if (player2->currentDirection != DOWN && !read2){
+                        player2->currentDirection = UP;
+                        read2 = 1;
+                    }
+                    break;
+                case 'j':
+                    if (player2->currentDirection != RIGHT && !read2){
+                        player2->currentDirection = LEFT;
+                        read2 = 1;
+                    }
+                    break;
+                case 'l':
+                    if (player2->currentDirection != LEFT && !read2){
+                        player2->currentDirection = RIGHT;
+                        read2 = 1;
+                    }
+                    break;
+                case 'k':
+                    if (player2->currentDirection != UP && !read2){
+                        player2->currentDirection = DOWN;
+                        read2 = 1;
+                    }
+                    break;
+                }
             }
-        }else{
-            switch (c){
-            case 'w':
-                if (player1->currentDirection != DOWN)
-                    player1->currentDirection = UP;
-                break;
-            case 'a':
-                if (player1->currentDirection != RIGHT)    
-                    player1->currentDirection = LEFT;
-                break;
-            case 'd':
-                if (player1->currentDirection != LEFT)
-                    player1->currentDirection = RIGHT;
-                break;
-            case 's':
-                if (player1->currentDirection != UP)    
-                    player1->currentDirection = DOWN;
-                break;
-            }
+    }else{
+        sys_readLastPressed(STDIN, &c);
+        switch (c){
+        case 'w':
+            if (player1->currentDirection != DOWN)
+                player1->currentDirection = UP;
+            break;
+        case 'a':
+            if (player1->currentDirection != RIGHT)    
+                player1->currentDirection = LEFT;
+            break;
+        case 'd':
+            if (player1->currentDirection != LEFT)
+                player1->currentDirection = RIGHT;
+            break;
+        case 's':
+            if (player1->currentDirection != UP)    
+                player1->currentDirection = DOWN;
+            break;
         }
     }
-    
 }
 
 int movePlayer(Player * player, Player * otherPlayer, int cantPlayers){
@@ -378,6 +396,7 @@ int checkCollisionWithBody(Player * player, Coordinates point){
 }
 
 void printPoints(int cantPlayers, Player * player1, Player * player2){
+    //sys_changeFont(2);
     int fontwidth;
     sys_getFontWidth(&fontwidth);
     char aux[MAX_BUFFER];
@@ -388,13 +407,16 @@ void printPoints(int cantPlayers, Player * player1, Player * player2){
         numToStr(player2->points, aux);
         sys_writeInPos(aux, scrWidth - (borderSizeX + BLOCKSIZE * 1.2), headerY, PINE_GREEN, ICE_GREEN);
     }
+    sys_changeFont(1);
 }
 
 void printLevel(){
+    //sys_changeFont(2);
     char aux[MAX_BUFFER];
     numToStr(level, aux);
 
     sys_writeInPos(aux, borderSizeX + BLOCKSIZE + boardWidth / 2, headerY, PINE_GREEN, ICE_GREEN);
+    sys_changeFont(1);
 }
 
 
@@ -493,7 +515,8 @@ int menuSnake(){
 
     
     printBorder(DARK_GREEN, GREEN, 1.5);
-    char c = getChar();
+    char c;
+    while((c = getChar()) != '1' && c != '2'){}
     return c - '0';
 
 }
@@ -555,7 +578,7 @@ void printControlScreen(int cantPlayers){
         printfColor("                                 a   a   sss   dddd                     jjj     k  k   llllll                    %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n%n%n", ICE_GREEN, PINE_GREEN);
-        printfColor("                                          Presione cualquier tecla para continuar                                  %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                  Presione SPACE para continuar                                  %n", ICE_GREEN, PINE_GREEN);
         printBorder(DARK_GREEN, GREEN, 1);
     }else{
         printf("%n%n%n");
@@ -573,13 +596,13 @@ void printControlScreen(int cantPlayers){
         printfColor("                                                      a   a   sss   dddd                                        %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n%n", ICE_GREEN, PINE_GREEN);
-        printfColor("                                             Presione cualquier tecla para continuar                                  %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                  Presione SPACE para continuar                                  %n", ICE_GREEN, PINE_GREEN);
         printBorder(DARK_GREEN, GREEN, 1.5);
     }
 
 
     
-    getChar();
+    while(getChar() != ' '){};
 
 }
 
