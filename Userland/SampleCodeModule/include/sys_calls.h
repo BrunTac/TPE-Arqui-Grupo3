@@ -14,7 +14,7 @@ void sys_drawSquare(Color color, int x, int y);
 void sys_scrWidth(int * ans);
 void sys_scrHeight(int * ans);
 void sys_sleep(int ticks);
-void sys_beep();
+void sys_beep(uint32_t frequency, int ticks);
 void sys_changeFont(int size);
 void sys_readLastPressed(int fd, char * c);
 void sys_ticksElapsed(int * ans);

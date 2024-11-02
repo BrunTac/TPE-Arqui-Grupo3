@@ -59,9 +59,9 @@ static void sys_sleep(int ticks) {
     sleep(ticks);
 }
 
-static void sys_beep(uint32_t frequency) {
+static void sys_beep(uint32_t frequency, int ticks) {
 
-    beep(frequency);
+    beep(frequency, ticks);
 
 }
 
@@ -128,7 +128,7 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             sys_sleep((int) arg1);
             break ;
         case 11:
-            sys_beep((uint32_t) arg1);
+            sys_beep((uint32_t) arg1, (int) arg2);
             break ;
         case 12:
             sys_readLastPressed((int) arg1, (char *) arg2);
