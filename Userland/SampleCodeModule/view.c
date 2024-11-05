@@ -3,6 +3,7 @@
 #include <sys_calls.h>
 #include <sounds.h>
 #include <stdint.h>
+#include <snake.h>
 
 extern void opcodeError();
 
@@ -104,7 +105,7 @@ void commandline_handler(){
     }else if(strcmp(cmd, "fontsize") == 0){
         fontsize();
     }else if(strcmp(cmd, "exit") == 0) {
-        exit();
+        exitShell();
     }else{
         invalid_command();
     }
@@ -209,7 +210,7 @@ void snake() {
     }
 }
 
-void exit(){
+void exitShell(){
     printf("%nHasta pronto %s!", user);
     exited = 1;
 }

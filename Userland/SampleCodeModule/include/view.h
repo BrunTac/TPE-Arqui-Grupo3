@@ -20,7 +20,7 @@ void fontsize();
 void snake();
 void beep();
 void fontsize();
-void exit();
+void exitShell();
 void invalid_command();
 
 void test_opcode_exep();
