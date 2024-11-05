@@ -149,5 +149,4 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             sys_showRegisters();
             break ;
     }
-    return 0;
 }

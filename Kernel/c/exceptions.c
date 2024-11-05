@@ -1,5 +1,7 @@
 #include <videoDriver.h>
 #include <lib.h>
+#include <keyboard.h>
+#include <interrupts.h>
 
 #define ZERO_EXCEPTION_ID 0
 #define INVALID_OP_CODE 6
@@ -28,6 +30,10 @@ void exceptionDispatcher(int exception, uint64_t * registers) {
 			prints("Exception: invalid operation code detected\n", RED, BLACK);
 	}
 	printRegistersExc(registers);
+
+	_sti();
+	prints("\nPress ENTER to restart\n", WHITE, BLACK);
+	while(getKey() != '\n'){}
 }
 
 
