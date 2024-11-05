@@ -252,7 +252,7 @@ void printMenu(){
     printDashLine();
     printf("- menu............................imprime el menu de comandos%n");
     printf("- time............................imprime la hora actual%n");
-    printf("- showregisters...................imprime los valores guardados los registros%n");
+    printf("- showregisters...................imprime los valores guardados los registros. Para guardar los registros, presionar la tecla TAB%n");
     printf("- clear...........................vacia la pantalla%n");
     printf("- exception.......................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
     printf("    -opcode.......................prueba la excepcion 'invalid opcode'%n");
