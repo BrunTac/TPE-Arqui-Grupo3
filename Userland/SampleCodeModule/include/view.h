@@ -19,7 +19,8 @@ void test_exception();
 void fontsize();
 void snake();
 void beep();
-void fontsize();
+void zoomin();
+void zoomout();
 void exitShell();
 void invalid_command();
 

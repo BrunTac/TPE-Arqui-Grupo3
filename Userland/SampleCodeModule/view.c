@@ -13,6 +13,7 @@ char cmdtokens[MAX_TOKENS][MAX_BUFFER];
 int ticksInState;
 int tokens = 0;
 int exited = 0;
+int zoomedIn = 0;
 
 void initialize(){
     sys_ticksElapsed(&ticksInState);
@@ -102,8 +103,10 @@ void commandline_handler(){
         test_exception();
     }else if(strcmp(cmd, "snake") == 0){
         snake();
-    }else if(strcmp(cmd, "fontsize") == 0){
-        fontsize();
+    }else if(strcmp(cmd, "zoomin") == 0){
+        zoomin();
+    }else if(strcmp(cmd, "zoomout") == 0){
+        zoomout();
     }else if(strcmp(cmd, "exit") == 0) {
         exitShell();
     }else{
@@ -181,27 +184,28 @@ void test_exception(){
     }
 }
 
-void fontsize() {
-    if(checkArguments(1)) {
-        char * arg = cmdtokens[1];
-        if(strcmp(arg, "1") == 0) {
-            sys_changeFont(1);
-            sys_clear();
-        }else if(strcmp(arg, "2") == 0) {
+void zoomin(){
+    if(checkArguments(0)){
+        if(!zoomedIn){
+            zoomedIn = 1;
             sys_changeFont(2);
             sys_clear();
-        }else if(strcmp(arg, "3") == 0) { 
-            sys_changeFont(3);
-            sys_clear();
-        }else if(strcmp(arg, "4") == 0) {
-            sys_changeFont(4);
-            sys_clear();
-        }else if(strcmp(arg, "5") == 0) {
-            sys_changeFont(5);
-            sys_clear();
-        }else printf("%nArgumento invalido. Por favor ingresar un numero del 1 al 5");
+        }else{
+            printError("Error: los caracteres ya se encuentran agrandados%n");
+        }
     }
+}
 
+void zoomout(){
+    if(checkArguments(0)){
+        if(zoomedIn){
+            zoomedIn = 0;
+            sys_changeFont(1);
+            sys_clear();
+        }else{
+            printError("Error: los caracteres ya se encuentran achicados%n");
+        }
+    }
 }
 
 void snake() {
@@ -248,12 +252,13 @@ void printMenu(){
     printDashLine();
     printf("- menu............................imprime el menu de comandos%n");
     printf("- time............................imprime la hora actual%n");
-    printf("- showregisters...................imprime los valores actuales de todos los registros%n");
+    printf("- showregisters...................imprime los valores guardados los registros%n");
     printf("- clear...........................vacia la pantalla%n");
     printf("- exception.......................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
     printf("    -opcode.......................prueba la excepcion 'invalid opcode'%n");
     printf("    -divzero......................prueba la excepcion generada al dividir por cero%n");
-    printf("- fontsize........................cambia el tamaño de letra. Se pueden ingresar numeros del 1 al 5%n");
+    printf("- zoomin..........................agranda los caracteres%n");
+    printf("- zoomout.........................achica los caracteres%n");
     printf("- snake...........................llama al juego snake%n");
     printf("- exit............................sale de la terminal%n%n");
 }

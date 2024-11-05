@@ -165,7 +165,6 @@ void drawMap(int cantPlayers){
 			}	
 		}	
 	}
-    //sys_changeFont(2);
     int fontwidth;
     sys_getFontWidth(&fontwidth);
 
@@ -180,7 +179,6 @@ void drawMap(int cantPlayers){
     if(cantPlayers == 2){
         sys_writeInPos(POINTS_STR_2, scrWidth - (borderSizeX + BLOCKSIZE) - strlen(POINTS_STR_2) * fontwidth, headerY, PINE_GREEN, ICE_GREEN);
     }
-    sys_changeFont(1);  
 }
 
 
@@ -410,7 +408,6 @@ int checkCollisionWithBody(Player * player, Coordinates point){
 }
 
 void printPoints(int cantPlayers, Player * player1, Player * player2){
-    //sys_changeFont(2);
     int fontwidth;
     sys_getFontWidth(&fontwidth);
     char aux[MAX_BUFFER];
@@ -421,16 +418,13 @@ void printPoints(int cantPlayers, Player * player1, Player * player2){
         numToStr(player2->points, aux);
         sys_writeInPos(aux, scrWidth - (borderSizeX + BLOCKSIZE * 1.2), headerY, PINE_GREEN, ICE_GREEN);
     }
-    sys_changeFont(1);
 }
 
 void printLevel(){
-    //sys_changeFont(2);
     char aux[MAX_BUFFER];
     numToStr(level, aux);
 
     sys_writeInPos(aux, borderSizeX + BLOCKSIZE + boardWidth / 2, headerY, PINE_GREEN, ICE_GREEN);
-    sys_changeFont(1);
 }
 
 
