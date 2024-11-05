@@ -20,9 +20,9 @@ void initialize(){
     sys_saveRegisters();
     sys_clear();
     printHeader();
-    //luffyTune();
+    luffyTune();
 
-    printf("%nIngrese su nombre de usuario: ");
+    printf("%nEnter your user name: ");
 
     scanf("%s", &user);
 
@@ -30,7 +30,7 @@ void initialize(){
         strcpy(user, "user");
     }
 
-    printf("%n%nHola %s! Estos son los comandos que puedes llamar:%n", user);
+    printf("%n%nHey %s! You can call the following commands:%n", user);
     printMenu();    
 }
 
@@ -115,14 +115,14 @@ void commandline_handler(){
 }
 
 void notEnoughArguments(int arguments){
-    printError("Error: faltan argumentos. El comando '%s' necesita %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
+    printError("Error: not enough arguments. '%s' needs %d argument%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
 }
 
 void tooManyArguments(int arguments){
     if(arguments == 0){
-        printError("Error: el comando '%s' no acepta argumentos.%n", cmdtokens[0]);
+        printError("Error: '%s' doesn't expect arguments.%n", cmdtokens[0]);
     }else{
-        printError("Error: el comando '%s' solo acepta %d argumento%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
+        printError("Error: '%s' expects %d argument%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
     }
 }
 
@@ -165,7 +165,7 @@ char * registerNames[] = {"Instruction pointer: ", "CS: ", "RAX: ", "RBX: ", "RC
 
 void showregisters(){
     if(checkArguments(0)){
-        printf("Registros en tick numero %d:%n", ticksInState);
+        printf("Registers at tick number %d:%n", ticksInState);
         sys_showRegisters();
     }
 }
@@ -178,7 +178,7 @@ void test_exception(){
         }else if(strcmp(arg, "divzero") == 0){
             test_divzero_exep();
         }else{
-            printf("%nArgumento invalido. Por favor ingresar una se las siguientes opciones:%n");
+            printf("%nInvalid Argument. Please enter one of the following options:%n");
             printf("1. opcode%n2. divzero%n");
         }
     }
@@ -191,7 +191,7 @@ void zoomin(){
             sys_changeFont(2);
             sys_clear();
         }else{
-            printError("Error: los caracteres ya se encuentran agrandados%n");
+            printError("Error: max zoom in%n");
         }
     }
 }
@@ -203,7 +203,7 @@ void zoomout(){
             sys_changeFont(1);
             sys_clear();
         }else{
-            printError("Error: los caracteres ya se encuentran achicados%n");
+            printError("Error: max zoom out%n");
         }
     }
 }
@@ -215,13 +215,13 @@ void snake() {
 }
 
 void exitShell(){
-    printf("%nHasta pronto %s!", user);
+    printf("%nSee you soon %s!", user);
     exited = 1;
 }
 
 void invalid_command(){
-    printError("Error. El comando '%s' es invalido.%n", cmdtokens[0]);
-    printf("%nPara ver el menu de opciones utilice el comando: 'menu'");
+    printError("Error. '%s' is an invalid command.%n", cmdtokens[0]);
+    printf("%nToo see all available commands enter: 'menu'");
 }
 
 
@@ -235,8 +235,8 @@ void test_divzero_exep(){
 void printHeader(){
     printDashLine();
     printDashLine();
-    printf("%nBienvenido a la terminal de ");
-    printfColor("Cuervazos", RED, BLUE); printf(" "); printfColor("Millonarios", RED, WHITE); printf(" SO%n%n");
+    printf("%nWelcome to ");
+    printfColor("Cuervazos", RED, BLUE); printf(" "); printfColor("Millonarios", RED, WHITE); printf(" OS%n%n");
     printDashLine();
     printDashLine();
 }
@@ -248,17 +248,17 @@ void printDashLine(){
 void printMenu(){
     newLine();
     printDashLine();
-    printf("MENU DE COMANDOS%n");
+    printf("COMMAND MENU%n");
     printDashLine();
-    printf("- menu............................imprime el menu de comandos%n");
-    printf("- time............................imprime la hora actual%n");
-    printf("- showregisters...................imprime los valores guardados los registros%n");
-    printf("- clear...........................vacia la pantalla%n");
-    printf("- exception.......................prueba las exceptiones. Se llama con los siguientes argumentos:%n");
-    printf("    -opcode.......................prueba la excepcion 'invalid opcode'%n");
-    printf("    -divzero......................prueba la excepcion generada al dividir por cero%n");
-    printf("- zoomin..........................agranda los caracteres%n");
-    printf("- zoomout.........................achica los caracteres%n");
-    printf("- snake...........................llama al juego snake%n");
-    printf("- exit............................sale de la terminal%n%n");
+    printf("- menu............................prints command menu%n");
+    printf("- time............................prints current time%n");
+    printf("- showregisters...................prints current register values%n");
+    printf("- clear...........................clears the screen%n");
+    printf("- exception.......................tests exceptions. Use one of the following arguments:%n");
+    printf("    -opcode.......................tests 'invalid opcode' exception%n");
+    printf("    -divzero......................tests 'cero division' exception%n");
+    printf("- zoomin..........................increases character font%n");
+    printf("- zoomout.........................decreases character font%n");
+    printf("- snake...........................play Snake game%n");
+    printf("- exit............................exits the terminal%n%n");
 }

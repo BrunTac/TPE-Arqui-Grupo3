@@ -441,9 +441,9 @@ char defeatScreen1(Player * player){
     printf("%n%n%n");
     printfColor("                                                          Score : %d                                                            %n", ICE_GREEN, GRAY, player->points);
     printf("%n%n");
-    printfColor("                                            presione SPACE tecla para volver a jugar                                           %n", ICE_GREEN, GRAY);
+    printfColor("                                                    press SPACE to play again                                                  %n", ICE_GREEN, GRAY);
     printf("%n");
-    printfColor("                                              presione cualquier tecla para salir                                              %n", ICE_GREEN, GRAY);
+    printfColor("                                                   press anything else to exit                                                 %n", ICE_GREEN, GRAY);
 
     printBorder(0xA66A00, 0xD89B39, 1.5);
     char c = getChar();
@@ -468,9 +468,9 @@ char defeatScreen2(Player * player1, Player * player2){
     printf("%n");
     printfColor("                                                      Player 2 Score : %d                                                         %n", ICE_GREEN, GRAY, player2->points);
     printf("%n%n%n");
-    printfColor("                                           presione SPACE tecla para volver a jugar                                            %n", ICE_GREEN, GRAY);
+    printfColor("                                                    press SPACE to play again                                                  %n", ICE_GREEN, GRAY);
     printf("%n");
-    printfColor("                                              presione cualquier tecla para salir                                               %n", ICE_GREEN, GRAY);
+    printfColor("                                                   press anything else to exit                                                 %n", ICE_GREEN, GRAY);
 
     printBorder(0x4A1E1B, 0x6B3A36, 1);
     char c = getChar();
@@ -501,9 +501,9 @@ char defeatScreen3(Player * player1, Player * player2){
     printf("%n");
     printf("%n");
     printf("%n");
-    printfColor("                                           presione SPACE tecla para volver a jugar                                            %n", ICE_GREEN, GRAY);
+    printfColor("                                                    press SPACE to play again                                                  %n", ICE_GREEN, GRAY);
     printf("%n");
-    printfColor("                                              presione cualquier tecla para salir                                               %n", ICE_GREEN, GRAY);
+    printfColor("                                                   press anything else to exit                                                 %n", ICE_GREEN, GRAY);
 
     
     printBorder(0x1A2B4C, 0x2F456A, 1);
@@ -529,9 +529,9 @@ int menuSnake(){
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                                presione 1 para modo un jugador                                                 %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                   press 1 for single player                                                    %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
-    printfColor("                                               presione 2 para modo dos jugadores                                               %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                  press 2 for two player mode                                                   %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
     printfColor("                                                                                                                                %n", ICE_GREEN, PINE_GREEN);
@@ -608,7 +608,7 @@ void printControlScreen(int cantPlayers){
         printfColor("                                 a   a   sss   dddd                     jjj     k  k   llllll                    %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n%n%n", ICE_GREEN, PINE_GREEN);
-        printfColor("                                                  Presione SPACE para continuar                                  %n", ICE_GREEN, PINE_GREEN);
+    printfColor("                                                     press SPACE to continue                                                      %n", ICE_GREEN, PINE_GREEN);
         printBorder(DARK_GREEN, GREEN, 1);
     }else{
         printf("%n%n%n");
@@ -626,7 +626,7 @@ void printControlScreen(int cantPlayers){
         printfColor("                                                      a   a   sss   dddd                                        %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n", ICE_GREEN, PINE_GREEN);
         printfColor("                                                                                                     %n%n", ICE_GREEN, PINE_GREEN);
-        printfColor("                                                  Presione SPACE para continuar                                  %n", ICE_GREEN, PINE_GREEN);
+        printfColor("                                                    press SPACE to continue                                                      %n", ICE_GREEN, PINE_GREEN);
         printBorder(DARK_GREEN, GREEN, 1.5);
     }
 
