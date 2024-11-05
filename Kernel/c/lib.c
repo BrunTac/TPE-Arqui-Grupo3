@@ -21,8 +21,8 @@ char * registerNamesCall[] = {"Instruction pointer: ", "CS: ", "RAX: ", "RBX: ",
 void printRegistersCall(uint64_t * registers){
 
     for(int i = 0 ; i < REGISTER_AMOUNT ; i++) {
-		prints(registerNamesCall[i], RED, BLACK); 
-		printHex(registers[i], RED, BLACK);
+		prints(registerNamesCall[i], WHITE, BLACK); 
+		printHex(registers[i], WHITE, BLACK);
 		print_newline();
 	}
 

@@ -1,20 +1,25 @@
 #include <view.h>
 #include <libc.h>
 #include <sys_calls.h>
-#include <songs.h>
+#include <sounds.h>
+#include <stdint.h>
 
 extern void opcodeError();
 
 char user[MAX_BUFFER];
 char cmdline[MAX_BUFFER];
 char cmdtokens[MAX_TOKENS][MAX_BUFFER];
+int ticksInState;
 int tokens = 0;
 int exited = 0;
 
 void initialize(){
+    sys_ticksElapsed(&ticksInState);
+    sys_saveRegisters();
     sys_clear();
     printHeader();
-    luffyTune();
+    //luffyTune();
+
     printf("%nIngrese su nombre de usuario: ");
 
     scanf("%s", &user);
@@ -50,7 +55,9 @@ void getCommandline(){
             if(read > 0){
                 read--;
                 putChar(c);
-            } 
+            }
+        }else if(c == '\t') {
+            saveRegisters(&ticksInState);
         }else{
             cmdline[read++] = c;
             putChar(c);
@@ -148,9 +155,14 @@ void time(){
     }
 }
 
+char * registerNames[] = {"Instruction pointer: ", "CS: ", "RAX: ", "RBX: ", "RCX: ", "RDX: ", "RSP: ", 
+			"RBP: ", "RDI: ", "RSI: ", "R8: ", "R9: ", "R10: ", "R11: ", "R12: ", 
+			"R13: ", "R14: ", "R15: ", "RFLAGS: " };
+
 void showregisters(){
     if(checkArguments(0)){
-        sys_show_registers();
+        printf("Registros en tick numero %d:%n", ticksInState);
+        sys_showRegisters();
     }
 }
 
@@ -189,6 +201,12 @@ void fontsize() {
         }else printf("%nArgumento invalido. Por favor ingresar un numero del 1 al 5");
     }
 
+}
+
+void snake() {
+    if(checkArguments(0)) {
+        ticksInState = snakeGame();
+    }
 }
 
 void exit(){
@@ -238,5 +256,3 @@ void printMenu(){
     printf("- snake...........................llama al juego snake%n");
     printf("- exit............................sale de la terminal%n%n");
 }
-
-

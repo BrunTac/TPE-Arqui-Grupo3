@@ -3,6 +3,7 @@
 #include <sys_calls.h>
 #include <libc.h>
 #include <stdlib.h>
+#include <sounds.h>
 
 
 #define BLOCKSIZE 32
@@ -31,7 +32,9 @@ static int playing;
 static int speed;
 static int level;
 
-void snake(){
+static int ticksForState;
+
+int snakeGame(){
 
     sys_scrHeight(&scrHeight);
     sys_scrWidth(&scrWidth);
@@ -130,6 +133,7 @@ void snake(){
     }
     sys_changeFont(1);
     sys_clear();
+    return ticksForState;
 }
 
 void spawnPlayer(int x, int y, Player * player, Color color){
@@ -223,6 +227,9 @@ void updateDirection(Player * player1, Player * player2, int cantPlayers){
                 if (player2->currentDirection != UP)    
                     player2->currentDirection = DOWN;
                 break;
+            case '\t':
+                saveRegisters(&ticksForState);
+                break;
             }
         }else{
             switch (c){
@@ -241,6 +248,9 @@ void updateDirection(Player * player1, Player * player2, int cantPlayers){
             case 's':
                 if (player1->currentDirection != UP)    
                     player1->currentDirection = DOWN;
+                break;
+            case '\t':
+                saveRegisters(&ticksForState);
                 break;
             }
         }
@@ -296,6 +306,7 @@ int movePlayer(Player * player, Player * otherPlayer, int cantPlayers){
             player->tail += 1;
         }
     }else if (collision == -1){
+        lost();
         return 1;
     }else if (collision == 1)
     {
@@ -308,9 +319,12 @@ int movePlayer(Player * player, Player * otherPlayer, int cantPlayers){
         }
         if (player->points % INCREASE_RATE == 0 && speed > 1)
         {
+            levelUp();
             speed--;
             level++;
             printLevel();
+        }else{
+            appleEaten();
         }
         spawnApple(player, otherPlayer, cantPlayers);
     }
@@ -416,7 +430,12 @@ char defeatScreen1(Player * player){
     printfColor("                                              presione cualquier tecla para salir                                              %n", ICE_GREEN, GRAY);
 
     printBorder(0xA66A00, 0xD89B39, 1.5);
-    return getChar();
+    char c = getChar();
+    while(c == '\t') {
+        saveRegisters(&ticksForState);
+        c = getChar();
+    }
+    return c;
 }
 
 char defeatScreen2(Player * player1, Player * player2){
@@ -438,7 +457,12 @@ char defeatScreen2(Player * player1, Player * player2){
     printfColor("                                              presione cualquier tecla para salir                                               %n", ICE_GREEN, GRAY);
 
     printBorder(0x4A1E1B, 0x6B3A36, 1);
-    return getChar();
+    char c = getChar();
+    while(c == '\t') {
+        saveRegisters(&ticksForState);
+        c = getChar();
+    }
+    return c;
 }
 
 char defeatScreen3(Player * player1, Player * player2){
@@ -467,7 +491,12 @@ char defeatScreen3(Player * player1, Player * player2){
 
     
     printBorder(0x1A2B4C, 0x2F456A, 1);
-    return getChar();
+    char c = getChar();
+    while(c == '\t') {
+        saveRegisters(&ticksForState);
+        c = getChar();
+    }
+    return c;
 }
 
 int menuSnake(){
@@ -493,7 +522,15 @@ int menuSnake(){
 
     
     printBorder(DARK_GREEN, GREEN, 1.5);
-    char c = getChar();
+    char c;
+    int correctKey = 0;
+    while(!correctKey) {
+        c = getChar();
+        if(c == '\t')
+            saveRegisters(&ticksForState);
+        if(c == '1' || c == '2')
+            correctKey = 1;
+    }
     return c - '0';
 
 }
@@ -577,9 +614,11 @@ void printControlScreen(int cantPlayers){
         printBorder(DARK_GREEN, GREEN, 1.5);
     }
 
-
-    
-    getChar();
+    char c = getChar();
+    while(c == '\t') {
+        saveRegisters(&ticksForState);
+        c = getChar();
+    }
 
 }
 

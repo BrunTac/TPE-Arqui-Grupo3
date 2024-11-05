@@ -9,10 +9,11 @@
 #define STDOUT 1
 #define STDERR 2
 
-uint64_t * showRegisters();
 uint64_t getSeconds();
 uint64_t getMinutes();
 uint64_t getHours();
+void saveRegisters();
+void showRegisters();
 
 
 static void sys_time(char time[3][3]){
@@ -44,9 +45,8 @@ static void sys_clear(){
     clear();
 }
 
-static void sys_showRegisters(){
-
-    showRegisters();
+static void sys_saveRegisters(){
+    saveRegisters();
 }
 
 static void sys_drawSquare(Color color, int x, int y){
@@ -72,12 +72,10 @@ static void sys_changeFont(int size) {
 }
  
 static void sys_scrHeight(int* ans){
-
     *ans = getHeight();
 }
 
 static void sys_scrWidth(int* ans){
-
     *ans = getWidth();
 }
 
@@ -88,12 +86,15 @@ static void sys_readLastPressed(int fd, char * c) {
 }
 
 static void sys_ticksElapsed(int * ans){
-    
     *ans = ticks_elapsed();
 }
 
 static void sys_getFontWidth(int * ans){
     *ans = getFontWidth();
+}
+
+static void sys_showRegisters() {
+    showRegisters();
 }
 
 void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5) {
@@ -115,15 +116,17 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             sys_clear();
             break ;
         case 6:
-            sys_showRegisters();
+            sys_saveRegisters();
             break ;
         case 7:
             sys_drawSquare((Color) arg1, (int)arg2, (int)arg3);
             break ;
         case 8:
-            return sys_scrHeight((int*) arg1);
+            sys_scrHeight((int*) arg1);
+            break ;
         case 9:
-            return sys_scrWidth((int*) arg1);
+            sys_scrWidth((int*) arg1);
+            break ;
         case 10:
             sys_sleep((int) arg1);
             break ;
@@ -142,5 +145,9 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
         case 15:
             sys_getFontWidth((int *) arg1);
             break ;
+        case 16:
+            sys_showRegisters();
+            break ;
     }
+    return 0;
 }

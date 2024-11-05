@@ -197,11 +197,9 @@ void drawSquare(Color color, int x, int y){
 }
 
 void printHex(const uint64_t num, Color fnt, Color bgd) {
-
 	static char buffer[64] = { '0' };
-
 	uintToBase(num, buffer, 16);
-	prints(buffer, BLACK, WHITE);
+	prints(buffer, fnt, bgd);
 }
 
 void clear(){

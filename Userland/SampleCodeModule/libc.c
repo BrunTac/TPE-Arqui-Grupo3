@@ -100,7 +100,6 @@ void numToStr(uint64_t num, char * destination){
     
 }
 
-
 void scanf(const char *format, void *variable) {
     for (const char *ptr = format; *ptr != '\0'; ptr++) {
         if (*ptr == '%' && *(ptr + 1) != '\0') {
@@ -191,3 +190,9 @@ uint64_t strlen(const char *str) {
     return length;
 }
 
+void saveRegisters(int * ticks) {
+    sys_ticksElapsed(ticks);
+    sys_saveRegisters();
+    sys_beep(700, 1);
+    sys_beep(300, 1);
+}

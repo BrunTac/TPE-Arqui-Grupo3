@@ -9,7 +9,7 @@ void sys_read(int fd, char * c);
 void sys_writeChar(int fd, char c, Color font, Color background);
 void sys_writeInPos(const char * str, uint64_t x, uint64_t y, Color font, Color background);
 void sys_clear();
-void sys_show_registers();
+void sys_saveRegisters();
 void sys_drawSquare(Color color, int x, int y);
 void sys_scrWidth(int * ans);
 void sys_scrHeight(int * ans);
@@ -19,5 +19,6 @@ void sys_changeFont(int size);
 void sys_readLastPressed(int fd, char * c);
 void sys_ticksElapsed(int * ans);
 void sys_getFontWidth(int * ans);
+void sys_showRegisters();
 
 #endif

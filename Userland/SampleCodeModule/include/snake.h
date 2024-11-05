@@ -28,7 +28,7 @@ typedef struct Player
 } Player;
 
 
-void snake();
+int snakeGame();
 int menuSnake();
 void drawMap(int cantPlayers);
 void spawnPlayer(int x, int y, Player * player, Color color);

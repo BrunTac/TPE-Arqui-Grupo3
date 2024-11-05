@@ -2,7 +2,7 @@ GLOBAL cpuVendor
 GLOBAL getHours
 GLOBAL getMinutes
 GLOBAL getSeconds
-GLOBAL getRegisters
+GLOBAL saveRegisters
 GLOBAL showRegisters
 GLOBAL inb
 GLOBAL outb
@@ -56,7 +56,7 @@ getSeconds:
 	movzx rax, al
 	ret
 
-showRegisters:
+saveRegisters:
 	push rax
 	mov rax, [rsp+8]
 	mov [registerState], rax
@@ -90,9 +90,13 @@ showRegisters:
 	mov [registerState+8*18], rax
 	pop rax ; hasta aca para guardar rflags
 
+	mov rax, registerState
+
+	ret
+
+showRegisters:
 	mov rdi, registerState
 	call printRegistersCall
-
 	ret
 
 outb:

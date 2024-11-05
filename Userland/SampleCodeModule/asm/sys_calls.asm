@@ -3,7 +3,7 @@ GLOBAL sys_read
 GLOBAL sys_writeInPos
 GLOBAL sys_writeChar
 GLOBAL sys_clear
-GLOBAL sys_show_registers
+GLOBAL sys_saveRegisters
 GLOBAL sys_scrHeight
 GLOBAL sys_scrWidth
 GLOBAL sys_sleep
@@ -13,6 +13,7 @@ GLOBAL sys_changeFont
 GLOBAL sys_readLastPressed
 GLOBAL sys_ticksElapsed
 GLOBAL sys_getFontWidth
+GLOBAL sys_showRegisters
 
 section .text
 
@@ -41,11 +42,10 @@ sys_clear:
     int 80h
     ret
 
-sys_show_registers:
+sys_saveRegisters:
     mov rax, 6
     int 80h
     ret
-
 
 sys_drawSquare:
     mov rax, 7
@@ -89,5 +89,10 @@ sys_changeFont:
 
 sys_getFontWidth:
     mov rax, 15
+    int 80h
+    ret
+
+sys_showRegisters:
+    mov rax, 16
     int 80h
     ret
