@@ -95,10 +95,7 @@ void putCharInPos(unsigned char c, int x, int y, Color fgcolor, Color bgcolor){
 
 	for(putY = 0 ; putY < DEFAULT_HEIGHT ; putY++){
 		for(putX = 0 ; putX < DEFAULT_WIDTH ; putX++){
-			for(int pixelX = 0 ; pixelX < scale ; pixelX++) {
-					for(int pixelY = 0 ; pixelY < scale ; pixelY++)
-						putPixel(symbol[putY] & mask[putX] ? fgcolor : bgcolor, x + (8 - putX) * scale + pixelX, y + putY * scale + pixelY);
-				}
+			putPixel(symbol[putY] & mask[putX] ? fgcolor : bgcolor, x + (8 - putX), y + putY);
 		}
 	}	
 	x += DEFAULT_WIDTH*scale;
