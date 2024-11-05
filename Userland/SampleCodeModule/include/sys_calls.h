@@ -20,5 +20,6 @@ void sys_readLastPressed(int fd, char * c);
 void sys_ticksElapsed(int * ans);
 void sys_getFontWidth(int * ans);
 void sys_showRegisters();
+void sys_clearLastPressed();
 
 #endif

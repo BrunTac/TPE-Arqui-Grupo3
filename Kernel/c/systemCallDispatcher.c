@@ -97,6 +97,10 @@ static void sys_showRegisters() {
     showRegisters();
 }
 
+static void sys_clearLastPressed() {
+    clearLastPressed();
+}
+
 void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5) {
 
     switch(id) {
@@ -147,6 +151,9 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             break ;
         case 16:
             sys_showRegisters();
+            break ;
+        case 17:
+            sys_clearLastPressed();
             break ;
     }
 }

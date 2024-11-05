@@ -244,7 +244,9 @@ void updateDirection(Player * player1, Player * player2, int cantPlayers){
                     }
                     break;
                 case '\t':
-                    saveRegisters(&ticksForState);
+                    sys_saveRegisters();
+                    tabPressed(&ticksForState);
+                    sys_clearLastPressed();
                     break;
                 }   
             }
@@ -268,7 +270,9 @@ void updateDirection(Player * player1, Player * player2, int cantPlayers){
                     player1->currentDirection = DOWN;
                 break;
             case '\t':
-                saveRegisters(&ticksForState);
+                sys_saveRegisters();
+                tabPressed(&ticksForState);
+                sys_clearLastPressed();
                 break;
         }
     }
@@ -448,7 +452,8 @@ char defeatScreen1(Player * player){
     printBorder(0xA66A00, 0xD89B39, 1.5);
     char c = getChar();
     while(c == '\t') {
-        saveRegisters(&ticksForState);
+        sys_saveRegisters();
+        tabPressed(&ticksForState);
         c = getChar();
     }
     return c;
@@ -475,7 +480,8 @@ char defeatScreen2(Player * player1, Player * player2){
     printBorder(0x4A1E1B, 0x6B3A36, 1);
     char c = getChar();
     while(c == '\t') {
-        saveRegisters(&ticksForState);
+        sys_saveRegisters();
+        tabPressed(&ticksForState);
         c = getChar();
     }
     return c;
@@ -509,7 +515,8 @@ char defeatScreen3(Player * player1, Player * player2){
     printBorder(0x1A2B4C, 0x2F456A, 1);
     char c = getChar();
     while(c == '\t') {
-        saveRegisters(&ticksForState);
+        sys_saveRegisters();
+        tabPressed(&ticksForState);
         c = getChar();
     }
     return c;
@@ -542,8 +549,10 @@ int menuSnake(){
     int correctKey = 0;
     while(!correctKey) {
         c = getChar();
-        if(c == '\t')
-            saveRegisters(&ticksForState);
+        if(c == '\t') {
+            sys_saveRegisters();
+            tabPressed(&ticksForState);
+        }
         if(c == '1' || c == '2')
             correctKey = 1;
     }
@@ -634,8 +643,10 @@ void printControlScreen(int cantPlayers){
     int correctKey = 0;
     while(!correctKey) {
         c = getChar();
-        if(c == '\t')
-            saveRegisters(&ticksForState);
+        if(c == '\t') {
+            sys_saveRegisters();
+            tabPressed(&ticksForState);
+        }
         if(c == ' ')
             correctKey = 1;
     }

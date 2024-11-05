@@ -58,12 +58,12 @@ getSeconds:
 
 saveRegisters:
 	push rax
-	mov rax, [rsp+8]
+	mov rax, [rsp+16]
 	mov [registerState], rax
 	pop rax ; hasta aca es para guardar RIP
 
 	push rax
-	mov rax, [rsp+16]
+	mov rax, [rsp+24]
 	mov [registerState+8], rax
 	pop rax ; hasta aca es para guardar CS
 

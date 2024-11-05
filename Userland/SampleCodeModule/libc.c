@@ -190,9 +190,8 @@ uint64_t strlen(const char *str) {
     return length;
 }
 
-void saveRegisters(int * ticks) {
+void tabPressed(int * ticks) {
     sys_ticksElapsed(ticks);
-    sys_saveRegisters();
     sys_beep(700, 1);
     sys_beep(300, 1);
 }

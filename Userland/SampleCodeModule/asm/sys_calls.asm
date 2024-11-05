@@ -14,6 +14,7 @@ GLOBAL sys_readLastPressed
 GLOBAL sys_ticksElapsed
 GLOBAL sys_getFontWidth
 GLOBAL sys_showRegisters
+GLOBAL sys_clearLastPressed
 
 section .text
 
@@ -94,5 +95,10 @@ sys_getFontWidth:
 
 sys_showRegisters:
     mov rax, 16
+    int 80h
+    ret
+
+sys_clearLastPressed:
+    mov rax, 17
     int 80h
     ret

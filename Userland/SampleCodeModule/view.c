@@ -59,7 +59,8 @@ void getCommandline(){
                 putChar(c);
             }
         }else if(c == '\t') {
-            saveRegisters(&ticksInState);
+            sys_saveRegisters();
+            tabPressed(&ticksInState);
         }else{
             cmdline[read++] = c;
             putChar(c);
@@ -250,15 +251,15 @@ void printMenu(){
     printDashLine();
     printf("COMMAND MENU%n");
     printDashLine();
-    printf("- menu............................prints command menu%n");
-    printf("- time............................prints current time%n");
-    printf("- showregisters...................prints current register values%n");
+    printf("- menu............................prints this command menu%n");
+    printf("- time............................prints the current time%n");
+    printf("- showregisters...................prints the saved register values. To save the register values, press the TAB key at any time%n");
     printf("- clear...........................clears the screen%n");
     printf("- exception.......................tests exceptions. Use one of the following arguments:%n");
-    printf("    -opcode.......................tests 'invalid opcode' exception%n");
-    printf("    -divzero......................tests 'cero division' exception%n");
-    printf("- zoomin..........................increases character font%n");
-    printf("- zoomout.........................decreases character font%n");
+    printf("    -opcode.......................throws the 'invalid opcode' exception%n");
+    printf("    -divzero......................throws the 'zero division' exception%n");
+    printf("- zoomin..........................increases the character font%n");
+    printf("- zoomout.........................decreases the character font%n");
     printf("- snake...........................play Snake game%n");
     printf("- exit............................exits the terminal%n%n");
 }
