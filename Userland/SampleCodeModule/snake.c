@@ -331,12 +331,6 @@ int movePlayer(Player * player, Player * otherPlayer, int cantPlayers){
     }else if (collision == 1)
     {
         player->points++;
-        if (((apple.x + apple.y) % (2 * BLOCKSIZE) == 0))
-        {
-            sys_drawSquare(DARK_GREEN, apple.x, apple.y);
-        }else{
-            sys_drawSquare(GREEN, apple.x, apple.y);
-        }
         if (player->points % INCREASE_RATE == 0 && speed > 1)
         {
             levelUp();
