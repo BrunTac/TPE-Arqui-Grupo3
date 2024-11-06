@@ -443,7 +443,7 @@ char defeatScreen1(Player * player){
     printf("%n");
     printfColor("                                                   press anything else to exit                                                 %n", ICE_GREEN, GRAY);
 
-    printBorder(0xA66A00, 0xD89B39, 1.5);
+    printBorder(MUSTARD, LIGHT_MUSTARD, 1.5);
     char c = getChar();
     while(c == '\t') {
         sys_saveRegisters();
@@ -471,7 +471,7 @@ char defeatScreen2(Player * player1, Player * player2){
     printf("%n");
     printfColor("                                                   press anything else to exit                                                 %n", ICE_GREEN, GRAY);
 
-    printBorder(0x4A1E1B, 0x6B3A36, 1);
+    printBorder(BURGUNDY, SOFT_RED, 1);
     char c = getChar();
     while(c == '\t') {
         sys_saveRegisters();
@@ -506,7 +506,7 @@ char defeatScreen3(Player * player1, Player * player2){
     printfColor("                                                   press anything else to exit                                                 %n", ICE_GREEN, GRAY);
 
     
-    printBorder(0x1A2B4C, 0x2F456A, 1);
+    printBorder(GRAY_BLUE, LIGHT_GRAY_BLUE, 1);
     char c = getChar();
     while(c == '\t') {
         sys_saveRegisters();
