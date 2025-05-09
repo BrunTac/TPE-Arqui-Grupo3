@@ -1,5 +1,6 @@
 include Makefile.inc
 
+KERNELELF=kernel.elf
 KERNEL=kernel.bin
 SOURCES=$(wildcard c/*.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
@@ -10,10 +11,11 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
-all: $(KERNEL)
+all: $(KERNEL) $(KERNELELF)
 
-$(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) font.o
-	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNEL) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS)
+$(KERNEL): $(KERNELELF)
+	$(OBJCOPY) -O binary $(KERNELELF) $(KERNEL)
+
 
 %.o: %.c
 	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@
@@ -27,6 +29,9 @@ $(LOADEROBJECT):
 # Regla para generar font.o desde font.psf usando objcopy
 font.o: font.psf
 	objcopy -O elf64-x86-64 -B i386 -I binary font.psf font.o
+
+$(KERNELELF): $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS) font.o
+	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNELELF) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS) font.o
 
 clean:
 	rm -rf asm/*.o c/*.o *.bin
