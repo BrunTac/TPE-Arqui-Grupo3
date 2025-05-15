@@ -14,3 +14,6 @@
 #No access
 .bash_history
 build_script.sh
+
+#gdbinit
+.gdbinit
