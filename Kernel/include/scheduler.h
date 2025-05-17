@@ -2,15 +2,16 @@
 #define _SCHEDULER_H_
 
 #include <stdint.h>
-#include <linkedListStatic.h>
+#include <stddef.h>
+#include <circularListStatic.h>
+#include <structs.h>
 
 #define TICKS_PER_QUANTUM 10
 
-typedef struct{
-    uint64_t pid;
-    uint32_t tickCount;
-} Process;
+void initScheduler();
+void * scheduler(void * rsp);
 
-void scheduler();
+extern Process * currentProcess;
+extern List readyProcesses;
 
 #endif

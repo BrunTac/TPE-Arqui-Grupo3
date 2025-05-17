@@ -22,6 +22,8 @@ EXTERN main
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN sysCallDispatcher
+EXTERN scheduler
+EXTERN timer_handler
 
 SECTION .text
 
@@ -162,7 +164,20 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState
+
+	call timer_handler
+
+	mov rdi, rsp
+	call scheduler
+	mov rsp, rax
+
+	mov al, 20h
+	out 20h, al
+
+	popState
+
+	iretq
 
 ;Keyboard
 _irq01Handler:

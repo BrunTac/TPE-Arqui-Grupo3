@@ -7,6 +7,7 @@
 #include <keyboard.h>
 #include <idtLoader.h>
 #include <interrupts.h>
+#include <processManager.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -52,6 +53,7 @@ void * initializeKernelBinary()
 int main()
 {	
 	load_idt();
+	initializeProcessManager();
 
 	((EntryPoint)sampleCodeModuleAddress)();
 

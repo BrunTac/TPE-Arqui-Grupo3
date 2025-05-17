@@ -13,7 +13,6 @@ void timer_handler() {
 	if(ticks % 30 == 0){
 		clearLastPressed();
 	}
-	scheduler();
 }
 
 void sleep(int period) {
