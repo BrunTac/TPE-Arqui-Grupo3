@@ -2,6 +2,7 @@
 #include <interrupts.h>
 #include <keyboard.h>
 #include <videoDriver.h>
+#include <scheduler.h>
 
 static unsigned long ticks = 0;
 
@@ -12,6 +13,7 @@ void timer_handler() {
 	if(ticks % 30 == 0){
 		clearLastPressed();
 	}
+	scheduler();
 }
 
 void sleep(int period) {

@@ -4,6 +4,7 @@
 #include <lib.h>
 #include <time.h>
 #include <soundDriver.h>
+#include <processManager.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -154,6 +155,9 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
             break ;
         case 17:
             sys_clearLastPressed();
+            break ;
+        case 18:
+            createProcess((function) arg1, (int) arg2, (char **) arg3, (int) arg4);
             break ;
     }
 }

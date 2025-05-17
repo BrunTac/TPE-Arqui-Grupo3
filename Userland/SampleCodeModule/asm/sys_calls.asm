@@ -102,3 +102,8 @@ sys_clearLastPressed:
     mov rax, 17
     int 80h
     ret
+
+sys_createProcess:
+    mov rax, 18
+    int 80h
+    ret

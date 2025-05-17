@@ -3,6 +3,7 @@
 
 #include <color.h>
 #include <stdint.h>
+#include <libc.h>
 
 void sys_time(char destiny[3][3]);
 void sys_read(int fd, char * c);
@@ -21,5 +22,6 @@ void sys_ticksElapsed(int * ans);
 void sys_getFontWidth(int * ans);
 void sys_showRegisters();
 void sys_clearLastPressed();
+void sys_createProcess(function fn, int argc, char * argv[], int priority);
 
 #endif
