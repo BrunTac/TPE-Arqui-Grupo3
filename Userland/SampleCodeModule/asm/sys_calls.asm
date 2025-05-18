@@ -15,6 +15,7 @@ GLOBAL sys_ticksElapsed
 GLOBAL sys_getFontWidth
 GLOBAL sys_showRegisters
 GLOBAL sys_clearLastPressed
+GLOBAL sys_createProcess
 
 section .text
 

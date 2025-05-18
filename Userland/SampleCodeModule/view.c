@@ -89,6 +89,22 @@ void tokenize(){
     cmdtokens[tokens++][j] = '\0';
 }
 
+void * p1(void * a1){
+    for(int i = 0; i < 10; i++){
+        printf("1%n");
+        sys_sleep(100);
+    }
+    return NULL;
+}
+
+void * p2(void * a1){
+    for(int i = 0; i < 10; i++){
+        printf("2%n");
+        sys_sleep(100);
+    }
+    return NULL;
+}
+
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
@@ -110,6 +126,9 @@ void commandline_handler(){
         zoomout();
     }else if(strcmp(cmd, "exit") == 0) {
         exitShell();
+    }else if(strcmp(cmd, "test") == 0){
+        sys_createProcess(&p1, 0, NULL, 0);
+        sys_createProcess(&p2, 0, NULL, 0);
     }else{
         invalid_command();
     }

@@ -9,7 +9,7 @@ void initScheduler(){
 
 void * scheduler(void * rsp){
     if(isEmpty(&readyProcesses)){
-        return NULL;
+        return rsp;
     }
     currentProcess = (Process *) getCurrentData(&readyProcesses);
 

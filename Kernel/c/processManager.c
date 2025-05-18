@@ -64,6 +64,7 @@ void createProcess(function fn, int argc, char * argv[], int priority){
     processes[pid]->isEmpty = 0;
     processes[pid]->pid = pid;
     processes[pid]->status = READY;
+    processes[pid]->ppid = currentProcess->PCB->pid;
 
     Process newProcess = {0, stackPtr, processes[pid]};
     if(!addNode(&readyProcesses, &newProcess)){
