@@ -16,6 +16,7 @@ GLOBAL sys_getFontWidth
 GLOBAL sys_showRegisters
 GLOBAL sys_clearLastPressed
 GLOBAL sys_createProcess
+GLOBAL sys_exitProcess
 
 section .text
 
@@ -106,5 +107,10 @@ sys_clearLastPressed:
 
 sys_createProcess:
     mov rax, 18
+    int 80h
+    ret
+
+sys_exitProcess:
+    mov rax, 19
     int 80h
     ret

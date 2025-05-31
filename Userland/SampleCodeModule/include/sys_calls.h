@@ -23,5 +23,6 @@ void sys_getFontWidth(int * ans);
 void sys_showRegisters();
 void sys_clearLastPressed();
 void sys_createProcess(function fn, int argc, char * argv[], int priority);
+void sys_exitProcess();
 
 #endif

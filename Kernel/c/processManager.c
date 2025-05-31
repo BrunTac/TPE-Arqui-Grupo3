@@ -49,8 +49,6 @@ void createProcess(function fn, int argc, char * argv[], int priority){
 
     setNewProcessStack(1, (char *[]) { (char *) args }, stackPtr, (function) processWrapper);*/
 
-    setNewProcessStack(argc, argv, stackPtr, fn);
-
     uint64_t pid;
     for(pid = 0; pid < MAX_PROCESSES; pid++){
         if(processes[pid]->isEmpty){
@@ -64,13 +62,22 @@ void createProcess(function fn, int argc, char * argv[], int priority){
     processes[pid]->isEmpty = 0;
     processes[pid]->pid = pid;
     processes[pid]->status = READY;
-    processes[pid]->ppid = currentProcess->PCB->pid;
+    if(currentProcess == NULL){
+        processes[pid]->ppid = -1;
+    }else{
+        processes[pid]->ppid = currentProcess->PCB->pid;
+    }
 
     Process newProcess = {0, stackPtr, processes[pid]};
     if(!addNode(&readyProcesses, &newProcess)){
         // MAYBE PRINT ERROR MESSAGE: PROCESS LIMIT REACHED
     }
+    setNewProcessStack(argc, argv, stackPtr, fn);
     return ;
+}
+
+void exitProcess(){
+
 }
 
 

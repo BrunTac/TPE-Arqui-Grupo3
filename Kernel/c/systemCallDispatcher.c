@@ -159,5 +159,8 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
         case 18:
             createProcess((function) arg1, (int) arg2, (char **) arg3, (int) arg4);
             break ;
+        case 19:
+            exitProcess();
+            break ;
     }
 }

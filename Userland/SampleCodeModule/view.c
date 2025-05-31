@@ -34,7 +34,7 @@ void initialize(){
     printMenu();    
 }
 
-void terminal(){
+void terminal(uint64_t argc, char ** argv){
     while(!exited){
         printf("%s-$ > ", user);
 
@@ -89,20 +89,18 @@ void tokenize(){
     cmdtokens[tokens++][j] = '\0';
 }
 
-void * p1(void * a1){
+void p1(uint64_t argc, char ** argv){
     for(int i = 0; i < 10; i++){
         printf("1%n");
         sys_sleep(100);
     }
-    return NULL;
 }
 
-void * p2(void * a1){
+void p2(uint64_t argc, char ** argv){
     for(int i = 0; i < 10; i++){
         printf("2%n");
         sys_sleep(100);
     }
-    return NULL;
 }
 
 void commandline_handler(){

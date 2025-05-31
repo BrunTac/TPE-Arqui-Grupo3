@@ -6,7 +6,7 @@
 
 #define MAX_BUFFER 256
 
-typedef void* (*function)(void*);
+typedef void (*function)(uint64_t argc, char ** argv);
 
 void printf(const char *format, ...);
 void printfColor(const char * format, Color font, Color background, ...);
