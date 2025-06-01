@@ -17,6 +17,8 @@ GLOBAL _irq60Handler
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
 
+GLOBAL int_20h
+
 EXTERN getStackBase
 EXTERN main
 EXTERN irqDispatcher
@@ -228,7 +230,9 @@ haltcpu:
 	hlt
 	ret
 
-
+int_20h:
+	int 20h 
+	ret
 
 SECTION .bss
 	aux resq 1

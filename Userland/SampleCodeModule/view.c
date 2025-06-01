@@ -20,7 +20,6 @@ void initialize(){
     sys_saveRegisters();
     sys_clear();
     printHeader();
-    luffyTune();
 
     printf("%nEnter your user name: ");
 
@@ -92,14 +91,14 @@ void tokenize(){
 void p1(uint64_t argc, char ** argv){
     for(int i = 0; i < 10; i++){
         printf("1%n");
-        sys_sleep(100);
+        sys_sleep(20);
     }
 }
 
 void p2(uint64_t argc, char ** argv){
     for(int i = 0; i < 10; i++){
         printf("2%n");
-        sys_sleep(100);
+        sys_sleep(20);
     }
 }
 
@@ -125,8 +124,8 @@ void commandline_handler(){
     }else if(strcmp(cmd, "exit") == 0) {
         exitShell();
     }else if(strcmp(cmd, "test") == 0){
-        sys_createProcess(&p1, 0, NULL, 0);
-        sys_createProcess(&p2, 0, NULL, 0);
+        sys_createProcess(p1, 0, 0, 1);
+        sys_createProcess(p2, 0, 0, 5);
     }else{
         invalid_command();
     }

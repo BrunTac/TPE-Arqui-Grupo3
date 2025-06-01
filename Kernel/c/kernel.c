@@ -52,6 +52,8 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	_cli();
+
 	load_idt();
 	initializeProcessManager();
 
@@ -59,9 +61,9 @@ int main()
 	char * argv[] = {shell};
 	createProcess((function) sampleCodeModuleAddress, 1, argv, 1);
 
-	while(1){
-		_hlt();
-	}
+	_sti();
+
+	_hlt();
 
 	return 0;
 }
