@@ -6,7 +6,7 @@
 #include <circularListStatic.h>
 #include <structs.h>
 
-#define TICKS_PER_QUANTUM 10
+#define TICKS_PER_QUANTUM 5
 
 void initScheduler();
 void * scheduler(void * rsp);

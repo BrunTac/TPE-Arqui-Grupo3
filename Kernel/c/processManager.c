@@ -6,9 +6,9 @@ extern char endOfKernel;
 
 void setNewProcessStack(int argc, char * argv[], void * stackPtr, function fn);
 
+static entryPCB * processes[MAX_PROCESSES];
 MemoryManagerADT heapManager;
 MemoryManagerADT stackManager;
-entryPCB * processes[MAX_PROCESSES];
 
 void initMemoryManagers() {
     void *metadataHeap  = (void *)&endOfKernel;
@@ -20,13 +20,6 @@ void initMemoryManagers() {
     heapManager = createMemoryManager(metadataHeap, heapMemory);
     stackManager = createMemoryManager(metadataStack, stackMemory);
 }
-
-/*void * processWrapper(void * arg) {
-    ProcessStartArgs * args = (ProcessStartArgs *) arg;
-    args->fn(args->argc, args->argv);
-    exit(0);
-    return NULL;
-}*/
 
 void initializeProcessManager(){
     initMemoryManagers();
@@ -41,13 +34,6 @@ void initializeProcessManager(){
 void createProcess(function fn, int argc, char * argv[], int priority){
     void * stackPtr = allocMemory(stackManager, STACK_SIZE);
     stackPtr += STACK_SIZE;
-
-    /*ProcessStartArgs * args = allocMemory(heapManager, sizeof(ProcessStartArgs));
-    args->fn = fn;
-    args->argc = argc;
-    args->argv = argv;
-
-    setNewProcessStack(1, (char *[]) { (char *) args }, stackPtr, (function) processWrapper);*/
 
     uint64_t pid;
     for(pid = 0; pid < MAX_PROCESSES; pid++){

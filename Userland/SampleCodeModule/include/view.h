@@ -6,7 +6,7 @@
 #define MAX_TOKENS 10
 
 void initialize();
-void terminal(uint64_t argc, char ** argv);
+void terminal();
 
 void getCommandline();
 void tokenize();

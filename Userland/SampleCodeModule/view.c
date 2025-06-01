@@ -34,7 +34,7 @@ void initialize(){
     printMenu();    
 }
 
-void terminal(uint64_t argc, char ** argv){
+void terminal(){
     while(!exited){
         printf("%s-$ > ", user);
 

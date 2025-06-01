@@ -6,7 +6,7 @@
 int main() {
 	
 	initialize();
-	sys_createProcess(terminal, 0, NULL, 0);
-
+	terminal();
+	
 	return 0;
 }

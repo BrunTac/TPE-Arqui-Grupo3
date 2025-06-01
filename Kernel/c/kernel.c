@@ -55,7 +55,13 @@ int main()
 	load_idt();
 	initializeProcessManager();
 
-	((EntryPoint)sampleCodeModuleAddress)();
+	char * shell = "shell";
+	char * argv[] = {shell};
+	createProcess((function) sampleCodeModuleAddress, 1, argv, 1);
+
+	while(1){
+		_hlt();
+	}
 
 	return 0;
 }
