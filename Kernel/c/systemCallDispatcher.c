@@ -10,6 +10,8 @@
 #define STDOUT 1
 #define STDERR 2
 
+typedef void (*syscall)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
+
 uint64_t getSeconds();
 uint64_t getMinutes();
 uint64_t getHours();
@@ -102,65 +104,19 @@ static void sys_clearLastPressed() {
     clearLastPressed();
 }
 
+syscall syscallTable[] = {
+    NULL, (syscall)sys_writeInPos, (syscall)sys_time, (syscall)sys_read, (syscall)sys_writeChar, 
+    (syscall)sys_clear, (syscall)sys_saveRegisters, (syscall)sys_drawSquare, (syscall)sys_scrHeight, (syscall)sys_scrWidth,
+    (syscall)sys_sleep, (syscall)sys_beep, (syscall)sys_readLastPressed, (syscall)sys_ticksElapsed, (syscall)sys_changeFont,
+    (syscall)sys_getFontWidth, (syscall)sys_showRegisters, (syscall)sys_clearLastPressed, (syscall)createProcess, (syscall)exitProcess
+};
+
 void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5) {
 
-    switch(id) {
-        case 1:
-            sys_writeInPos((const char *) arg1,(uint64_t) arg2, (uint64_t) arg3, (Color) arg4, (Color) arg5);
-            break ;
-        case 2:
-            sys_time((char (*)[3])arg1);
-            break ;
-        case 3:
-            sys_read((int) arg1, (char *) arg2);
-            break ;
-        case 4:
-            sys_writeChar((int) arg1,(char) arg2, (Color) arg3, (Color) arg4);
-            break ;
-        case 5:
-            sys_clear();
-            break ;
-        case 6:
-            sys_saveRegisters();
-            break ;
-        case 7:
-            sys_drawSquare((Color) arg1, (int)arg2, (int)arg3);
-            break ;
-        case 8:
-            sys_scrHeight((int*) arg1);
-            break ;
-        case 9:
-            sys_scrWidth((int*) arg1);
-            break ;
-        case 10:
-            sys_sleep((int) arg1);
-            break ;
-        case 11:
-            sys_beep((uint32_t) arg1, (int) arg2);
-            break ;
-        case 12:
-            sys_readLastPressed((int) arg1, (char *) arg2);
-            break ;
-        case 13:
-            sys_ticksElapsed((int *) arg1);
-            break ;
-        case 14:
-            sys_changeFont((int) arg1);
-            break ;
-        case 15:
-            sys_getFontWidth((int *) arg1);
-            break ;
-        case 16:
-            sys_showRegisters();
-            break ;
-        case 17:
-            sys_clearLastPressed();
-            break ;
-        case 18:
-            createProcess((function) arg1, (int) arg2, (char **) arg3, (int) arg4);
-            break ;
-        case 19:
-            exitProcess();
-            break ;
+    syscall handler;
+    if (id < (sizeof(syscallTable) / sizeof(syscallTable[0]))){
+        handler = syscallTable[id];
+        return handler(arg1, arg2, arg3, arg4, arg5);
     }
+    return -1;
 }
