@@ -116,7 +116,6 @@ void sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3,
     syscall handler;
     if (id < (sizeof(syscallTable) / sizeof(syscallTable[0]))){
         handler = syscallTable[id];
-        return handler(arg1, arg2, arg3, arg4, arg5);
+        handler(arg1, arg2, arg3, arg4, arg5);
     }
-    return -1;
 }

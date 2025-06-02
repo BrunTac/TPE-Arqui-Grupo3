@@ -18,13 +18,22 @@ setNewProcessStack:
     push 0x8
     push functionWrapper
     
-    mov r15, rbp
-    mov rbp, rdx
-    mov rdx, rcx
-
-    pushState
-
-    mov rbp, r15
+    push 0x00
+    push 0x00
+    push 0x00
+    push rcx
+    push rdx
+	push rdi
+	push rsi
+	push 0x00
+	push 0x00
+	push 0x00
+	push 0x00
+	push 0x00
+	push 0x00
+	push 0x00
+	push 0x00
+    
     mov rax, rsp
     
     mov rsp, rbp

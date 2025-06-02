@@ -3,12 +3,11 @@
 
 #include <memoryManager.h>
 #include <lib.h>
-#include <circularListStatic.h>
 #include <scheduler.h>
 #include <structs.h>
 
 #define STACK_SIZE 4096
-#define MAX_PROCESSES 1024
+#define MAX_PROCESSES 10
 
 #define MM_STRUCT_SIZE      0x1000
 #define HEAP_REGION_SIZE      0x40000

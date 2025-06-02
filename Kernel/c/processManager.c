@@ -3,12 +3,17 @@
 #include <lib.h>
 
 extern char endOfKernel;
+void int_20h();
 
-void setNewProcessStack(int argc, char * argv[], void * stackPtr, function fn);
-
-static entryPCB * processes[MAX_PROCESSES];
+static entryPCB processes[MAX_PROCESSES];
 MemoryManagerADT heapManager;
 MemoryManagerADT stackManager;
+
+void exitProcess(){
+    processes[currentProcess].isEmpty = 1;
+    removeFromScheduler(currentProcess);
+    int_20h();
+}
 
 void initMemoryManagers() {
     void *metadataHeap  = (void *)&endOfKernel;
@@ -25,45 +30,31 @@ void initializeProcessManager(){
     initMemoryManagers();
     
     for(uint64_t i = 0; i < MAX_PROCESSES; i++){
-        processes[i]->isEmpty = 1;
+        processes[i].isEmpty = 1;
     }
 
     initScheduler();
 }
 
 void createProcess(function fn, int argc, char * argv[], int priority){
-    void * stackPtr = allocMemory(stackManager, STACK_SIZE);
+    uint64_t stackPtr = (uint64_t) allocMemory(stackManager, STACK_SIZE);
     stackPtr += STACK_SIZE;
 
     uint64_t pid;
     for(pid = 0; pid < MAX_PROCESSES; pid++){
-        if(processes[pid]->isEmpty){
+        if(processes[pid].isEmpty){
             break ;
         }
     }
     if(pid == MAX_PROCESSES){
         // MAYBE PRINT ERROR MESSAGE: PROCESS LIMIT REACHED
-        return ;
+        
     }
-    processes[pid]->isEmpty = 0;
-    processes[pid]->pid = pid;
-    processes[pid]->status = READY;
-    if(currentProcess == NULL){
-        processes[pid]->ppid = -1;
-    }else{
-        processes[pid]->ppid = currentProcess->PCB->pid;
-    }
-
-    Process newProcess = {0, stackPtr, processes[pid]};
-    if(!addNode(&readyProcesses, &newProcess)){
-        // MAYBE PRINT ERROR MESSAGE: PROCESS LIMIT REACHED
-    }
-    setNewProcessStack(argc, argv, stackPtr, fn);
+    processes[pid].isEmpty = 0;
+    processes[pid].pid = pid;
+    processes[pid].ppid = currentProcess;
+    addToScheduler(pid, argc, argv, stackPtr, fn, priority);
     return ;
-}
-
-void exitProcess(){
-
 }
 
 

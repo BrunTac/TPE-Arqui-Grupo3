@@ -10,14 +10,14 @@ typedef enum {
 typedef struct {
     uint64_t pid;
     uint64_t ppid;
-    Status status;
-    uint8_t isEmpty;
+    uint64_t isEmpty;
 } entryPCB;
 
 typedef struct{
     uint32_t tickCount;
-    void * rsp;
-    entryPCB * PCB;
+    uint64_t rsp;
+    uint8_t priority;
+    Status status;
 } Process;
 
 #endif
