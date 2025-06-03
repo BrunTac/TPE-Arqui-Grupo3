@@ -4,18 +4,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define SIZEOF_HEADER sizeof(header_t)
-
-typedef char ALIGN[SIZEOF_HEADER];
-
-typedef union header {
-    struct {
-        union header *next;
-        size_t size;
-        int isFree;
-    } s;
-    ALIGN align; 
-} header_t ;
+typedef struct header {
+    struct header *next;
+    size_t size;
+    int isFree;
+} header_t;
 
 typedef struct {
     header_t *firstBlock;
@@ -23,7 +16,7 @@ typedef struct {
     uintptr_t memEnd;
 } mm_t ;
 
-mm_t *createMemoryManager(void * manager, void *memoryRegion, size_t regionSize);
+mm_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionSize);
 
 void *malloc_mm(mm_t *mgr, size_t size);
 

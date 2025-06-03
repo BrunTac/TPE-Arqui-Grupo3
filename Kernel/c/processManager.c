@@ -1,17 +1,18 @@
 #include <processManager.h>
-#include <memoryManager.h>
+#include <newmm.h>
 #include <lib.h>
 
 extern char endOfKernel;
 void int_20h();
 
 static entryPCB processes[MAX_PROCESSES];
-MemoryManagerADT heapManager;
-MemoryManagerADT stackManager;
+mm_t *heapManager;
+mm_t *stackManager;
 
-void exitProcess(){
+void exitProcess(void *stackPtr){
     processes[currentProcess].isEmpty = 1;
     removeFromScheduler(currentProcess);
+
     int_20h();
 }
 
@@ -22,8 +23,8 @@ void initMemoryManagers() {
     void *metadataStack = (void *)((uint64_t)heapMemory + HEAP_REGION_SIZE);
     void *stackMemory   = (void *)((uint64_t)metadataStack + MM_STRUCT_SIZE);
 
-    heapManager = createMemoryManager(metadataHeap, heapMemory);
-    stackManager = createMemoryManager(metadataStack, stackMemory);
+    heapManager = createMemoryManager_mm(metadataHeap, heapMemory, HEAP_REGION_SIZE);
+    stackManager = createMemoryManager_mm(metadataStack, stackMemory, STACK_REGION_SIZE);
 }
 
 void initializeProcessManager(){
@@ -37,7 +38,7 @@ void initializeProcessManager(){
 }
 
 void createProcess(function fn, int argc, char * argv[], int priority){
-    uint64_t stackPtr = (uint64_t) allocMemory(stackManager, STACK_SIZE);
+    uint64_t stackPtr = (uint64_t) malloc_mm(stackManager, STACK_SIZE);
     stackPtr += STACK_SIZE;
 
     uint64_t pid;
