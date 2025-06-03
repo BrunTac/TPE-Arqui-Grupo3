@@ -65,6 +65,39 @@ SECTION .text
 	pop rax
 %endmacro
 
+%macro pushStateNoRAX 0
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+%endmacro
+
+%macro popStateNoRAX 0
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop r11
+	pop r10
+	pop r9
+	pop r8
+	pop rsi
+	pop rdi
+	pop rbp
+	pop rdx
+	pop rcx
+	pop rbx
+%endmacro
 
 %macro irqHandlerMaster 1
 	pushState
@@ -203,17 +236,17 @@ _irq05Handler:
 
 ;Sys_calls
 _irq60Handler:
-	pushState ; preservo registros
+	pushStateNoRAX
 
 	mov r9, r8
 	mov r8, rcx
 	mov rcx, rdx
 	mov rdx, rsi
 	mov rsi, rdi
-	mov rdi, rax ; muevo mis registros por un lugar en el lugar de ingreso para que RAX sea mi primer argumento (id del syscall)
+	mov rdi, rax ; shift registers value to have the syscall id as first argument
 	call sysCallDispatcher
 
-	popState ; restauro registros
+	popStateNoRAX
 
 	iretq
 

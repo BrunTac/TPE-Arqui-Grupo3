@@ -21,6 +21,10 @@ void initScheduler(){
     }
 }
 
+uint64_t getCurrentProcess(){
+    return currentProcess;
+}
+
 void addToScheduler(uint64_t pid, int argc, char * argv[], uint64_t stackPtr, function fn, uint8_t priority){
     processes[pid].rsp = setNewProcessStack(argc, argv, stackPtr, fn);
     processes[pid].priority = priority;
@@ -45,4 +49,12 @@ uint64_t scheduler(uint64_t rsp){
     }
 
     return processes[currentProcess].rsp;
+}
+
+void blockProcess(uint64_t pid){
+    processes[pid].status = BLOCKED;
+}
+
+void unblockProcess(uint64_t pid){
+    processes[pid].status = READY;
 }

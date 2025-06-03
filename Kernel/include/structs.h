@@ -1,6 +1,8 @@
 #ifndef _STRUCTS_H_
 #define _STRUCTS_H_
 
+#include "BlockedQueueADT.h"
+
 typedef enum {
     READY = 0,
     BLOCKED,
@@ -11,6 +13,7 @@ typedef struct {
     uint64_t pid;
     uint64_t ppid;
     uint64_t isEmpty;
+    BlockedQueueADT blockedQueue;
 } entryPCB;
 
 typedef struct{

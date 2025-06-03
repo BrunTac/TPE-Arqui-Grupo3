@@ -123,9 +123,12 @@ void commandline_handler(){
         zoomout();
     }else if(strcmp(cmd, "exit") == 0) {
         exitShell();
-    }else if(strcmp(cmd, "test") == 0){
+    }else if(strcmp(cmd, "test1") == 0){
         sys_createProcess(p1, 0, 0, 1);
         sys_createProcess(p2, 0, 0, 5);
+    }else if(strcmp(cmd, "test2") == 0){
+        uint64_t pid = sys_createProcess(p1, 0, 0, 5);
+        sys_waitpid(pid);
     }else{
         invalid_command();
     }

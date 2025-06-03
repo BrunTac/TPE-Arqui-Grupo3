@@ -17,6 +17,7 @@ GLOBAL sys_showRegisters
 GLOBAL sys_clearLastPressed
 GLOBAL sys_createProcess
 GLOBAL sys_exitProcess
+GLOBAL sys_waitpid
 
 section .text
 
@@ -112,5 +113,10 @@ sys_createProcess:
 
 sys_exitProcess:
     mov rax, 19
+    int 80h
+    ret
+
+sys_waitpid:
+    mov rax, 20
     int 80h
     ret

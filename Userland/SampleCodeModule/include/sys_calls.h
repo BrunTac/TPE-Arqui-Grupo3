@@ -22,7 +22,8 @@ void sys_ticksElapsed(int * ans);
 void sys_getFontWidth(int * ans);
 void sys_showRegisters();
 void sys_clearLastPressed();
-void sys_createProcess(function fn, int argc, char * argv[], int priority);
+uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority);
 void sys_exitProcess();
+void sys_waitpid(uint64_t pid);
 
 #endif

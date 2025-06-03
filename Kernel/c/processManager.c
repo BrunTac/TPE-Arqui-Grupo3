@@ -10,9 +10,13 @@ mm_t *heapManager;
 mm_t *stackManager;
 
 void exitProcess(void *stackPtr){
+    uint64_t currentProcess = getCurrentProcess();
+    
     processes[currentProcess].isEmpty = 1;
     removeFromScheduler(currentProcess);
 
+    emptyQueue(processes[currentProcess].blockedQueue);
+    
     int_20h();
 }
 
@@ -27,6 +31,23 @@ void initMemoryManagers() {
     stackManager = createMemoryManager_mm(metadataStack, stackMemory, STACK_REGION_SIZE);
 }
 
+mm_t * getHeap(){
+    return heapManager;
+}
+
+void waitpid(uint64_t pid){
+    uint64_t currentPid = getCurrentProcess();
+    if(currentPid < 0){
+        // ERROR ????
+    }
+    if(pid == currentPid || isQueued(processes[currentPid].blockedQueue, pid)){
+        // KILL(pid) o algun warning ?
+    }
+    enqueue(processes[pid].blockedQueue, currentPid);
+    blockProcess(currentPid);
+    int_20h();
+}
+
 void initializeProcessManager(){
     initMemoryManagers();
     
@@ -37,7 +58,7 @@ void initializeProcessManager(){
     initScheduler();
 }
 
-void createProcess(function fn, int argc, char * argv[], int priority){
+uint64_t createProcess(function fn, int argc, char * argv[], int priority){
     uint64_t stackPtr = (uint64_t) malloc_mm(stackManager, STACK_SIZE);
     stackPtr += STACK_SIZE;
 
@@ -53,9 +74,10 @@ void createProcess(function fn, int argc, char * argv[], int priority){
     }
     processes[pid].isEmpty = 0;
     processes[pid].pid = pid;
-    processes[pid].ppid = currentProcess;
+    processes[pid].ppid = getCurrentProcess();
+    processes[pid].blockedQueue = newQueue();
     addToScheduler(pid, argc, argv, stackPtr, fn, priority);
-    return ;
+    return pid;
 }
 
 
