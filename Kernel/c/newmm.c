@@ -1,4 +1,5 @@
 #include <newmm.h>
+#include <processManager.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -71,4 +72,12 @@ void free_mm(mm_t *mgr, void *memToFree) {
         current = current->next;
     }
     return; // no encontro el puntero al bloque pedido para liberar
+}
+
+void *malloc(size_t size) {
+    return malloc_mm(heapManager, size);
+}
+
+void free(void *memToFree) {
+    free_mm(heapManager, memToFree);
 }

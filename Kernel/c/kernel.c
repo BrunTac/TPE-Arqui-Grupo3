@@ -8,6 +8,7 @@
 #include <idtLoader.h>
 #include <interrupts.h>
 #include <processManager.h>
+#include <tests.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -56,6 +57,13 @@ int main()
 
 	load_idt();
 	initializeProcessManager();
+
+	char *args[] = { "100", NULL };  // or whatever limit you want
+    test_mm(1, args);
+
+    // If test_mm loops forever, the kernel will hang there.
+    // If test_mm returns due to an error, you can print a message and halt:
+    prints("test_mm returned\n", WHITE, BLACK);
 
 	char * shell = "shell";
 	char * argv[] = {shell};

@@ -6,6 +6,7 @@ extern char endOfKernel;
 void int_20h();
 
 static entryPCB processes[MAX_PROCESSES];
+
 mm_t *heapManager;
 mm_t *stackManager;
 
