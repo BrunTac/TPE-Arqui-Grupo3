@@ -1,5 +1,7 @@
 #include <scheduler.h>
 
+void int_20h();
+
 uint64_t currentProcess;
 static Process processes[MAX_PROCESSES];
 
@@ -57,4 +59,9 @@ void blockProcess(uint64_t pid){
 
 void unblockProcess(uint64_t pid){
     processes[pid].status = READY;
+}
+
+void yieldProcess(uint64_t pid){
+    processes[pid].tickCount = TICKS_PER_QUANTUM * processes[currentProcess].priority;
+    int_20h();
 }

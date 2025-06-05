@@ -3,6 +3,8 @@
 
 #include "BlockedQueueADT.h"
 
+#define MAX_CHAR_NAME 20
+
 typedef enum {
     READY = 0,
     BLOCKED,
@@ -22,5 +24,13 @@ typedef struct{
     uint8_t priority;
     Status status;
 } Process;
+
+typedef struct{
+    uint64_t value;
+    const char * name;
+    BlockedQueueADT waitingQueue;
+    uint8_t processCount;
+    uint8_t lock;
+} Semaphore;
 
 #endif

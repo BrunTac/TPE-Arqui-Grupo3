@@ -9,12 +9,12 @@ BlockedQueueADT newQueue(void);
 
 void enqueue(BlockedQueueADT queue, uint64_t pid);
 
-uint64_t dequeue(BlockedQueueADT queue);
+void dequeue(BlockedQueueADT queue);
 
 void freeQueue(BlockedQueueADT queue);
 
 uint8_t isQueued(BlockedQueueADT queue, uint64_t pid);
 
-void emptyQueue(BlockedQueueADT queue);
+void emptyQueue(BlockedQueueADT queue); 
 
 #endif

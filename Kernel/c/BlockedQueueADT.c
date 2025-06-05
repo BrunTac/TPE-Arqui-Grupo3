@@ -37,8 +37,8 @@ void enqueue(BlockedQueueADT queue, uint64_t pid) {
     queue->tail = newNode;
 }
 
-uint64_t dequeue(BlockedQueueADT queue) {
-    if (!queue || !queue->head) return -1;
+void dequeue(BlockedQueueADT queue) {
+    if (!queue || !queue->head) return ;
 
     Node * temp = queue->head;
     uint64_t pid = temp->pid;
@@ -48,8 +48,8 @@ uint64_t dequeue(BlockedQueueADT queue) {
         queue->tail = NULL;
     }
 
+    unblockProcess(pid);
     free_mm(getHeap(), temp);
-    return pid;
 }
 
 void freeQueue(BlockedQueueADT queue) {

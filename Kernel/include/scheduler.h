@@ -19,6 +19,7 @@ uint64_t scheduler(uint64_t rsp);
 uint64_t setNewProcessStack(int argc, char * argv[], uint64_t stackPtr, function fn);
 void blockProcess(uint64_t pid);
 void unblockProcess(uint64_t pid);
+void yieldProcess(uint64_t pid);
 
 extern uint64_t currentProcess;
 

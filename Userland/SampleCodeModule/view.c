@@ -88,6 +88,30 @@ void tokenize(){
     cmdtokens[tokens++][j] = '\0';
 }
 
+void ps1() {
+    uint8_t sem1 = sys_openSem("sem1", 1);
+    uint8_t sem2 = sys_openSem("sem2", 0);
+    for (int i = 0; i < 10; i++) {
+        sys_waitSem(sem1);
+        printf("1%n");
+        sys_postSem(sem2);
+    }
+    sys_closeSem(sem1);
+    sys_closeSem(sem2);
+}
+
+void ps2() {
+    uint8_t sem1 = sys_openSem("sem1", 1);
+    uint8_t sem2 = sys_openSem("sem2", 0);
+    for (int i = 0; i < 10; i++) {
+        sys_waitSem(sem2);
+        printf("2%n");
+        sys_postSem(sem1);
+    }
+    sys_closeSem(sem1);
+    sys_closeSem(sem2);
+}
+
 void p1(uint64_t argc, char ** argv){
     for(int i = 0; i < 10; i++){
         printf("1%n");
@@ -129,6 +153,9 @@ void commandline_handler(){
     }else if(strcmp(cmd, "test2") == 0){
         uint64_t pid = sys_createProcess(p1, 0, 0, 5);
         sys_waitpid(pid);
+    }else if(strcmp(cmd, "test3") == 0){
+        sys_createProcess(ps1, 0, 0, 1);
+        sys_createProcess(ps2, 0, 0, 3);
     }else{
         invalid_command();
     }

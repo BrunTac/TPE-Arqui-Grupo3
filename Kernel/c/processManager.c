@@ -45,7 +45,7 @@ void waitpid(uint64_t pid){
     }
     enqueue(processes[pid].blockedQueue, currentPid);
     blockProcess(currentPid);
-    int_20h();
+    yieldProcess(currentPid);
 }
 
 void initializeProcessManager(){
