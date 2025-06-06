@@ -22,6 +22,8 @@ GLOBAL sys_openSem
 GLOBAL sys_waitSem
 GLOBAL sys_postSem
 GLOBAL sys_closeSem
+GLOBAL sys_getProcessInfo
+GLOBAL sys_getPid
 
 section .text
 
@@ -142,5 +144,15 @@ sys_postSem:
 
 sys_closeSem:
     mov rax, 24
+    int 80h
+    ret
+
+sys_getProcessInfo:
+    mov rax, 25
+    int 80h
+    ret
+
+sys_getPid:
+    mov rax, 26
     int 80h
     ret

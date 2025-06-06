@@ -4,6 +4,7 @@
 #include <color.h>
 #include <stdint.h>
 #include <libc.h>
+#include <structs.h>
 
 void sys_time(char destiny[3][3]);
 void sys_read(int fd, char * c);
@@ -22,12 +23,14 @@ void sys_ticksElapsed(int * ans);
 void sys_getFontWidth(int * ans);
 void sys_showRegisters();
 void sys_clearLastPressed();
-uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority);
+uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name);
 void sys_exitProcess();
 void sys_waitpid(uint64_t pid);
 uint8_t sys_openSem(const char * name, uint64_t value);
 void sys_waitSem(uint8_t sem);
 void sys_postSem(uint8_t sem);
 void sys_closeSem(uint8_t sem);
+uint64_t sys_getProcessInfo(ProcessInfo * buffer);
+uint64_t sys_getPid();
 
 #endif

@@ -15,7 +15,7 @@ void initScheduler(){
     currentProcess = -1;
     char * name = "root";
 	char * argv[] = {name};
-    createProcess(root, 1, argv, 0);
+    createProcess(root, 1, argv, 0, name);
     currentProcess = 0;
 
     for(int i = 0; i < MAX_PROCESSES; i++){
@@ -64,4 +64,10 @@ void unblockProcess(uint64_t pid){
 void yieldProcess(uint64_t pid){
     processes[pid].tickCount = TICKS_PER_QUANTUM * processes[currentProcess].priority;
     int_20h();
+}
+
+void getProcessInfo(uint64_t pid, ProcessInfo *info){
+    info->status = processes[pid].status;
+    info->rsp = processes[pid].rsp; 
+    info->priority = processes[pid].priority;
 }

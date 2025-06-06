@@ -16,6 +16,7 @@ typedef struct {
     uint64_t ppid;
     uint64_t isEmpty;
     BlockedQueueADT blockedQueue;
+    char name[MAX_CHAR_NAME];
 } entryPCB;
 
 typedef struct{
@@ -24,6 +25,15 @@ typedef struct{
     uint8_t priority;
     Status status;
 } Process;
+
+typedef struct {
+    uint64_t pid;
+    uint64_t ppid;
+    uint8_t priority;
+    uint64_t rsp;
+    Status status;
+    char name[MAX_CHAR_NAME];
+} ProcessInfo;
 
 typedef struct{
     uint64_t value;

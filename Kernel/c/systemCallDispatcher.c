@@ -132,8 +132,8 @@ static uint64_t sys_waitpid(uint64_t pid) {
     return pid;
 }
 
-static uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority) {
-    return createProcess(fn, argc, argv, priority);
+static uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name) {
+    return createProcess(fn, argc, argv, priority, name);
 }
 
 static uint64_t sys_exitProcess() {
@@ -160,12 +160,21 @@ static uint64_t sys_closeSem(uint8_t sem) {
     return 0;
 }
 
+static uint64_t sys_getProcessInfo(ProcessInfo * buffer){
+    return listProcesses(buffer);
+}
+
+static uint64_t sys_getPid(){
+    return getCurrentProcess();
+}
+
 syscall syscallTable[] = {
     NULL, (syscall)sys_writeInPos, (syscall)sys_time, (syscall)sys_read, (syscall)sys_writeChar, 
     (syscall)sys_clear, (syscall)sys_saveRegisters, (syscall)sys_drawSquare, (syscall)sys_scrHeight, (syscall)sys_scrWidth,
     (syscall)sys_sleep, (syscall)sys_beep, (syscall)sys_readLastPressed, (syscall)sys_ticksElapsed, (syscall)sys_changeFont,
     (syscall)sys_getFontWidth, (syscall)sys_showRegisters, (syscall)sys_clearLastPressed, (syscall)sys_createProcess, (syscall)sys_exitProcess,
-    (syscall)sys_waitpid, (syscall)sys_openSem, (syscall)sys_waitSem, (syscall)sys_postSem, (syscall)sys_closeSem
+    (syscall)sys_waitpid, (syscall)sys_openSem, (syscall)sys_waitSem, (syscall)sys_postSem, (syscall)sys_closeSem, (syscall)sys_getProcessInfo,
+    (syscall) sys_getPid,
 };
 
 uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5) {

@@ -58,7 +58,7 @@ int main()
 
 	char * shell = "shell";
 	char * argv[] = {shell};
-	createProcess((function) sampleCodeModuleAddress, 1, argv, 1);
+	createProcess((function) sampleCodeModuleAddress, 1, argv, 1, shell);
 
 	_sti();
 

@@ -58,10 +58,9 @@ void initializeProcessManager(){
     initScheduler();
 }
 
-uint64_t createProcess(function fn, int argc, char * argv[], int priority){
+uint64_t createProcess(function fn, int argc, char * argv[], int priority, const char * name){
     uint64_t stackPtr = (uint64_t) malloc_mm(stackManager, STACK_SIZE);
     stackPtr += STACK_SIZE;
-
     uint64_t pid;
     for(pid = 0; pid < MAX_PROCESSES; pid++){
         if(processes[pid].isEmpty){
@@ -76,8 +75,24 @@ uint64_t createProcess(function fn, int argc, char * argv[], int priority){
     processes[pid].pid = pid;
     processes[pid].ppid = getCurrentProcess();
     processes[pid].blockedQueue = newQueue();
+    strcpy(processes[pid].name, name);
     addToScheduler(pid, argc, argv, stackPtr, fn, priority);
     return pid;
+}
+
+uint64_t listProcesses(ProcessInfo * buffer){
+
+    uint64_t count = 0;
+    for(uint64_t i = 0; i < MAX_PROCESSES && count < MAX_PROCESSES; i++){
+        if(!processes[i].isEmpty){
+            buffer[count].pid = processes[i].pid;
+            buffer[count].ppid = processes[i].ppid;
+            strcpy(buffer[count].name, processes[i].name);
+            getProcessInfo(i, &buffer[count]);
+            count++;
+        }
+    }
+    return count;
 }
 
 

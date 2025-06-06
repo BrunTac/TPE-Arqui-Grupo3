@@ -4,6 +4,7 @@
 #include <sounds.h>
 #include <stdint.h>
 #include <snake.h>
+#include <structs.h>
 
 extern void opcodeError();
 
@@ -148,14 +149,18 @@ void commandline_handler(){
     }else if(strcmp(cmd, "exit") == 0) {
         exitShell();
     }else if(strcmp(cmd, "test1") == 0){
-        sys_createProcess(p1, 0, 0, 1);
-        sys_createProcess(p2, 0, 0, 5);
+        sys_createProcess(p1, 0, 0, 1, "p1");
+        sys_createProcess(p2, 0, 0, 5, "p2");
     }else if(strcmp(cmd, "test2") == 0){
-        uint64_t pid = sys_createProcess(p1, 0, 0, 5);
+        uint64_t pid = sys_createProcess(p1, 0, 0, 5, "p1");
         sys_waitpid(pid);
     }else if(strcmp(cmd, "test3") == 0){
-        sys_createProcess(ps1, 0, 0, 1);
-        sys_createProcess(ps2, 0, 0, 3);
+        sys_createProcess(ps1, 0, 0, 1, "ps1");
+        sys_createProcess(ps2, 0, 0, 3, "ps2");
+    }else if(strcmp(cmd, "ps") == 0){
+        ps();
+    }else if (strcmp(cmd, "loop") == 0){
+        sys_createProcess(loop, 0, 0, 1, "loop");
     }else{
         invalid_command();
     }
@@ -308,4 +313,27 @@ void printMenu(){
     printf("- zoomout.........................decreases the character font%n");
     printf("- snake...........................play Snake game%n");
     printf("- exit............................exits the terminal%n%n");
+}
+
+void ps() {
+    ProcessInfo processes[10];
+    int count = sys_getProcessInfo(processes);
+
+    for (int i = 0; i < count; i++) {
+        printf("PID: %lu | PPID: %lu | PRI: %d | STATE: %d | NAME: %s | RSP: %d\n",
+               processes[i].pid,
+               processes[i].ppid,
+               processes[i].priority,
+               processes[i].status,
+               processes[i].name,
+               processes[i].rsp);
+    }
+}
+
+void loop(){
+    int pid = sys_getPid();
+    for (size_t i = 0; i < 10; i++){
+        printf("This is my pid:%d\n", pid);
+        sys_sleep(20);
+    }
 }
