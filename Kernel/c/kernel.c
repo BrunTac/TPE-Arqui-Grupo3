@@ -58,11 +58,14 @@ int main()
 
 	char * shell = "shell";
 	char * argv[] = {shell};
-	createProcess((function) sampleCodeModuleAddress, 1, argv, 1, shell);
+	uint8_t fds[] = {STDIN, STDOUT, STDERR};
+	createProcess((function) sampleCodeModuleAddress, 1, argv, 1, shell, fds);
 
 	_sti();
 
-	_hlt();
+	while(1){
+		_hlt();
+	}
 
 	return 0;
 }

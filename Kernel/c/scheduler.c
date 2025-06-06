@@ -6,19 +6,16 @@ uint64_t currentProcess;
 static Process processes[MAX_PROCESSES];
 
 void root(){
-    while(1){
-        _hlt();
-    }
+    yieldProcess(getCurrentProcess());
 }
 
 void initScheduler(){
     currentProcess = -1;
     char * name = "root";
 	char * argv[] = {name};
-    createProcess(root, 1, argv, 0, name);
-    currentProcess = 0;
+    currentProcess = createProcess(root, 1, argv, 0, name, NULL);
 
-    for(int i = 0; i < MAX_PROCESSES; i++){
+    for(int i = 1; i < MAX_PROCESSES; i++){
         processes[i].status = -1;
     }
 }

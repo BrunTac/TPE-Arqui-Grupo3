@@ -49,7 +49,7 @@ uint8_t sem_open(const char * name, uint64_t value){
         if(firstFree == -1 && !sems[i]){
             firstFree = i;
         }
-        if(strcmp(sems[i]->name, name) == 0){
+        if(sems[i] && strcmp(sems[i]->name, name) == 0){
             sems[i]->processCount++;
             return i;
         }

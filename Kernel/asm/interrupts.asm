@@ -238,6 +238,7 @@ _irq05Handler:
 _irq60Handler:
 	pushStateNoRAX
 
+	push r9
 	mov r9, r8
 	mov r8, rcx
 	mov rcx, rdx
@@ -245,6 +246,8 @@ _irq60Handler:
 	mov rsi, rdi
 	mov rdi, rax ; shift registers value to have the syscall id as first argument
 	call sysCallDispatcher
+
+	pop r9
 
 	popStateNoRAX
 

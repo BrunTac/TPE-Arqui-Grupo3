@@ -1,17 +1,11 @@
 #include <libc.h>
 #include <sys_calls.h>
 
-#define STDIN 0
-#define STDOUT 1
-#define STDERR 2
-#define MAX_BUFFER 256
-
-
 void printf(const char *format, ...){
     va_list args;
     va_start(args, format);
 
-    printfd(1, format, WHITE, BLACK, args);
+    print(format, WHITE, BLACK, args, 0);
     va_end(args);
     return;
 }
@@ -20,7 +14,7 @@ void printfColor(const char * format, Color font, Color background, ...){
     va_list args;
     va_start(args, background);
 
-    printfd(1, format, font, background, args);
+    print(format, font, background, args, 0);
 
     va_end(args);
 }
@@ -29,16 +23,16 @@ void printError(const char *format, ...){
     va_list args;
     va_start(args, format);
 
-    printfd(2, format, WHITE, BLACK, args);
+    print(format, WHITE, BLACK, args, 1);
 
     va_end(args);
 }
 
 void putChar(char c){
-    write(1, c, WHITE, BLACK);
+    write(c, WHITE, BLACK, 0);
 }
 
-void printfd(int fd, const char * format, Color font, Color background, va_list args){
+void print(const char * format, Color font, Color background, va_list args, uint8_t isError){
    
     for (const char *ptr = format; *ptr != '\0'; ptr++) {
         if (*ptr == '%' && *(ptr + 1) != '\0') {
@@ -46,7 +40,7 @@ void printfd(int fd, const char * format, Color font, Color background, va_list 
             if (*ptr == 'd') {
                 int num = va_arg(args, int);
                 if (num < 0) {
-                    write(fd, '-', font, background);
+                    write('-', font, background, isError);
                     num = -num;
                 }
                 // Convert int to string and print
@@ -57,24 +51,24 @@ void printfd(int fd, const char * format, Color font, Color background, va_list 
                     num /= 10;
                 } while (num > 0);
                 while (i > 0) {
-                    write(fd, buffer[--i], font, background);
+                    write(buffer[--i], font, background, isError);
                 }
             } else if (*ptr == 's') {
                 char *str = va_arg(args, char*);
                 while (*str) {
-                    write(fd, *str++, font, background);
+                    write(*str++, font, background, isError);
                 }
             } else if (*ptr == 'n'){
                 newLine();
             }
         } else {
-            write(fd, *ptr, font, background);
+            write(*ptr, font, background, isError);
         }
     }
 }
 
-void write(int fd, char character, Color font, Color background){
-    sys_writeChar(fd, character, font, background);
+void write(char character, Color font, Color background, uint8_t isError){
+    sys_writeChar(character, font, background, isError);
 }
 
 void numToStr(uint64_t num, char * destination){
@@ -145,12 +139,12 @@ void scanf(const char *format, void *variable) {
 char getChar(){
     char c = '\0';
     while(c == '\0')
-        sys_read(STDIN, &c);
+        sys_read(&c);
     return c;
 }
 
 void newLine(){
-    sys_writeChar(STDOUT, '\n', WHITE, BLACK);
+    sys_writeChar('\n', WHITE, BLACK, 0);
 }
 
  int strcmp(const char * s1, const char * s2){

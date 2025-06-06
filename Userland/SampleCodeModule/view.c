@@ -15,8 +15,13 @@ int ticksInState;
 int tokens = 0;
 int exited = 0;
 int zoomedIn = 0;
+uint8_t defaultFds[FD_AMOUNT];
 
 void initialize(){
+    defaultFds[0] = STDIN;
+    defaultFds[1] = STDOUT;
+    defaultFds[2] = STDERR;
+    
     sys_ticksElapsed(&ticksInState);
     sys_saveRegisters();
     sys_clear();
@@ -127,6 +132,22 @@ void p2(uint64_t argc, char ** argv){
     }
 }
 
+void producer(uint64_t argc, char ** argv){
+    for(int i = 0; i < 10; i++){
+        printf("%d", i);
+        sys_sleep(20);
+    }
+}
+
+void consumer(uint64_t argc, char ** argv){
+    char c[2] = {0};
+    for(int i = 0; i < 10; i++){
+        sys_read(&c[0]);
+        printf("%s%n", &c);
+        sys_sleep(20);
+    }
+}
+
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
@@ -149,18 +170,27 @@ void commandline_handler(){
     }else if(strcmp(cmd, "exit") == 0) {
         exitShell();
     }else if(strcmp(cmd, "test1") == 0){
-        sys_createProcess(p1, 0, 0, 1, "p1");
-        sys_createProcess(p2, 0, 0, 5, "p2");
+        sys_createProcess(p1, 0, 0, 1, "p1", defaultFds);
+        sys_createProcess(p2, 0, 0, 5, "p2", defaultFds);
     }else if(strcmp(cmd, "test2") == 0){
-        uint64_t pid = sys_createProcess(p1, 0, 0, 5, "p1");
+        uint64_t pid = sys_createProcess(p1, 0, 0, 5, "p1", defaultFds);
         sys_waitpid(pid);
     }else if(strcmp(cmd, "test3") == 0){
-        sys_createProcess(ps1, 0, 0, 1, "ps1");
-        sys_createProcess(ps2, 0, 0, 3, "ps2");
+        sys_createProcess(ps1, 0, 0, 1, "ps1", defaultFds);
+        sys_createProcess(ps2, 0, 0, 3, "ps2", defaultFds);
+    }else if(strcmp(cmd, "pipe") == 0){
+        uint8_t pipeFd = sys_pipeOpen("mi primer pipe");
+        uint8_t fds1[] = {STDIN, pipeFd, STDERR};
+        uint8_t fds2[] = {pipeFd, STDOUT, STDERR};
+        uint64_t pid1 = sys_createProcess(producer, 0, 0, 1, "p", fds1);
+        uint64_t pid2 = sys_createProcess(consumer, 0, 0, 3, "c", fds2);
+        sys_waitpid(pid1);
+        sys_waitpid(pid2);
     }else if(strcmp(cmd, "ps") == 0){
-        ps();
+        uint64_t pid = sys_createProcess(ps, 0, 0, 5, "ps", defaultFds);
+        sys_waitpid(pid);
     }else if (strcmp(cmd, "loop") == 0){
-        sys_createProcess(loop, 0, 0, 1, "loop");
+        sys_createProcess(loop, 0, 0, 1, "loop", defaultFds);
     }else{
         invalid_command();
     }
@@ -316,11 +346,11 @@ void printMenu(){
 }
 
 void ps() {
-    ProcessInfo processes[10];
+    ProcessInfo processes[MAX_PROCESSES];
     int count = sys_getProcessInfo(processes);
 
     for (int i = 0; i < count; i++) {
-        printf("PID: %lu | PPID: %lu | PRI: %d | STATE: %d | NAME: %s | RSP: %d\n",
+        printf("PID: %d | PPID: %d | PRI: %d | STATE: %d | NAME: %s | RSP: %d\n",
                processes[i].pid,
                processes[i].ppid,
                processes[i].priority,

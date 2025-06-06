@@ -7,8 +7,8 @@
 #include <structs.h>
 
 void sys_time(char destiny[3][3]);
-void sys_read(int fd, char * c);
-void sys_writeChar(int fd, char c, Color font, Color background);
+void sys_read(char * c);
+void sys_writeChar(char c, Color font, Color background, uint8_t isError);
 void sys_writeInPos(const char * str, uint64_t x, uint64_t y, Color font, Color background);
 void sys_clear();
 void sys_saveRegisters();
@@ -18,12 +18,12 @@ void sys_scrHeight(int * ans);
 void sys_sleep(int ticks);
 void sys_beep(uint32_t frequency, int ticks);
 void sys_changeFont(int size);
-void sys_readLastPressed(int fd, char * c);
+void sys_readLastPressed(char * c);
 void sys_ticksElapsed(int * ans);
 void sys_getFontWidth(int * ans);
 void sys_showRegisters();
 void sys_clearLastPressed();
-uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name);
+uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]);
 void sys_exitProcess();
 void sys_waitpid(uint64_t pid);
 uint8_t sys_openSem(const char * name, uint64_t value);
@@ -32,5 +32,7 @@ void sys_postSem(uint8_t sem);
 void sys_closeSem(uint8_t sem);
 uint64_t sys_getProcessInfo(ProcessInfo * buffer);
 uint64_t sys_getPid();
+uint8_t sys_pipeOpen(const char * name);
+void sys_pipeClose(uint8_t pipeId);
 
 #endif

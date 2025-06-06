@@ -24,6 +24,8 @@ GLOBAL sys_postSem
 GLOBAL sys_closeSem
 GLOBAL sys_getProcessInfo
 GLOBAL sys_getPid
+GLOBAL sys_pipeOpen
+GLOBAL sys_pipeClose
 
 section .text
 
@@ -154,5 +156,15 @@ sys_getProcessInfo:
 
 sys_getPid:
     mov rax, 26
+    int 80h
+    ret
+
+sys_pipeOpen:
+    mov rax, 27
+    int 80h
+    ret
+
+sys_pipeClose:
+    mov rax, 28
     int 80h
     ret

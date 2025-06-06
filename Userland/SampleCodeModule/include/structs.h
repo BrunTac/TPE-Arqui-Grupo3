@@ -2,6 +2,7 @@
 #define _STRUCTS_H_
 
 #define MAX_CHAR_NAME 20
+#define MAX_PROCESSES 10
 
 typedef enum {
     READY = 0,
