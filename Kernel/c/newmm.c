@@ -1,4 +1,5 @@
 #include <newmm.h>
+#include <structs.h>
 #include <processManager.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -28,6 +29,7 @@ void *malloc_mm(mm_t *mgr, size_t size) {
     }
 
     header_t *current = mgr->firstBlock;
+    
     while(current) {
         uintptr_t realSize = size + sizeof(header_t);
         uintptr_t newAllocEnd = (uintptr_t) current + realSize;
