@@ -17,7 +17,9 @@ extern mm_t *heapManager;
 extern mm_t *stackManager;
 
 void initializeProcessManager();
-void createProcess(function fn, int argc, char * argv[], int priority);
+mm_t * getHeap();
+void waitpid(uint64_t pid);
+uint64_t createProcess(function fn, int argc, char * argv[], int priority);
 void exitProcess();
 
 #endif

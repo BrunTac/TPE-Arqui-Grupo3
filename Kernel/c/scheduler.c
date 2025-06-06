@@ -1,5 +1,7 @@
 #include <scheduler.h>
 
+void int_20h();
+
 uint64_t currentProcess;
 static Process processes[MAX_PROCESSES];
 
@@ -19,6 +21,10 @@ void initScheduler(){
     for(int i = 0; i < MAX_PROCESSES; i++){
         processes[i].status = -1;
     }
+}
+
+uint64_t getCurrentProcess(){
+    return currentProcess;
 }
 
 void addToScheduler(uint64_t pid, int argc, char * argv[], uint64_t stackPtr, function fn, uint8_t priority){
@@ -45,4 +51,17 @@ uint64_t scheduler(uint64_t rsp){
     }
 
     return processes[currentProcess].rsp;
+}
+
+void blockProcess(uint64_t pid){
+    processes[pid].status = BLOCKED;
+}
+
+void unblockProcess(uint64_t pid){
+    processes[pid].status = READY;
+}
+
+void yieldProcess(uint64_t pid){
+    processes[pid].tickCount = TICKS_PER_QUANTUM * processes[currentProcess].priority;
+    int_20h();
 }

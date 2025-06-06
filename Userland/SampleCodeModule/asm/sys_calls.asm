@@ -17,6 +17,11 @@ GLOBAL sys_showRegisters
 GLOBAL sys_clearLastPressed
 GLOBAL sys_createProcess
 GLOBAL sys_exitProcess
+GLOBAL sys_waitpid
+GLOBAL sys_openSem
+GLOBAL sys_waitSem
+GLOBAL sys_postSem
+GLOBAL sys_closeSem
 
 section .text
 
@@ -112,5 +117,30 @@ sys_createProcess:
 
 sys_exitProcess:
     mov rax, 19
+    int 80h
+    ret
+
+sys_waitpid:
+    mov rax, 20
+    int 80h
+    ret
+
+sys_openSem:
+    mov rax, 21
+    int 80h
+    ret
+
+sys_waitSem:
+    mov rax, 22
+    int 80h
+    ret
+
+sys_postSem:
+    mov rax, 23
+    int 80h
+    ret
+
+sys_closeSem:
+    mov rax, 24
     int 80h
     ret
