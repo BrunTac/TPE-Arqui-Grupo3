@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <snake.h>
 #include <structs.h>
-
+#include <phylo.h>
 
 extern void opcodeError();
 
@@ -287,6 +287,10 @@ void commandline_handler(){
         nice();
     }else if (strcmp(cmd, "kill") == 0){
         kill();
+    }else if (strcmp(cmd, "phylo") == 0){
+        char * argv[] = {"phylo", "5"};
+        uint64_t pid = sys_createProcess(phylo, 2, argv, 1, argv[0], defaultFds);
+        sys_waitpid(pid);
     }else{
         invalid_command();
     }
