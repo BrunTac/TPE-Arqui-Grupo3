@@ -148,6 +148,87 @@ void consumer(uint64_t argc, char ** argv){
     }
 }
 
+void cat(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+}
+
+void wc(){
+    char line[MAX_BUFFER];
+    
+    int lines = 0;
+    int words = 0;
+    int chars = 0;
+    int charsInline = 0;
+    char c;
+
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                chars--;
+                charsInline--;
+                if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words--;
+                }
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                lines++;
+                charsInline = 0;
+            }else{
+                if(!isSpace(c) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words++;
+                }
+                chars++;
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+    if(chars > 0){
+        lines++;
+    }
+    printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
+}
+
+void filter(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            if(!isVocal(c)){
+                putChar(c);
+            }
+        }
+    }
+}
+
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
@@ -186,11 +267,24 @@ void commandline_handler(){
         uint64_t pid2 = sys_createProcess(consumer, 0, 0, 3, "c", fds2);
         sys_waitpid(pid1);
         sys_waitpid(pid2);
+        sys_pipeClose(pipeFd);
     }else if(strcmp(cmd, "ps") == 0){
         uint64_t pid = sys_createProcess(ps, 0, 0, 5, "ps", defaultFds);
         sys_waitpid(pid);
     }else if (strcmp(cmd, "loop") == 0){
         sys_createProcess(loop, 0, 0, 1, "loop", defaultFds);
+    }else if (strcmp(cmd, "cat") == 0){
+        uint64_t pid = sys_createProcess(cat, 0, 0, 1, "cat", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "wc") == 0){
+        uint64_t pid = sys_createProcess(wc, 0, 0, 1, "wc", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "filter") == 0){
+        uint64_t pid = sys_createProcess(filter, 0, 0, 1, "filter", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "phylo") == 0){
+        uint64_t pid = sys_createProcess(phylo, 0, 0, 1, "phylo", defaultFds);
+        sys_waitpid(pid);
     }else{
         invalid_command();
     }

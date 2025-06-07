@@ -189,3 +189,11 @@ void tabPressed(int * ticks) {
     sys_beep(700, 1);
     sys_beep(300, 1);
 }
+
+int isSpace(char c){
+    return c == ' ' || c == '\t';
+}
+
+int isVocal(char c){
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+}
