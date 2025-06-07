@@ -51,7 +51,7 @@ typedef struct {
 // buddy mm structs
 
 typedef struct buddy {
-    struct buddy *buddy, *left, *right;
+    struct buddy *buddy, *left, *right, *parent;
     uint8_t isFree;
     size_t size;
 } buddy_t;

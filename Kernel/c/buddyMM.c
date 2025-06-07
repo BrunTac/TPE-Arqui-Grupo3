@@ -15,7 +15,8 @@ bmm_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionS
     megaBuddy->buddy = NULL;
     megaBuddy->left = NULL;
     megaBuddy->right = NULL;
-    megaBuddy->size = regionSize - sizeof(buddy_t);
+    megaBuddy->parent = NULL;
+    megaBuddy->size = regionSize - sizeof(buddy_t)
     megaBuddy->isFree= 1;
 
     memoryManager->megaBuddy = megaBuddy;
@@ -37,7 +38,9 @@ static void *find_free_block(buddy_t *node, size_t size) {
             if(node->size/2 < size && size <= node->size) {
                 node->isFree = 0;
                 return (void *) ((uintptr_t) node + sizeof(buddy_t)); // ocupa la hoja encontrada   
-            } else if(size <= node->size/2) { // 
+            } else if(size <= node->size/2) { // es demasiado chico para ocupar la mem entera => se divide
+                node->isFree = 0;
+                
                 buddy_t *leftBuddy = (buddy_t *)((uintptr_t)node + sizeof(buddy_t));
                 buddy_t *rightBuddy = (buddy_t *)((uintptr_t)leftBuddy + sizeof(buddy_t) + (node->size - 2*sizeof(buddy_t))/2);
                 
@@ -46,12 +49,14 @@ static void *find_free_block(buddy_t *node, size_t size) {
                 leftBuddy->left = NULL;
                 leftBuddy->right = NULL;
                 leftBuddy->buddy = rightBuddy;
+                leftBuddy->parent = node;
                 
                 rightBuddy->size = (node->size - 2*sizeof(buddy_t))/2;
                 rightBuddy->isFree = 1;
                 rightBuddy->left = NULL;
                 rightBuddy->right = NULL;
                 rightBuddy->buddy = leftBuddy;
+                rightBuddy->parent = node;
                 
                 node->left = leftBuddy;
                 node->right = rightBuddy;
@@ -75,9 +80,76 @@ static void *find_free_block(buddy_t *node, size_t size) {
 
 void *malloc_mm(bmm_t *mgr, size_t size) {
     if(!mgr || !size) {
-        return NULL; // param check
+        return NULL; // param check 
     }    
     
     return find_free_block(mgr->megaBuddy, size);
+}
+
+static buddy_t *find_node(buddy_t *node, void *memToFree) {
+    if(!node) {
+        return NULL;
+    }
+
+    // se fija si memToFree es igual a la memoria asignada a node
+    void *nodeData = (void *)((uintptr_t)node + sizeof(buddy_t));
+    if(nodeData == memToFree && !node->left && !node->right) { // se asegura de que sea una hoja
+        return node;
+    }
+
+    // no encontro memToFree o no era hoja => sigo buscando
+    if(node->left) {
+        buddy_t *result = find_node(node->left, memToFree);
+        if(result) {
+            return result;
+        }
+        return find_node(node->right, memToFree);
+    }
+
+    return NULL; // no encontro memToFree
+}
+
+static buddy_t *try_coalesce(buddy_t *node) {
+    if(!node || !node->buddy || !node->parent) {
+        return node;
+    }
+
+    // el buddy esta libre => los junto haciendo que el padre sea hoja
+    if(node->isFree && node->buddy->isFree) {
+        buddy_t *parent = node->parent;
+        size_t sizeToSet = node->size + node->buddy->size + 2*sizeof(buddy_t);
+        
+        parent->left = NULL;
+        parent->right = NULL;
+        parent->isFree = 1;
+        parent->size = sizeToSet;
+        
+        return parent;
+    }
+
+    return node; // el buddy no estaba free
+} 
+
+void free_mm(bmm_t *mgr, void *memToFree) {
+    if(!mgr || !memToFree) {
+        return;
+    }
+
+    // busco el nodo a liberar
+    buddy_t *node = find_node(mgr->megaBuddy, memToFree);
+    if(!node) {
+        return; // me pasaste cualquier cosa loko
+    }
+
+    node->isFree = 1;
+
+    // intento de juntar los buddies, corta cuando llego a megaBuddy (no tiene buddy) o simplemente no pude juntar alguno
+    while(node != mgr->megaBuddy && node->parent) {
+        buddy_t *coalesced = try_coalesce(node);
+        if(coalesced == node) {
+            break;
+        }
+        node = coalesced;
+    }
 }
 
