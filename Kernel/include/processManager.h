@@ -17,7 +17,7 @@ void initializeProcessManager();
 mm_t * getHeap();
 void waitpid(uint64_t pid);
 uint64_t createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]);
-void exitProcess();
+int64_t exitProcess(uint64_t pid);
 uint64_t listProcesses(ProcessInfo * buffer);
 int8_t getInputFd(uint64_t pid);
 int8_t getOutputFd(uint64_t pid);

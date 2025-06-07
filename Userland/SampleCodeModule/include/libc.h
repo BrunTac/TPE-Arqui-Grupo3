@@ -34,5 +34,6 @@ uint64_t strlen(const char *str);
 void tabPressed(int * ticks);
 int isSpace(char c);
 int isVocal(char c);
+int atoi(const char *str);
 
 #endif

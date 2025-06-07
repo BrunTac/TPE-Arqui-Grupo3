@@ -68,3 +68,11 @@ void getProcessInfo(uint64_t pid, ProcessInfo *info){
     info->rsp = processes[pid].rsp; 
     info->priority = processes[pid].priority;
 }
+
+int64_t changePriority(uint64_t pid, uint8_t priority){
+    if (isValidPid(pid) && priority > 0 && priority < 10){
+        processes[pid].priority = priority;
+        return 0;
+    }
+    return -1;
+} 

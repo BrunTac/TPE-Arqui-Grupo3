@@ -9,15 +9,17 @@ static entryPCB processes[MAX_PROCESSES];
 mm_t *heapManager;
 mm_t *stackManager;
 
-void exitProcess(void *stackPtr){
-    uint64_t currentProcess = getCurrentProcess();
-    
-    processes[currentProcess].isEmpty = 1;
-    removeFromScheduler(currentProcess);
+int64_t exitProcess(uint64_t pid){ 
+    if (isValidPid(pid)){
+        processes[pid].isEmpty = 1;
+        removeFromScheduler(pid);
 
-    emptyQueue(processes[currentProcess].blockedQueue);
+        emptyQueue(processes[pid].blockedQueue);
     
-    int_20h();
+        int_20h();
+        return 0;
+    }
+    return -1;
 }
 
 void initMemoryManagers() {
