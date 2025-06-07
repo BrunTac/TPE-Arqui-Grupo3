@@ -28,6 +28,7 @@ GLOBAL sys_pipeOpen
 GLOBAL sys_pipeClose
 GLOBAL sys_changePriority
 GLOBAL sys_killProcess
+
 section .text
 
 sys_writeInPos:

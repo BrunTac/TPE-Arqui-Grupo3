@@ -283,9 +283,6 @@ void commandline_handler(){
     }else if (strcmp(cmd, "filter") == 0){
         uint64_t pid = sys_createProcess(filter, 0, 0, 1, "filter", defaultFds);
         sys_waitpid(pid);
-    }else if (strcmp(cmd, "phylo") == 0){
-        uint64_t pid = sys_createProcess(phylo, 0, 0, 1, "phylo", defaultFds);
-        sys_waitpid(pid);
     }else if (strcmp(cmd, "nice") == 0){
         nice();
     }else if (strcmp(cmd, "kill") == 0){
@@ -479,7 +476,8 @@ void nice(){
 
 void kill(){
     if (checkArguments(1)){
-        if (sys_killProcess(atoi(cmdtokens[1]) == 0)){
+        uint64_t pid = atoi(cmdtokens[1]);
+        if (sys_killProcess(pid) == 0){
             printf("Process with pid %d killed successfully\n", atoi(cmdtokens[1]));
         }else{
             printf("Invalid pid\n");
