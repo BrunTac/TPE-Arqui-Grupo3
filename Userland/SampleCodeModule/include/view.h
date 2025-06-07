@@ -31,5 +31,9 @@ void test_divzero_exep();
 void printHeader();
 void printDashLine();
 void printMenu();
+void ps();
+void loop();
+void nice();
+void kill();
 
 #endif

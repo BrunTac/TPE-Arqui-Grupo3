@@ -6,19 +6,16 @@ uint64_t currentProcess;
 static Process processes[MAX_PROCESSES];
 
 void root(){
-    while(1){
-        _hlt();
-    }
+    yieldProcess(getCurrentProcess());
 }
 
 void initScheduler(){
     currentProcess = -1;
     char * name = "root";
 	char * argv[] = {name};
-    createProcess(root, 1, argv, 0);
-    currentProcess = 0;
+    currentProcess = createProcess(root, 1, argv, 0, name, NULL);
 
-    for(int i = 0; i < MAX_PROCESSES; i++){
+    for(int i = 1; i < MAX_PROCESSES; i++){
         processes[i].status = -1;
     }
 }
@@ -65,3 +62,17 @@ void yieldProcess(uint64_t pid){
     processes[pid].tickCount = TICKS_PER_QUANTUM * processes[currentProcess].priority;
     int_20h();
 }
+
+void getProcessInfo(uint64_t pid, ProcessInfo *info){
+    info->status = processes[pid].status;
+    info->rsp = processes[pid].rsp; 
+    info->priority = processes[pid].priority;
+}
+
+int64_t changePriority(uint64_t pid, uint8_t priority){
+    if (isValidPid(pid) && priority > 0 && priority < 10){
+        processes[pid].priority = priority;
+        return 0;
+    }
+    return -1;
+} 

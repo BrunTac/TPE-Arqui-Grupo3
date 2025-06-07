@@ -4,6 +4,8 @@
 #include <sounds.h>
 #include <stdint.h>
 #include <snake.h>
+#include <structs.h>
+#include <phylo.h>
 
 extern void opcodeError();
 
@@ -14,8 +16,13 @@ int ticksInState;
 int tokens = 0;
 int exited = 0;
 int zoomedIn = 0;
+uint8_t defaultFds[FD_AMOUNT];
 
 void initialize(){
+    defaultFds[0] = STDIN;
+    defaultFds[1] = STDOUT;
+    defaultFds[2] = STDERR;
+    
     sys_ticksElapsed(&ticksInState);
     sys_saveRegisters();
     sys_clear();
@@ -126,6 +133,103 @@ void p2(uint64_t argc, char ** argv){
     }
 }
 
+void producer(uint64_t argc, char ** argv){
+    for(int i = 0; i < 10; i++){
+        printf("%d", i);
+        sys_sleep(20);
+    }
+}
+
+void consumer(uint64_t argc, char ** argv){
+    char c[2] = {0};
+    for(int i = 0; i < 10; i++){
+        sys_read(&c[0]);
+        printf("%s%n", &c);
+        sys_sleep(20);
+    }
+}
+
+void cat(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+}
+
+void wc(){
+    char line[MAX_BUFFER];
+    
+    int lines = 0;
+    int words = 0;
+    int chars = 0;
+    int charsInline = 0;
+    char c;
+
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                chars--;
+                charsInline--;
+                if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words--;
+                }
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                lines++;
+                charsInline = 0;
+            }else{
+                if(!isSpace(c) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words++;
+                }
+                chars++;
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+    if(chars > 0){
+        lines++;
+    }
+    printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
+}
+
+void filter(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            if(!isVocal(c)){
+                putChar(c);
+            }
+        }
+    }
+}
+
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
@@ -148,14 +252,45 @@ void commandline_handler(){
     }else if(strcmp(cmd, "exit") == 0) {
         exitShell();
     }else if(strcmp(cmd, "test1") == 0){
-        sys_createProcess(p1, 0, 0, 1);
-        sys_createProcess(p2, 0, 0, 5);
+        sys_createProcess(p1, 0, 0, 1, "p1", defaultFds);
+        sys_createProcess(p2, 0, 0, 5, "p2", defaultFds);
     }else if(strcmp(cmd, "test2") == 0){
-        uint64_t pid = sys_createProcess(p1, 0, 0, 5);
+        uint64_t pid = sys_createProcess(p1, 0, 0, 5, "p1", defaultFds);
         sys_waitpid(pid);
     }else if(strcmp(cmd, "test3") == 0){
-        sys_createProcess(ps1, 0, 0, 1);
-        sys_createProcess(ps2, 0, 0, 3);
+        sys_createProcess(ps1, 0, 0, 1, "ps1", defaultFds);
+        sys_createProcess(ps2, 0, 0, 3, "ps2", defaultFds);
+    }else if(strcmp(cmd, "pipe") == 0){
+        uint8_t pipeFd = sys_pipeOpen("mi primer pipe");
+        uint8_t fds1[] = {STDIN, pipeFd, STDERR};
+        uint8_t fds2[] = {pipeFd, STDOUT, STDERR};
+        uint64_t pid1 = sys_createProcess(producer, 0, 0, 1, "p", fds1);
+        uint64_t pid2 = sys_createProcess(consumer, 0, 0, 3, "c", fds2);
+        sys_waitpid(pid1);
+        sys_waitpid(pid2);
+        sys_pipeClose(pipeFd);
+    }else if(strcmp(cmd, "ps") == 0){
+        uint64_t pid = sys_createProcess(ps, 0, 0, 5, "ps", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "loop") == 0){
+        sys_createProcess(loop, 0, 0, 1, "loop", defaultFds);
+    }else if (strcmp(cmd, "cat") == 0){
+        uint64_t pid = sys_createProcess(cat, 0, 0, 1, "cat", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "wc") == 0){
+        uint64_t pid = sys_createProcess(wc, 0, 0, 1, "wc", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "filter") == 0){
+        uint64_t pid = sys_createProcess(filter, 0, 0, 1, "filter", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "nice") == 0){
+        nice();
+    }else if (strcmp(cmd, "kill") == 0){
+        kill();
+    }else if (strcmp(cmd, "phylo") == 0){
+        char * argv[] = {"phylo", "5"};
+        uint64_t pid = sys_createProcess(phylo, 2, argv, 1, argv[0], defaultFds);
+        sys_waitpid(pid);
     }else{
         invalid_command();
     }
@@ -308,4 +443,48 @@ void printMenu(){
     printf("- zoomout.........................decreases the character font%n");
     printf("- snake...........................play Snake game%n");
     printf("- exit............................exits the terminal%n%n");
+}
+
+void ps() {
+    ProcessInfo processes[MAX_PROCESSES];
+    int count = sys_getProcessInfo(processes);
+
+    for (int i = 0; i < count; i++) {
+        printf("PID: %d | PPID: %d | PRI: %d | STATE: %d | NAME: %s | RSP: %d\n",
+               processes[i].pid,
+               processes[i].ppid,
+               processes[i].priority,
+               processes[i].status,
+               processes[i].name,
+               processes[i].rsp);
+    }
+}
+
+void loop(){
+    int pid = sys_getPid();
+    for (size_t i = 0; i < 10; i++){
+        printf("This is my pid:%d\n", pid);
+        sys_sleep(20);
+    }
+}
+
+void nice(){
+    if (checkArguments(2)){
+        if (sys_changePriority(atoi(cmdtokens[1]), atoi(cmdtokens[2])) == 0){
+            printf("Priority changed successfully!\n");
+        }else{
+            printf("Invalid pid or priority\n");
+        }   
+    }
+}
+
+void kill(){
+    if (checkArguments(1)){
+        uint64_t pid = atoi(cmdtokens[1]);
+        if (sys_killProcess(pid) == 0){
+            printf("Process with pid %d killed successfully\n", atoi(cmdtokens[1]));
+        }else{
+            printf("Invalid pid\n");
+        }   
+    }
 }

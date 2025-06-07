@@ -192,7 +192,7 @@ void updateDirection(Player * player1, Player * player2, int cantPlayers){
         int read2 = 0;
         for(int i = 0; i < 2; i++){
         
-            sys_readLastPressed(STDIN, &c);
+            sys_readLastPressed(&c);
 
             switch (c){
                 case 'w':
@@ -251,7 +251,7 @@ void updateDirection(Player * player1, Player * player2, int cantPlayers){
                 }   
             }
     }else{
-        sys_readLastPressed(STDIN, &c);
+        sys_readLastPressed(&c);
         switch (c){
             case 'w':
                 if (player1->currentDirection != DOWN)

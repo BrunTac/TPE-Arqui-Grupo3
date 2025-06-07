@@ -3,6 +3,13 @@
 
 #include <stdint.h>
 
+#define FD_AMOUNT 3
+#define MAX_BUFFER 256
+
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
+
 typedef void (*function)(uint64_t argc, char ** argv);
 
 void * memset(void * destination, int32_t character, uint64_t length);

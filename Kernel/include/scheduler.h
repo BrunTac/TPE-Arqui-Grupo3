@@ -20,7 +20,8 @@ uint64_t setNewProcessStack(int argc, char * argv[], uint64_t stackPtr, function
 void blockProcess(uint64_t pid);
 void unblockProcess(uint64_t pid);
 void yieldProcess(uint64_t pid);
-
+void getProcessInfo(uint64_t pid, ProcessInfo *info);
+int64_t changePriority(uint64_t pid, uint8_t priority);
 extern uint64_t currentProcess;
 
 #endif

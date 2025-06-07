@@ -9,8 +9,8 @@ static unsigned long ticks = 0;
 void timer_handler() {
 	ticks++;
 	_sti();
-	emptyBuffer();
 	if(ticks % 30 == 0){
+		emptyBuffer();
 		clearLastPressed();
 	}
 }
