@@ -28,6 +28,9 @@ GLOBAL sys_pipeOpen
 GLOBAL sys_pipeClose
 GLOBAL sys_changePriority
 GLOBAL sys_killProcess
+GLOBAL sys_unblockProcess
+GLOBAL sys_blockProcess
+GLOBAL sys_getProcessStatus
 
 section .text
 
@@ -178,5 +181,20 @@ sys_changePriority:
 
 sys_killProcess:
     mov rax, 30
+    int 80h
+    ret
+
+sys_blockProcess:
+    mov rax, 31
+    int 80h
+    ret
+
+sys_unblockProcess:
+    mov rax, 32
+    int 80h
+    ret
+
+sys_getProcessStatus:
+    mov rax, 33
     int 80h
     ret

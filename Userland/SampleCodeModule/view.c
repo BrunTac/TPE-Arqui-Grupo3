@@ -295,6 +295,8 @@ void commandline_handler(){
         char * argv[] = {"phylo", "5"};
         uint64_t pid = sys_createProcess(phylo, 2, argv, 1, argv[0], defaultFds);
         sys_waitpid(pid);
+    }else if (strcmp(cmd, "block") == 0){
+        block();
     }else{
         invalid_command();
     }
@@ -602,4 +604,16 @@ void eat(int i){
     philos[i].status = EATING;
     sys_postSem(printUpdateSem);
     sys_sleep(20);
+void block(){
+    if (checkArguments(1)){
+        uint64_t pid = atoi(cmdtokens[1]);
+        if (sys_getProcessStatus(pid) == 0){
+            sys_blockProcess(pid);
+            printf("Process with pid %d blocked successfully\n", atoi(cmdtokens[1]));
+        }else{
+            sys_unblockProcess(pid);
+            printf("Process with pid %d unblocked successfully\n", atoi(cmdtokens[1]));
+        }   
+    }
+    
 }
