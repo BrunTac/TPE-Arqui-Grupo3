@@ -6,6 +6,7 @@
 #include <snake.h>
 #include <structs.h>
 
+
 extern void opcodeError();
 
 char user[MAX_BUFFER];
@@ -190,7 +191,11 @@ void commandline_handler(){
         uint64_t pid = sys_createProcess(ps, 0, 0, 5, "ps", defaultFds);
         sys_waitpid(pid);
     }else if (strcmp(cmd, "loop") == 0){
-        sys_createProcess(loop, 0, 0, 1, "loop", defaultFds);
+        sys_createProcess(loop, 0, 0, 0, "loop", defaultFds);
+    }else if (strcmp(cmd, "nice") == 0){
+        nice();
+    }else if (strcmp(cmd, "kill") == 0){
+        kill();
     }else{
         invalid_command();
     }
@@ -365,5 +370,25 @@ void loop(){
     for (size_t i = 0; i < 10; i++){
         printf("This is my pid:%d\n", pid);
         sys_sleep(20);
+    }
+}
+
+void nice(){
+    if (checkArguments(2)){
+        if (sys_changePriority(atoi(cmdtokens[1]), atoi(cmdtokens[2])) == 0){
+            printf("Priority changed successfully!\n");
+        }else{
+            printf("Invalid pid or priority\n");
+        }   
+    }
+}
+
+void kill(){
+    if (checkArguments(1)){
+        if (sys_killProcess(atoi(cmdtokens[1]) == 0)){
+            printf("Process with pid %d killed successfully\n", atoi(cmdtokens[1]));
+        }else{
+            printf("Invalid pid\n");
+        }   
     }
 }

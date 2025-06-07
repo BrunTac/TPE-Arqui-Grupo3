@@ -8,7 +8,7 @@
 #include <semaphores.h>
 #include "pipes.h"
 
-typedef uint64_t (*syscall)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
+typedef int64_t (*syscall)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
 uint64_t getSeconds();
 uint64_t getMinutes();
@@ -17,7 +17,7 @@ uint64_t saveRegisters();
 uint64_t showRegisters();
 
 
-static uint64_t sys_time(char time[3][3]){
+static int64_t sys_time(char time[3][3]){
     uintToBase(getHours(), time[0], 16);
     uintToBase(getMinutes(), time[1], 16);
     uintToBase(getSeconds(), time[2], 16); 
@@ -25,13 +25,13 @@ static uint64_t sys_time(char time[3][3]){
     return 0;
 }
 
-static uint64_t sys_writeInPos(const char * str, uint64_t x, uint64_t y, Color font, Color background) {
+static int64_t sys_writeInPos(const char * str, uint64_t x, uint64_t y, Color font, Color background) {
     printsInPos(str, x, y, font, background);
 
     return 0;
 }
 
-static uint64_t sys_writeChar(char c, Color font, Color background, uint8_t isError) {
+static int64_t sys_writeChar(char c, Color font, Color background, uint8_t isError) {
     uint64_t pid = getCurrentProcess();
     int8_t fd = isError? getErrorFd(pid) : getOutputFd(pid);
     if(fd < 0){
@@ -49,7 +49,7 @@ static uint64_t sys_writeChar(char c, Color font, Color background, uint8_t isEr
     return 0;
 }
 
-static uint64_t sys_read(char * c) {
+static int64_t sys_read(char * c) {
     uint64_t pid = getCurrentProcess();
     int8_t fd = getInputFd(pid);
      if(fd < 0){
@@ -65,127 +65,136 @@ static uint64_t sys_read(char * c) {
     return 0;
 }
 
-static uint64_t sys_clear(){
+static int64_t sys_clear(){
     clear();
 
     return 0;
 }
 
-static uint64_t sys_saveRegisters(){
+static int64_t sys_saveRegisters(){
     saveRegisters();
 
     return 0;
 }
 
-static uint64_t sys_drawSquare(Color color, int x, int y){
+static int64_t sys_drawSquare(Color color, int x, int y){
     drawSquare(color, x , y);
 
     return 0;
 }
 
-static uint64_t sys_sleep(int ticks) {
+static int64_t sys_sleep(int ticks) {
     sleep(ticks);
 
     return 0;
 }
 
-static uint64_t sys_beep(uint32_t frequency, int ticks) {
+static int64_t sys_beep(uint32_t frequency, int ticks) {
     beep(frequency, ticks);
 
     return 0;
 }
 
-static uint64_t sys_changeFont(int size) {
+static int64_t sys_changeFont(int size) {
     updateSize(size);
 
     return 0;
 }
  
-static uint64_t sys_scrHeight(int* ans){
+static int64_t sys_scrHeight(int* ans){
     *ans = getHeight();
 
     return 0;
 }
 
-static uint64_t sys_scrWidth(int* ans){
+static int64_t sys_scrWidth(int* ans){
     *ans = getWidth();
 
     return 0;
 }
 
-static uint64_t sys_readLastPressed(char * c) {
+static int64_t sys_readLastPressed(char * c) {
     *(c) = getLastPressed();
     return 0;
 }
 
-static uint64_t sys_ticksElapsed(int * ans){
+static int64_t sys_ticksElapsed(int * ans){
     *ans = ticks_elapsed();
     return 0;
 }
 
-static uint64_t sys_getFontWidth(int * ans){
+static int64_t sys_getFontWidth(int * ans){
     *ans = getFontWidth();
     return 0;
 }
 
-static uint64_t sys_showRegisters() {
+static int64_t sys_showRegisters() {
     showRegisters();
     return 0;
 }
 
-static uint64_t sys_clearLastPressed() {
+static int64_t sys_clearLastPressed() {
     clearLastPressed();
     return 0;
 }
 
-static uint64_t sys_waitpid(uint64_t pid) {
+static int64_t sys_waitpid(uint64_t pid) {
     waitpid(pid);
     return pid;
 }
 
-static uint64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]) {
+static int64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]) {
     return createProcess(fn, argc, argv, priority, name, fds);
 }
 
-static uint64_t sys_exitProcess() {
-    exitProcess();
+static int64_t sys_exitProcess() {
+    uint64_t pid = getCurrentProcess();
+    exitProcess(pid);
     return 0;
 }
 
-static uint64_t sys_openSem(const char * name, uint64_t value) {
+static int64_t sys_openSem(const char * name, uint64_t value) {
     return sem_open(name, value);
 }
 
-static uint64_t sys_waitSem(uint8_t sem) {
+static int64_t sys_waitSem(uint8_t sem) {
     sem_wait(sem);
     return 0;
 }
 
-static uint64_t sys_postSem(uint8_t sem) {
+static int64_t sys_postSem(uint8_t sem) {
     sem_post(sem);
     return 0;
 }
 
-static uint64_t sys_closeSem(uint8_t sem) {
+static int64_t sys_closeSem(uint8_t sem) {
     sem_close(sem);
     return 0;
 }
 
-static uint64_t sys_getProcessInfo(ProcessInfo * buffer){
+static int64_t sys_getProcessInfo(ProcessInfo * buffer){
     return listProcesses(buffer);
 }
 
-static uint64_t sys_getPid(){
+static int64_t sys_getPid(){
     return getCurrentProcess();
 }
 
-static uint64_t sys_pipeOpen(const char * name){
+static int64_t sys_pipeOpen(const char * name){
     return pipe_open(name);
 }
 
-static uint64_t sys_pipeClose(uint8_t pipeId){
+static int64_t sys_pipeClose(uint8_t pipeId){
     pipe_close(pipeId);
     return 0;
+}
+
+static int64_t sys_changePriority(uint64_t pid, uint8_t priority){
+    return changePriority(pid, priority);
+}
+
+static int64_t sys_killProcess(uint64_t pid){
+    return exitProcess(pid);
 }
 
 syscall syscallTable[] = {
@@ -194,7 +203,7 @@ syscall syscallTable[] = {
     (syscall)sys_sleep, (syscall)sys_beep, (syscall)sys_readLastPressed, (syscall)sys_ticksElapsed, (syscall)sys_changeFont,
     (syscall)sys_getFontWidth, (syscall)sys_showRegisters, (syscall)sys_clearLastPressed, (syscall)sys_createProcess, (syscall)sys_exitProcess,
     (syscall)sys_waitpid, (syscall)sys_openSem, (syscall)sys_waitSem, (syscall)sys_postSem, (syscall)sys_closeSem, (syscall)sys_getProcessInfo,
-    (syscall)sys_getPid, (syscall)sys_pipeOpen, (syscall)sys_pipeClose
+    (syscall)sys_getPid, (syscall)sys_pipeOpen, (syscall)sys_pipeClose, (syscall)sys_changePriority, (syscall)sys_killProcess
 };
 
 uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {

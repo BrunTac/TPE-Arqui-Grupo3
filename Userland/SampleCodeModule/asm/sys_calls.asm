@@ -26,7 +26,8 @@ GLOBAL sys_getProcessInfo
 GLOBAL sys_getPid
 GLOBAL sys_pipeOpen
 GLOBAL sys_pipeClose
-
+GLOBAL sys_changePriority
+GLOBAL sys_killProcess
 section .text
 
 sys_writeInPos:
@@ -166,5 +167,15 @@ sys_pipeOpen:
 
 sys_pipeClose:
     mov rax, 28
+    int 80h
+    ret
+
+sys_changePriority:
+    mov rax, 29
+    int 80h
+    ret
+
+sys_killProcess:
+    mov rax, 30
     int 80h
     ret

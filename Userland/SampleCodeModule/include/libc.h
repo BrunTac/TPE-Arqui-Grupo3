@@ -32,5 +32,6 @@ void strcpy(char * destination, const char * source);
 uint64_t strlen(const char *str);
 
 void tabPressed(int * ticks);
+int atoi(const char *str);
 
 #endif

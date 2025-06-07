@@ -33,5 +33,7 @@ void printDashLine();
 void printMenu();
 void ps();
 void loop();
+void nice();
+void kill();
 
 #endif
