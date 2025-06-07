@@ -1,4 +1,4 @@
-#include "sys_calls.h"
+/*#include "sys_calls.h"
 #include "phylo.h"
 #include "libc.h"
 
@@ -110,4 +110,4 @@ void eat(int i){
     sys_postSem(printUpdateSem);
     sys_sleep(20);
 }
-
+*/
