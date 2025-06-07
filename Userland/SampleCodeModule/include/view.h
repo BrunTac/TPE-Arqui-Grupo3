@@ -35,5 +35,6 @@ void ps();
 void loop();
 void nice();
 void kill();
+void block();
 
 #endif

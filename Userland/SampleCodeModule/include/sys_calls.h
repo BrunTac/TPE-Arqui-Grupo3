@@ -36,4 +36,7 @@ int8_t sys_pipeOpen(const char * name);
 void sys_pipeClose(uint8_t pipeId);
 int64_t sys_changePriority(uint64_t pid, uint8_t priority);
 int64_t sys_killProcess(uint64_t pid);
+int64_t sys_getProcessStatus(uint64_t pid);
+int64_t sys_unblockProcess(uint64_t pid);
+int64_t sys_blockProcess(uint64_t pid);
 #endif
