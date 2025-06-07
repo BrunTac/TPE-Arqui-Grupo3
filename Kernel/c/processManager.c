@@ -1,5 +1,5 @@
 #include <processManager.h>
-#include <newmm.h>
+#include <memoryManager.h>
 #include <lib.h>
 
 extern char endOfKernel;
@@ -7,8 +7,8 @@ void int_20h();
 
 static entryPCB processes[MAX_PROCESSES];
 
-mm_t *heapManager;
-mm_t *stackManager;
+memory_manager_t *heapManager;
+memory_manager_t *stackManager;
 
 void exitProcess(void *stackPtr){
     uint64_t currentProcess = getCurrentProcess();
@@ -17,6 +17,7 @@ void exitProcess(void *stackPtr){
     removeFromScheduler(currentProcess);
 
     emptyQueue(processes[currentProcess].blockedQueue);
+    free_mm(stackManager, stackPtr);
     
     int_20h();
 }
@@ -30,10 +31,6 @@ void initMemoryManagers() {
 
     heapManager = createMemoryManager_mm(metadataHeap, heapMemory, HEAP_REGION_SIZE);
     stackManager = createMemoryManager_mm(metadataStack, stackMemory, STACK_REGION_SIZE);
-}
-
-mm_t * getHeap(){
-    return heapManager;
 }
 
 void waitpid(uint64_t pid){

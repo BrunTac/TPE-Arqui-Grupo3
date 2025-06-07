@@ -5,6 +5,8 @@
 
 #define MAX_CHAR_NAME 20
 
+#include <stddef.h>
+
 typedef enum {
     READY = 0,
     BLOCKED,
@@ -46,7 +48,6 @@ typedef struct {
     uintptr_t memStart;
     uintptr_t memEnd;
 } mm_t;
-
 
 // buddy mm structs
 

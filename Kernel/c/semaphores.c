@@ -1,6 +1,6 @@
 #include "semaphores.h"
 #include "structs.h"
-#include "newmm.h"
+#include "memoryManager.h"
 #include "processManager.h"
 #include "scheduler.h"
 
@@ -57,7 +57,7 @@ uint8_t sem_open(const char * name, uint64_t value){
     if(firstFree == -1){
         //ERROR ????
     }
-    sems[firstFree] = malloc_mm(getHeap(), sizeof(Semaphore));
+    sems[firstFree] = malloc(sizeof(Semaphore));
 
     sems[firstFree]->value = value;
     sems[firstFree]->name = name;
@@ -76,7 +76,7 @@ void sem_close(uint8_t sem){
     tryLock(&sems[sem]->lock);
     if(sems[sem]->processCount-- == 1){
         unlock(&sems[sem]->lock);
-        free_mm(getHeap(), sems[sem]);
+        free(sems[sem]);
         sems[sem] = NULL;
         return ;
     }

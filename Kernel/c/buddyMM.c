@@ -1,22 +1,20 @@
-#include <buddyMM.h>
+#include <memoryManager.h>
 #include <processManager.h>
 #include <structs.h>
-#include <stddef.h>
-#include <stdint.h>
 
-bmm_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionSize) {
-    if(!memoryRegion || !manager || regionSize < sizeof()) {
+memory_manager_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionSize) {
+    if(!memoryRegion || !manager || regionSize < sizeof(buddy_t)) {
         return NULL; // params
     }
 
-	bmm_t *memoryManager = (mm_t *) manager;
+	memory_manager_t *memoryManager = (memory_manager_t *) manager;
     buddy_t *megaBuddy = (buddy_t *) memoryRegion;
     
     megaBuddy->buddy = NULL;
     megaBuddy->left = NULL;
     megaBuddy->right = NULL;
     megaBuddy->parent = NULL;
-    megaBuddy->size = regionSize - sizeof(buddy_t)
+    megaBuddy->size = regionSize - sizeof(buddy_t);
     megaBuddy->isFree= 1;
 
     memoryManager->megaBuddy = megaBuddy;
@@ -78,7 +76,7 @@ static void *find_free_block(buddy_t *node, size_t size) {
     return NULL;
 }
 
-void *malloc_mm(bmm_t *mgr, size_t size) {
+void *malloc_mm(memory_manager_t *mgr, size_t size) {
     if(!mgr || !size) {
         return NULL; // param check 
     }    
@@ -130,7 +128,7 @@ static buddy_t *try_coalesce(buddy_t *node) {
     return node; // el buddy no estaba free
 } 
 
-void free_mm(bmm_t *mgr, void *memToFree) {
+void free_mm(memory_manager_t *mgr, void *memToFree) {
     if(!mgr || !memToFree) {
         return;
     }
@@ -153,3 +151,10 @@ void free_mm(bmm_t *mgr, void *memToFree) {
     }
 }
 
+void *malloc(size_t size) {
+    return malloc_mm(heapManager, size);
+}
+
+void free(void *memToFree) {
+    free_mm(heapManager, memToFree);
+}

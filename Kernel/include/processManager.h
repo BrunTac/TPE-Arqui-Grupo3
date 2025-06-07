@@ -1,7 +1,7 @@
 #ifndef _PROCESS_MANAGER_H_
 #define _PROCESS_MANAGER_H_
 
-#include <newmm.h>
+#include <memoryManager.h>
 #include <lib.h>
 #include <scheduler.h>
 #include <structs.h>
@@ -13,11 +13,10 @@
 #define HEAP_REGION_SIZE      0x40000
 #define STACK_REGION_SIZE     0x20000
 
-extern mm_t *heapManager;
-extern mm_t *stackManager;
+extern memory_manager_t *heapManager;
+extern memory_manager_t *stackManager;
 
 void initializeProcessManager();
-mm_t * getHeap();
 void waitpid(uint64_t pid);
 uint64_t createProcess(function fn, int argc, char * argv[], int priority);
 void exitProcess();

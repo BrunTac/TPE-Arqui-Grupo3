@@ -1,15 +1,13 @@
-#include <newmm.h>
+#include <memoryManager.h>
 #include <structs.h>
 #include <processManager.h>
-#include <stddef.h>
-#include <stdint.h>
 
-mm_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionSize) {
+memory_manager_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionSize) {
     if(!memoryRegion || !manager || regionSize < sizeof(header_t)) {
         return NULL; // params
     }
 
-	mm_t *memoryManager = (mm_t *) manager;
+	memory_manager_t *memoryManager = (memory_manager_t *) manager;
     header_t *firstBlock = (header_t *) memoryRegion;
     
     firstBlock->next = NULL;
@@ -23,7 +21,7 @@ mm_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionSi
     return memoryManager;
 }
 
-void *malloc_mm(mm_t *mgr, size_t size) {
+void *malloc_mm(memory_manager_t *mgr, size_t size) {
     if(!mgr || !size) {
         return NULL; // param check
     }
@@ -57,7 +55,7 @@ void *malloc_mm(mm_t *mgr, size_t size) {
     return NULL; // llego a null y no encontro espacio
 }
 
-void free_mm(mm_t *mgr, void *memToFree) {
+void free_mm(memory_manager_t *mgr, void *memToFree) {
     if(!memToFree || !mgr)
         return; // params check
 

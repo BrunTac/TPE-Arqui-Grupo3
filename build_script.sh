@@ -10,6 +10,12 @@ docker start $NOMBRE
 docker exec -u root -it $NOMBRE make clean -C /root/Toolchain
 docker exec -u root -it $NOMBRE make clean -C /root/
 docker exec -u root -it $NOMBRE make -C /root/Toolchain
-docker exec -u root -it $NOMBRE make -C /root/
+
+# Check if buddy argument is provided
+if [ "$1" = "buddy" ]; then
+    docker exec -u root -it $NOMBRE make buddy -C /root/
+else
+    docker exec -u root -it $NOMBRE make -C /root/
+fi
 
 
