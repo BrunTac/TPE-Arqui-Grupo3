@@ -35,6 +35,8 @@ void ps();
 void loop();
 void nice();
 void kill();
+void block();
+void runPhylo();
 
 void wrap_testmm();
 

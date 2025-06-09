@@ -51,11 +51,16 @@ uint64_t scheduler(uint64_t rsp){
 }
 
 void blockProcess(uint64_t pid){
-    processes[pid].status = BLOCKED;
+    if (isValidPid(pid)){
+        processes[pid].status = BLOCKED;
+    }   
 }
 
 void unblockProcess(uint64_t pid){
-    processes[pid].status = READY;
+    if (isValidPid(pid)){
+        processes[pid].status = READY;
+    }
+    
 }
 
 void yieldProcess(uint64_t pid){
@@ -83,4 +88,11 @@ void terminateForeground() {
             yieldProcess(i);
             exitProcess(i);
         }
+}
+
+int64_t getStatus(uint64_t pid){
+    if (isValidPid(pid)){
+        return processes[pid].status;
+    }
+    return -1;
 }

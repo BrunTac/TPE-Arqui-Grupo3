@@ -83,7 +83,7 @@ int strcmp(const char * s1, const char * s2){
 	return s1[r1] - s2[r2];
 }
 
- void strcpy(char * destination, const char * source){
+void strcpy(char * destination, const char * source){
 
 	int w = 0;
 
@@ -93,7 +93,7 @@ int strcmp(const char * s1, const char * s2){
 	}
 
 	destination[w] = '\0';
- }
+}
 
 uint64_t strlen(const char *str) {
     uint64_t length = 0;

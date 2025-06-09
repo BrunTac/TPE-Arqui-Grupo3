@@ -1,11 +1,11 @@
-#include "sys_calls.h"
 #include "phylo.h"
 #include "libc.h"
+#include "sys_calls.h"
 
-#define MAX_PHILOSOPHERS 20
+#define MAX_PHILOSOPHERS 9
+#define INIT_PHILOSOPHERS 5
 
-#define LEFT i
-#define RIGHT (i+1) % philosophersAmount
+char * names[] = {"Kaladin", "Dalinar", "Shallan", "Adolin", "Szeth", "Jasnah", "Navani", "Lift", "Wit"};
 
 typedef enum {
     THINKING = 0,
@@ -15,6 +15,8 @@ typedef enum {
 typedef struct {
     uint64_t pid;
     PhiloStatus status;
+    uint8_t waitingLeft;
+    uint8_t waitingRight;
 } Philosopher;
 
 int8_t forks[MAX_PHILOSOPHERS];
@@ -25,21 +27,38 @@ uint8_t fds[] = {STDIN, STDOUT, STDERR};
 
 uint8_t printUpdateSem;
 
-void phylo(uint64_t argc, char ** argv){
-    philosophersAmount = atoi(argv[1]);
+uint8_t printing;
+
+uint8_t mutex;
+
+void phylo(){
+    philosophersAmount = INIT_PHILOSOPHERS;
     for(uint8_t i = 0; i < philosophersAmount; i++){
         addPhilosopher(i);
     }
-    printUpdateSem = sys_openSem("printUpdateSem", 0);
-    char * argvView[] = {"view"};
-    uint64_t viewPid = sys_createProcess(view, 1, argvView, 1, argvView[0], fds);
+    mutex = sys_openSem("mutex", 1);
+
+    printUpdateSem = sys_openSem("printUpdateSem", 1);
+    printing = 0;
+    char * argv[] = {"view"};
+    uint64_t viewPid = sys_createProcess(view, 1, argv, 1, argv[0], fds);
     
     char c;
     while((c = getChar()) != '\0'){
         if(c == 'a' && philosophersAmount < MAX_PHILOSOPHERS){
+            printf("Inviting over philosopher %s%n", names[philosophersAmount]);
+            /*if(philos[0].waitingLeft){
+                sys_postSem(forks[0]);
+            }
+            if(philos[philosophersAmount - 1].waitingRight){
+                sys_postSem(forks[0]);
+            }*/
             addPhilosopher(philosophersAmount++);
         }else if(c == 'r' && philosophersAmount > 0){
+            printf("See you soon philosopher %s!%n", names[philosophersAmount - 1]);
             removePhilosopher(--philosophersAmount);
+        }else if(c == 'e'){
+            break ;
         }
     }
     for(uint8_t i = 0; i < philosophersAmount; i++){
@@ -50,13 +69,11 @@ void phylo(uint64_t argc, char ** argv){
 }
 
 void addPhilosopher(uint8_t idx){
-    char name[MAX_BUFFER];
-    numToStr(idx, name);
-    forks[idx] = sys_openSem(name, 1);
+    forks[idx] = sys_openSem(names[idx], 1);
 
-    char aux[2] = {idx, '\0'};
-    char * argv[] = {name, aux};
-    philos[idx].pid = sys_createProcess(philosopher, 2, argv, 1, name, fds);
+    char idxToStr[] = {idx + '0', '\0'};
+    char * argv[] = {names[idx], idxToStr};
+    philos[idx].pid = sys_createProcess(philosopher, 2, argv, 1, names[idx], fds);
     philos[idx].status = THINKING;
 }
 
@@ -71,12 +88,14 @@ void view(){
         for(uint8_t i = 0; i < philosophersAmount; i++){
             printf("%s ", philos[i].status == EATING ? "E" : ".");
         }
+        newLine();
+        printing = 0;
     }
 }
 
 void philosopher(uint64_t argc, char ** argv){
     uint8_t i = atoi(argv[1]);
-    while(1){
+    while(1){        
         think(i);
         take_forks(i);
         eat(i);
@@ -85,29 +104,49 @@ void philosopher(uint64_t argc, char ** argv){
 }
 
 void take_forks(int i){
+    
+    sys_waitSem(mutex);
     if(i % 2 == 1){
-        sys_waitSem(forks[LEFT]);
-        sys_waitSem(forks[RIGHT]);
+        philos[i].waitingLeft = 1;
+        sys_waitSem(forks[left(i)]);
+        philos[i].waitingLeft = 0;
+        philos[i].waitingRight = 1;
+        sys_waitSem(forks[right(i)]);
+        philos[i].waitingRight = 0;
     }else{
-        sys_waitSem(forks[RIGHT]);
-        sys_waitSem(forks[LEFT]);
+        philos[i].waitingRight = 1;
+        sys_waitSem(forks[right(i)]);
+        philos[i].waitingRight = 0;
+        philos[i].waitingLeft = 1;
+        sys_waitSem(forks[left(i)]);
+        philos[i].waitingLeft = 0;
     }
+    sys_postSem(mutex);
 }
 
 void put_forks(int i){
-    sys_postSem(forks[LEFT]);
-    sys_postSem(forks[RIGHT]);
+    sys_postSem(forks[left(i)]);
+    sys_postSem(forks[right(i)]);
 }
 
 void think(int i){
     philos[i].status = THINKING;
-    sys_postSem(printUpdateSem);
-    sys_sleep(20);
+    sys_sleep(10);
+}
+
+uint8_t left(uint8_t i){
+    return i;
+}
+
+uint8_t right(uint8_t i){
+    return (i + 1) % philosophersAmount;
 }
 
 void eat(int i){
     philos[i].status = EATING;
-    sys_postSem(printUpdateSem);
-    sys_sleep(20);
+    if(!printing){
+        sys_postSem(printUpdateSem);
+        printing = 1;
+    }
+    sys_sleep(10);
 }
-

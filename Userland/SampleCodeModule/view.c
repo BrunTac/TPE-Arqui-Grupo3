@@ -19,6 +19,109 @@ int exited = 0;
 int zoomedIn = 0;
 uint8_t defaultFds[FD_AMOUNT];
 
+Command commands[] = {
+    {"menu", "prints this command menu", menu}
+};
+
+void cat(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+}
+
+void wc(){
+    char line[MAX_BUFFER];
+    
+    int lines = 0;
+    int words = 0;
+    int chars = 0;
+    int charsInline = 0;
+    char c;
+
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                chars--;
+                charsInline--;
+                if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words--;
+                }
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                lines++;
+                charsInline = 0;
+            }else{
+                if(!isSpace(c) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words++;
+                }
+                chars++;
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+    if(chars > 0){
+        lines++;
+    }
+    printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
+}
+
+void filter(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            if(!isVocal(c)){
+                putChar(c);
+            }
+        }
+    }
+}
+
+void printMenu(){
+    newLine();
+    printDashLine();
+    printf("COMMAND MENU%n");
+    printDashLine();
+    printf("- menu............................prints this command menu%n");
+    printf("- time............................prints the current time%n");
+    printf("- showregisters...................prints the saved register values. To save the register values, press the TAB key at any time%n");
+    printf("- clear...........................clears the screen%n");
+    printf("- exception.......................tests exceptions. Use one of the following arguments:%n");
+    printf("    -opcode.......................throws the 'invalid opcode' exception%n");
+    printf("    -divzero......................throws the 'zero division' exception%n");
+    printf("- zoomin..........................increases the character font%n");
+    printf("- zoomout.........................decreases the character font%n");
+    printf("- snake...........................play Snake game%n");
+    printf("- exit............................exits the terminal%n%n");
+}
+
 void initialize(){
     defaultFds[0] = STDIN;
     defaultFds[1] = STDOUT;
@@ -47,8 +150,7 @@ void terminal(){
 
         cmdtokens[0][0] = '\0';
         getCommandline();   
-
-        // si se ingreso por lo menos un caracter     
+   
         if(cmdtokens[0][0] != '\0'){
             commandline_handler();
         }
@@ -293,17 +395,23 @@ void commandline_handler(){
     }else if (strcmp(cmd, "kill") == 0){
         kill();
     }else if (strcmp(cmd, "phylo") == 0){
-        char * argv[] = {"phylo", "5"};
-        uint64_t pid = sys_createProcess(phylo, 2, argv, 1, argv[0], defaultFds);
+        char * argv[] = {"phylo"};
+        uint64_t pid = sys_createProcess(runPhylo, 1, argv, 1, argv[0], defaultFds);
         sys_waitpid(pid);
     } else if (strcmp(cmd, "testmm") == 0) {
         uint64_t pid = sys_createProcess(wrap_testmm, 0, 0, 1, "testmm", defaultFds);
         sys_waitpid(pid);
     } else if (strcmp(cmd, "viewmem") == 0) {
         sys_viewmem();
-    } else {
+    } else if (strcmp(cmd, "block") == 0){
+        block();
+    }else{
         invalid_command();
     }
+}
+
+void runPhylo(){
+    phylo();
 }
 
 void notEnoughArguments(int arguments){
@@ -437,24 +545,6 @@ void printDashLine(){
     printf("--------------------------------------------------------------------------------------------------------------------------------%n");
 }
 
-void printMenu(){
-    newLine();
-    printDashLine();
-    printf("COMMAND MENU%n");
-    printDashLine();
-    printf("- menu............................prints this command menu%n");
-    printf("- time............................prints the current time%n");
-    printf("- showregisters...................prints the saved register values. To save the register values, press the TAB key at any time%n");
-    printf("- clear...........................clears the screen%n");
-    printf("- exception.......................tests exceptions. Use one of the following arguments:%n");
-    printf("    -opcode.......................throws the 'invalid opcode' exception%n");
-    printf("    -divzero......................throws the 'zero division' exception%n");
-    printf("- zoomin..........................increases the character font%n");
-    printf("- zoomout.........................decreases the character font%n");
-    printf("- snake...........................play Snake game%n");
-    printf("- exit............................exits the terminal%n%n");
-}
-
 void ps() {
     ProcessInfo processes[MAX_PROCESSES];
     int count = sys_getProcessInfo(processes);
@@ -497,4 +587,17 @@ void kill(){
             printf("Invalid pid\n");
         }   
     }
+}
+
+void block(){
+    if (checkArguments(1)){
+        uint64_t pid = atoi(cmdtokens[1]);
+        if (sys_getProcessStatus(pid) == 0){
+            sys_blockProcess(pid);
+            printf("Process with pid %d blocked successfully\n", atoi(cmdtokens[1]));
+        }else{
+            sys_unblockProcess(pid);
+            printf("Process with pid %d unblocked successfully\n", atoi(cmdtokens[1]));
+        }   
+    } 
 }

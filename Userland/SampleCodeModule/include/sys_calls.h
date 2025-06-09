@@ -41,5 +41,8 @@ void *sys_malloc(size_t size);
 void sys_free(void *memToFree);
 void *sys_memset(void * destination, int32_t c, uint64_t length);
 void sys_viewmem();
+int64_t sys_getProcessStatus(uint64_t pid);
+int64_t sys_unblockProcess(uint64_t pid);
+int64_t sys_blockProcess(uint64_t pid);
 
 #endif
