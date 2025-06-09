@@ -146,7 +146,11 @@ void newLine(){
     sys_writeChar('\n', WHITE, BLACK, 0);
 }
 
- int strcmp(const char * s1, const char * s2){
+void printDashLine(){
+    printf("--------------------------------------------------------------------------------------------------------------------------------%n");
+}
+
+int strcmp(const char * s1, const char * s2){
 
 	int r1 = 0;
 	int r2 = 0;

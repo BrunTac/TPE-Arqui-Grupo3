@@ -38,7 +38,6 @@ void runWc();
 void runFilter();
 
 void printHeader();
-void printDashLine();
 void invalid_command();
 
 int checkArguments(int arguments);

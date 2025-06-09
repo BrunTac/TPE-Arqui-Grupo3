@@ -356,10 +356,6 @@ void printHeader(){
     printDashLine();
 }
 
-void printDashLine(){
-    printf("--------------------------------------------------------------------------------------------------------------------------------%n");
-}
-
 void notEnoughArguments(int arguments){
     printError("Error: not enough arguments. '%s' needs %d argument%s.%n", cmdtokens[0], arguments, arguments == 1? "" : "s");
 }

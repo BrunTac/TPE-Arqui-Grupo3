@@ -1,6 +1,7 @@
 #include <processManager.h>
 #include <newmm.h>
 #include <lib.h>
+#include "pipes.h"
 
 extern char endOfKernel;
 void int_20h();

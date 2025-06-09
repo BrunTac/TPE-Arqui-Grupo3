@@ -2,6 +2,9 @@
 #include "libc.h"
 #include "sys_calls.h"
 
+void printPhyloHeader(uint8_t initialPhilos);
+void setUpTable(uint8_t philos);
+void emptyTable();
 void addPhilosopher(uint8_t idx);
 void removePhilosopher(uint8_t idx);
 void view();
@@ -23,8 +26,6 @@ typedef enum {
 typedef struct {
     uint64_t pid;
     PhiloStatus status;
-    uint8_t waitingLeft;
-    uint8_t waitingRight;
 } Philosopher;
 
 int8_t forks[MAX_PHILOSOPHERS];
@@ -36,43 +37,51 @@ uint8_t fds[] = {STDIN, STDOUT, STDERR};
 uint8_t printUpdateSem;
 uint8_t printing;
 
-//uint8_t mutex;
-
-void phylo(uint8_t  philos){
-    philosophersAmount = philos;
-    for(uint8_t i = 0; i < philosophersAmount; i++){
-        addPhilosopher(i);
-    }
-    //mutex = sys_openSem("mutex", 1);
-
+void phylo(uint8_t initialPhilos){
+    printPhyloHeader(initialPhilos);
+    
     printUpdateSem = sys_openSem("printUpdateSem", 1);
     printing = 0;
     char * argv[] = {"view"};
     uint64_t viewPid = sys_createProcess(view, 1, argv, 1, argv[0], fds);
     
+    setUpTable(initialPhilos);
     char c;
-    while((c = getChar()) != '\0'){
-        if(c == 'a' && philosophersAmount < MAX_PHILOSOPHERS){
-            printf("Inviting over philosopher %s%n", names[philosophersAmount]);
-            /*if(philos[0].waitingLeft){
-                sys_postSem(forks[0]);
+    while((c = getChar()) != '\0' && c != 'e'){
+        if(c == 'a'){
+            if(philosophersAmount == MAX_PHILOSOPHERS){
+                printf("Cant invite more philosophers. Full house!%n");
+            }else{
+                printf("Inviting over philosopher %s%n", names[philosophersAmount]);
+                emptyTable();
+                setUpTable(++philosophersAmount);
             }
-            if(philos[philosophersAmount - 1].waitingRight){
-                sys_postSem(forks[0]);
-            }*/
-            addPhilosopher(philosophersAmount++);
-        }else if(c == 'r' && philosophersAmount > 0){
-            printf("See you soon philosopher %s!%n", names[philosophersAmount - 1]);
-            removePhilosopher(--philosophersAmount);
-        }else if(c == 'e'){
-            break ;
+        }else if(c == 'r'){
+            if(philosophersAmount == MIN_PHILOSOPHERS){
+                printf("Cant remove more philosophers. Table at its minimum.%n");
+            }else{
+                printf("See you soon philosopher %s!%n", names[philosophersAmount - 1]);
+                emptyTable();
+                setUpTable(--philosophersAmount);
+            }  
         }
     }
+    emptyTable();
+    sys_killProcess(viewPid);
+    sys_closeSem(printUpdateSem);
+}
+
+void setUpTable(uint8_t philos){
+    philosophersAmount = philos;
+    for(uint8_t i = 0; i < philosophersAmount; i++){
+        addPhilosopher(i);
+    }
+}
+
+void emptyTable(){
     for(uint8_t i = 0; i < philosophersAmount; i++){
         removePhilosopher(i);
     }
-    sys_killProcess(viewPid);
-    sys_closeSem(printUpdateSem);
 }
 
 void addPhilosopher(uint8_t idx){
@@ -112,23 +121,13 @@ void philosopher(uint64_t argc, char ** argv){
 
 void take_forks(int i){
     
-    //sys_waitSem(mutex);
     if(i % 2 == 1){
-        philos[i].waitingLeft = 1;
         sys_waitSem(forks[left(i)]);
-        philos[i].waitingLeft = 0;
-        philos[i].waitingRight = 1;
         sys_waitSem(forks[right(i)]);
-        philos[i].waitingRight = 0;
     }else{
-        philos[i].waitingRight = 1;
         sys_waitSem(forks[right(i)]);
-        philos[i].waitingRight = 0;
-        philos[i].waitingLeft = 1;
         sys_waitSem(forks[left(i)]);
-        philos[i].waitingLeft = 0;
     }
-    //sys_postSem(mutex);
 }
 
 void put_forks(int i){
@@ -156,4 +155,14 @@ void eat(int i){
         printing = 1;
     }
     sys_sleep(10);
+}
+
+void printPhyloHeader(uint8_t initialPhilos){
+    printDashLine();
+    printf("RADIANTS TABLE%n%n");
+    printf("Setting up the table for %d philosophers%n%n", initialPhilos);
+    printf("- Press 'a' to invite a new philosopher%n");
+    printf("- Press 'r' to remove a philosopher%n");
+    printf("- Press 'e' to exit the table%n%n");
+    printDashLine();
 }
