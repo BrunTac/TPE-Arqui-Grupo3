@@ -131,8 +131,9 @@ void pipe_handler(){
     uint8_t fds[] = {-1, -1, STDERR};
     for(uint8_t processes = 0; processes < pipeCounter + 1; processes++){
         int8_t cmdIdx = getCommand(cmdtokens[processes * 2]);
-        if(commands[cmdIdx].argc > 1){
-            printError("Can not pipe %s%n", commands[cmdIdx].name);
+        if(cmdIdx < 0 || commands[cmdIdx].argc > 1){
+            if(cmdIdx < 0) invalid_command(cmdtokens[processes * 2]);
+            else printError("Can not pipe %s%n", commands[cmdIdx].name);
             for(i = 0; i < processes; i++){
                 sys_killProcess(pids[i]);
             }
@@ -151,11 +152,12 @@ void pipe_handler(){
         char * argv[] = {commands[cmdIdx].name};
         pids[processes] = sys_createProcess(commands[cmdIdx].fn, 1, argv, DEFAULT_PRIORITY, argv[0], fds);
     }
-    for(i = 0; i < pipeCounter; i++){
+    for(i = 0; i < pipeCounter + 1; i++){
         sys_waitpid(pids[i]);
-        sys_pipeClose(pipes[i]);
     }
-    sys_waitpid(pids[i]);
+    for(i = 0; i < pipeCounter; i++){
+       sys_pipeClose(pipes[i]);
+    }
 }
 
 void runTestmm() {
@@ -207,7 +209,7 @@ void commandline_handler(){
         return ;
     }
     if((i = getCommand(cmd)) < 0){
-        invalid_command();
+        invalid_command(cmd);
         return ;
     }
     if(isBackground && !commands[i].canBeBackground){
@@ -354,8 +356,8 @@ void runFilter(){
     filter();
 }
 
-void invalid_command(){
-    printError("Error. '%s' is an invalid command.%n", cmdtokens[0]);
+void invalid_command(char * cmd){
+    printError("Error. '%s' is an invalid command.%n", cmd);
     printf("%nToo see all available commands enter: 'menu'");
 }
 
