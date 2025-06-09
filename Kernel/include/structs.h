@@ -78,6 +78,7 @@ typedef struct {
     uintptr_t memStart;
     uintptr_t memEnd;
 } bmm_t;
+
 typedef struct{
     const char * name;
     char buffer[MAX_BUFFER];
