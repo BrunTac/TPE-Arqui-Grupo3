@@ -7,7 +7,7 @@
 
 Pipe * pipes[MAX_PIPES] = {NULL};
 
-uint8_t pipe_open(const char * name){
+int64_t pipe_open(const char * name){
     int8_t firstFree = -1;
     for(uint8_t i = 0; i < MAX_PIPES; i++){
         if(firstFree == -1 && !pipes[i]){
@@ -19,7 +19,7 @@ uint8_t pipe_open(const char * name){
         }
     }
     if(firstFree == -1){
-        //ERROR ????
+        return -1;
     }
     pipes[firstFree] = malloc(sizeof(Pipe));
 
@@ -34,10 +34,9 @@ uint8_t pipe_open(const char * name){
     return firstFree + FD_AMOUNT;
 }
 
-void pipe_write(uint8_t pipeId, char c){
+int64_t pipe_write(uint8_t pipeId, char c){
     if(!pipe_isValid(pipeId)){
-        // ERROR ??????????
-        return ;
+        return -1;
     }
     uint8_t idx = pipeId - FD_AMOUNT;
 
@@ -55,12 +54,12 @@ void pipe_write(uint8_t pipeId, char c){
         dequeue(pipes[idx]->readingQueue);
     }
     sem_post(pipes[idx]->sem);
+    return 0;
 }
 
-char pipe_read(uint8_t pipeId){
+int pipe_read(uint8_t pipeId){
     if(!pipe_isValid(pipeId)){
-        // ERROR ??????????
-        return 0;
+        return -1;
     }
     uint8_t idx = pipeId - FD_AMOUNT;
 
@@ -86,7 +85,6 @@ char pipe_read(uint8_t pipeId){
 
 void pipe_close(uint8_t pipeId){
     if(!pipe_isValid(pipeId)){
-        // ERROR ??????????
         return ;
     }
     uint8_t idx = pipeId - FD_AMOUNT;

@@ -46,10 +46,10 @@ void waitpid(uint64_t pid){
     }
     uint64_t currentPid = getCurrentProcess();
     if(currentPid < 0){
-        // ERROR ????
+        return ;
     }
     if(pid == currentPid || isQueued(processes[currentPid].blockedQueue, pid)){
-        // KILL(pid) o algun warning ?
+        return ;
     }
     enqueue(processes[pid].blockedQueue, currentPid);
     blockProcess(currentPid);
@@ -66,7 +66,7 @@ void initializeProcessManager(){
     initScheduler();
 }
 
-uint64_t createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]){
+int64_t createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]){
     uint64_t stackPtr = (uint64_t) malloc_mm(stackManager, STACK_SIZE);
     stackPtr += STACK_SIZE;
     uint64_t pid;
@@ -76,8 +76,7 @@ uint64_t createProcess(function fn, int argc, char * argv[], int priority, const
         }
     }
     if(pid == MAX_PROCESSES){
-        // MAYBE PRINT ERROR MESSAGE: PROCESS LIMIT REACHED
-        
+        return -1;
     }
     processes[pid].isEmpty = 0;
     processes[pid].pid = pid;
@@ -99,7 +98,7 @@ uint64_t createProcess(function fn, int argc, char * argv[], int priority, const
     return pid;
 }
 
-uint64_t listProcesses(ProcessInfo * buffer){
+int64_t listProcesses(ProcessInfo * buffer){
 
     uint64_t count = 0;
     for(uint64_t i = 0; i < MAX_PROCESSES && count < MAX_PROCESSES; i++){

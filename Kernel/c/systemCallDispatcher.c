@@ -37,15 +37,14 @@ static int64_t sys_writeChar(char c, Color font, Color background, uint8_t isErr
     uint64_t pid = getCurrentProcess();
     int8_t fd = isError? getErrorFd(pid) : getOutputFd(pid);
     if(fd < 0){
-        //ERROR???
-        return 0;
+        return -1;
     }
     if(fd == STDOUT){
         print(c, font, background);
     }else if(fd == STDERR){
         print(c, RED, BLACK);
     }else{
-        pipe_write(fd, c);
+        return pipe_write(fd, c);
     }
 
     return 0;
@@ -55,15 +54,17 @@ static int64_t sys_read(char * c) {
     uint64_t pid = getCurrentProcess();
     int8_t fd = getInputFd(pid);
     if(fd < 0){
-        //ERROR???
-        return 0;
+        return -1;
     }
     if(fd == STDIN){
         *(c) = getKey();
     }else{
-        *(c) = pipe_read(fd);
+        int val = pipe_read(fd); 
+        if (val < 0){
+            return -1;
+        }
+        *(c) = (char) val;
     }
-
     return 0;
 }
 
@@ -203,16 +204,18 @@ static void * sys_malloc(size_t size) {
     return malloc(size);
 }
 
-static void sys_free(void *memToFree) {
+static int64_t sys_free(void *memToFree) {
     free(memToFree);
+    return 0;
 }
 
-void *sys_memset(void * destination, int32_t c, uint64_t length) {
+static void * sys_memset(void * destination, int32_t c, uint64_t length) {
     return memset(destination, c, length);
 }
 
-void sys_viewmem() {
+static int64_t sys_viewmem() {
     viewmem();
+    return 0;
 }
 
 static int64_t sys_blockProcess(uint64_t pid){

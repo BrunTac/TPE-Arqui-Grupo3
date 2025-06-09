@@ -137,7 +137,7 @@ void put_forks(int i){
 
 void think(int i){
     philos[i].status = THINKING;
-    sys_sleep(10);
+    sys_sleep((getRandomNumber() % 30) + 10);
 }
 
 uint8_t left(uint8_t i){
@@ -154,7 +154,7 @@ void eat(int i){
         sys_postSem(printUpdateSem);
         printing = 1;
     }
-    sys_sleep(10);
+    sys_sleep((getRandomNumber() % 30) + 10);
 }
 
 void printPhyloHeader(uint8_t initialPhilos){

@@ -5,9 +5,9 @@
 
 #define MAX_PIPES 20
 
-uint8_t pipe_open(const char * name);
-void pipe_write(uint8_t pipeId, char c);
-char pipe_read(uint8_t pipeId);
+int64_t pipe_open(const char * name);
+int64_t pipe_write(uint8_t pipeId, char c);
+int pipe_read(uint8_t pipeId);
 void pipe_close(uint8_t pipeId);
 uint8_t pipe_isValid(uint8_t pipeId);
 

@@ -382,11 +382,6 @@ void spawnApple(Player * player1, Player * player2, int cantPlayers){
     sys_drawSquare(YELLOW, apple.x, apple.y);
 }
 
-int getRandomNumber(){
-    int rand;
-    sys_ticksElapsed(&rand);
-    return rand;
-}
 
 int checkCollisionWithBody(Player * player, Coordinates point){
     int i = player->tail;

@@ -223,3 +223,9 @@ int atoi(const char *str) {
 
     return sign * result;
 }
+
+int getRandomNumber(){
+    int rand;
+    sys_ticksElapsed(&rand);
+    return rand;
+}

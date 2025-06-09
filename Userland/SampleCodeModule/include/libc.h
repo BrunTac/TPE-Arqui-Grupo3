@@ -37,4 +37,6 @@ void tabPressed(int * ticks);
 int isSpace(char c);
 int isVocal(char c);
 
+int getRandomNumber();
+
 #endif

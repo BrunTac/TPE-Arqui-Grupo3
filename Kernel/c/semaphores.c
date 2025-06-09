@@ -11,7 +11,6 @@ Semaphore * sems[MAX_SEMAPHORES] = {NULL};
 
 void sem_post(uint8_t sem){
     if(!sem_isValid(sem)){
-        // ERROR ??????????
         return ;
     }
 
@@ -26,7 +25,6 @@ void sem_post(uint8_t sem){
 
 void sem_wait(uint8_t sem){
     if(!sem_isValid(sem)){
-        // ERROR ??????????
         return ;
     }
     tryLock(&sems[sem]->lock);
@@ -43,7 +41,7 @@ void sem_wait(uint8_t sem){
     unlock(&sems[sem]->lock);
 }
 
-uint8_t sem_open(const char * name, uint64_t value){
+int64_t sem_open(const char * name, uint64_t value){
     int8_t firstFree = -1;
     for(uint8_t i = 0; i < MAX_SEMAPHORES; i++){
         if(firstFree == -1 && !sems[i]){
@@ -55,7 +53,7 @@ uint8_t sem_open(const char * name, uint64_t value){
         }
     }
     if(firstFree == -1){
-        //ERROR ????
+        return -1;
     }
     sems[firstFree] = malloc(sizeof(Semaphore));
 
@@ -70,7 +68,6 @@ uint8_t sem_open(const char * name, uint64_t value){
 
 void sem_close(uint8_t sem){
     if(!sem_isValid(sem)){
-        // ERROR ??????????
         return ;
     }
     tryLock(&sems[sem]->lock);
