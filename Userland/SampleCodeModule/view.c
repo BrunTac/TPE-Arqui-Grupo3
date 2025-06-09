@@ -366,7 +366,7 @@ void printHeader(){
     printDashLine();
     printDashLine();
     printf("%nWelcome to ");
-    printfColor("Cuervazos", RED, BLUE); printf(" "); printfColor("Millonarios", RED, WHITE); printf(" OS%n%n");
+    printfColor("  STORM OS  %n%n", WHITE, BLUE);
     printDashLine();
     printDashLine();
 }
