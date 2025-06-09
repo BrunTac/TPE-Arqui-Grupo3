@@ -14,7 +14,7 @@ void testmm();
 void testprio();
 int64_t testprocesses();
 void test_exception();
-uint64_t testsync()
-uint64_t testnosync()
+uint64_t testsync();
+uint64_t testnosync();
 
 #endif

@@ -36,6 +36,7 @@ Command commands[] = {
     {"kill", "terminates a process given a pid", kill, 2, 1, 0}, {"nice", "updates priority, given a pid and a prority", nice, 3, 1, 0},
     {"phylo", "displays the philosophers-comensals problem given an initial amount", runPhylo, 2, 0, 0}, {"testmm" , "tests memory manager", runTestmm, 1, 0, 1},
     {"mem", "displays memory state", runViewMem, 1, 1, 1}, {"testPrio" , "tests priority on procesess", runTestprio, 1, 0, 1}, {"testProcesses" , "tests processes", runTestprocesses, 1, 0, 1},
+    {"testsync", "tests semaphores with synchronization", runTestsync, 1, 0, 1}, {"testnosync", "tests semaphores without synchronization", runTestnosync, 1, 0, 1},
     {NULL, NULL, NULL, 0, 0, 0}
 };
 
@@ -358,6 +359,14 @@ void runTestprio() {
 
 void runTestprocesses() {
     testprocesses();
+}
+
+void runTestsync() {
+    testsync();
+}
+
+void runTestnosync() {
+    testnosync();
 }
 
 void runViewMem(){

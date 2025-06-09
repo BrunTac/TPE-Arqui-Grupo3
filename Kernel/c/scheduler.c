@@ -69,9 +69,11 @@ void yieldProcess(uint64_t pid){
 }
 
 void yieldAll() {
-    for(int i = 0 ; i < MAX_PROCESSES ; i++)
-        if(isValidPid(pid))
+    for(int i = 0 ; i < MAX_PROCESSES ; i++) {
+        if(isValidPid(i)) {
             yieldProcess(i);
+        }
+    }
 }
 
 void getProcessInfo(uint64_t pid, ProcessInfo *info){
