@@ -80,7 +80,7 @@ typedef struct {
 } bmm_t;
 
 typedef struct{
-    const char * name;
+    char * name;
     char buffer[MAX_BUFFER];
     uint32_t readingIdx;
     uint32_t toBeRead;
