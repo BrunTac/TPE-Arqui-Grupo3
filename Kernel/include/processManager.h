@@ -18,14 +18,13 @@ extern memory_manager_t *stackManager;
 
 void initializeProcessManager();
 void waitpid(uint64_t pid);
-int64_t createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]);
+int64_t createProcess(function fn, int argc, char * argv[], int priority, uint8_t fds[FD_AMOUNT], uint8_t isBackground);
 int64_t exitProcess(uint64_t pid);
 int64_t listProcesses(ProcessInfo * buffer);
 int8_t getInputFd(uint64_t pid);
 int8_t getOutputFd(uint64_t pid);
 int8_t getErrorFd(uint64_t pid);
 uint8_t isValidPid(uint64_t pid);
-void ctrlC();
-void ctrlD();
+void terminateForeground();
 
 #endif

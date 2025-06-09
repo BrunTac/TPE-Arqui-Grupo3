@@ -94,6 +94,9 @@ void pipe_close(uint8_t pipeId){
     if(pipes[idx]->openingProcessCount-- == 1){
         sem_post(pipes[idx]->sem);
         sem_close(pipes[idx]->sem);
+        freeQueue(pipes[idx]->writingQueue);
+        freeQueue(pipes[idx]->readingQueue);
+        free(pipes[idx]->name);
         free(pipes[idx]);
         pipes[idx] = NULL;
         return ;

@@ -146,8 +146,8 @@ static int64_t sys_waitpid(uint64_t pid) {
     return pid;
 }
 
-static int64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]) {
-    return createProcess(fn, argc, argv, priority, name, fds);
+static int64_t sys_createProcess(function fn, int argc, char * argv[], int priority, uint8_t fds[FD_AMOUNT], uint8_t isBackground) {
+    return createProcess(fn, argc, argv, priority, fds, isBackground);
 }
 
 static int64_t sys_exitProcess() {

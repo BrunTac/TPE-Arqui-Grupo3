@@ -11,6 +11,17 @@ static entryPCB processes[MAX_PROCESSES];
 memory_manager_t *heapManager;
 memory_manager_t *stackManager;
 
+uint8_t terminatingForeground = 0;
+
+void freeProcess(uint64_t pid){
+    freeQueue(processes[pid].blockedQueue);
+    for(uint64_t i = 0; i < processes[pid].argc; i++){
+        free_mm(stackManager, (void *) processes[pid].argv[i]);
+    }
+    free_mm(stackManager, (void *) processes[pid].argv);
+    free_mm(stackManager, (void *) processes[pid].stackPtr);
+}
+
 int64_t exitProcess(uint64_t pid){ 
     if (isValidPid(pid)){
         int8_t fd = getOutputFd(pid);
@@ -19,11 +30,12 @@ int64_t exitProcess(uint64_t pid){
         }
         processes[pid].isEmpty = 1;
         removeFromScheduler(pid);
-
         emptyQueue(processes[pid].blockedQueue);
-        free_mm(stackManager, (void *) processes[pid].stackPtr);
-    
-        int_20h();
+        freeProcess(pid);
+        
+        if(!terminatingForeground){
+            int_20h();
+        }
         return 0;
     }
     return -1;
@@ -66,7 +78,7 @@ void initializeProcessManager(){
     initScheduler();
 }
 
-int64_t createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]){
+int64_t createProcess(function fn, int argc, char * argv[], int priority, uint8_t fds[FD_AMOUNT], uint8_t isBackground){
     uint64_t stackPtr = (uint64_t) malloc_mm(stackManager, STACK_SIZE);
     stackPtr += STACK_SIZE;
     uint64_t pid;
@@ -90,10 +102,11 @@ int64_t createProcess(function fn, int argc, char * argv[], int priority, const 
     processes[pid].fn = fn;
     processes[pid].blockedQueue = newQueue();
     processes[pid].stackPtr = (uintptr_t) stackPtr;
-    strcpy(processes[pid].name, name);
+    strcpy(processes[pid].name, argv[0]);
     processes[pid].fileDescriptors[0] = fds[0];
     processes[pid].fileDescriptors[1] = fds[1];
     processes[pid].fileDescriptors[2] = fds[2];
+    processes[pid].isBackground = isBackground;
     addToScheduler(pid, processes[pid].argc, processes[pid].argv, stackPtr, processes[pid].fn, priority);
     return pid;
 }
@@ -111,6 +124,17 @@ int64_t listProcesses(ProcessInfo * buffer){
         }
     }
     return count;
+}
+
+void terminateForeground() {
+    terminatingForeground = 1;
+    for(int i = 2 ; i < MAX_PROCESSES ; i++){
+        if(!processes[i].isBackground) {
+            exitProcess(i);
+        }
+    }
+    terminatingForeground = 0;
+    int_20h();
 }
 
 int8_t getInputFd(uint64_t pid){

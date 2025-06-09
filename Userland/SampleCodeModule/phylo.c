@@ -43,7 +43,7 @@ void phylo(uint8_t initialPhilos){
     printUpdateSem = sys_openSem("printUpdateSem", 1);
     printing = 0;
     char * argv[] = {"view"};
-    uint64_t viewPid = sys_createProcess(view, 1, argv, 1, argv[0], fds);
+    uint64_t viewPid = sys_createProcess(view, 1, argv, 1, fds, 0);
     
     setUpTable(initialPhilos);
     char c;
@@ -89,7 +89,7 @@ void addPhilosopher(uint8_t idx){
 
     char idxToStr[] = {idx + '0', '\0'};
     char * argv[] = {names[idx], idxToStr};
-    philos[idx].pid = sys_createProcess(philosopher, 2, argv, 1, names[idx], fds);
+    philos[idx].pid = sys_createProcess(philosopher, 2, argv, 1, fds, 0);
     philos[idx].status = THINKING;
 }
 

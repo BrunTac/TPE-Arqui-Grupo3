@@ -69,7 +69,7 @@ int main()
 	char * shell = "shell";
 	char * argv[] = {shell};
 	uint8_t fds[] = {STDIN, STDOUT, STDERR};
-	createProcess((function) sampleCodeModuleAddress, 1, argv, 1, shell, fds);
+	createProcess((function) sampleCodeModuleAddress, 1, argv, 1, fds, 0);
 
 	_sti();
 

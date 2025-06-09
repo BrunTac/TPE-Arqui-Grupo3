@@ -5,7 +5,7 @@
 
 void loop(){
     int pid = sys_getPid();
-    for (uint8_t i = 0; i < 10; i++){
+    while(1){
         printf("This is my pid: %d\n", pid);
         sys_sleep(20);
     }
@@ -46,10 +46,6 @@ void cat(){
     }
 }
 
-void lol(){
-    return ;
-}
-
 void wc(){
     char line[MAX_BUFFER];
     
@@ -84,7 +80,6 @@ void wc(){
     if(chars > 0){
         lines++;
     }
-    lol();
     printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
 }
 

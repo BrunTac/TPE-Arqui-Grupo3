@@ -25,6 +25,7 @@ typedef struct {
     BlockedQueueADT blockedQueue;
     char name[MAX_CHAR_NAME];
     uint8_t fileDescriptors[FD_AMOUNT];
+    uint8_t isBackground;
 } entryPCB;
 
 typedef struct{

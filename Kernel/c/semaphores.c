@@ -49,6 +49,7 @@ int64_t sem_open(const char * name, uint64_t value){
         }
         if(sems[i] && strcmp(sems[i]->name, name) == 0){
             sems[i]->processCount++;
+            sems[i]->value = value;
             return i;
         }
     }
@@ -73,6 +74,7 @@ void sem_close(uint8_t sem){
     tryLock(&sems[sem]->lock);
     if(sems[sem]->processCount-- == 1){
         unlock(&sems[sem]->lock);
+        freeQueue(sems[sem]->waitingQueue);
         free(sems[sem]);
         sems[sem] = NULL;
         return ;

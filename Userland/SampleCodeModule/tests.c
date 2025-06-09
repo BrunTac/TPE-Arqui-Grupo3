@@ -171,12 +171,13 @@ int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
 void testprio() {
   int64_t pids[TOTAL_PROCESSES];
-  char *argv[] = {0};
   uint64_t i;
   uint8_t defaultFds[FD_AMOUNT] = {0, 1, 2};
 
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    pids[i] = sys_createProcess((function) endless_loop_print, 0, argv, 0, "endless_print_loop", defaultFds);
+  for (i = 0; i < TOTAL_PROCESSES; i++){
+    char * argv[] = {"endless_print_loop"};
+    pids[i] = sys_createProcess((function) endless_loop_print, 1, argv, 0, defaultFds, 1);
+  }
 
   bussy_wait(WAIT);
   printf("\nCHANGING PRIORITIES...\n");
@@ -221,7 +222,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   uint8_t alive = 0;
   uint8_t action;
   uint64_t max_processes;
-  char *argvAux[] = {0};
   uint8_t defaultFds[FD_AMOUNT] = {0, 1, 2};
 
   if (argc != 1)
@@ -236,7 +236,8 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = sys_createProcess((function) endless_loop, 0, argvAux, 3, "endless_loop", defaultFds);
+      char * argv[] = {"endless_loop"};
+      p_rqs[rq].pid = sys_createProcess((function) endless_loop, 1, argv, 3, defaultFds, 1);
 
       if (p_rqs[rq].pid == -1) {
         printf("test_processes: ERROR creating process\n");
