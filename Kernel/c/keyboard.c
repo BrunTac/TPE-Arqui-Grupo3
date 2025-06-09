@@ -72,8 +72,12 @@ void keyboard_handler() {
         else
                 key = scanCodeToAscii_shiftOff[scanCode];
 
-        bufferKey(key);
-        lastPressed = key;
+        if (key != 0x00){
+                bufferKey(key);
+                lastPressed = key;
+        }
+        
+
 
 }
 
