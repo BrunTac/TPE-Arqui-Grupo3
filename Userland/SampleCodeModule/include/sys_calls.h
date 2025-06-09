@@ -44,5 +44,6 @@ int64_t sys_viewmem();
 int64_t sys_getProcessStatus(uint64_t pid);
 int64_t sys_unblockProcess(uint64_t pid);
 int64_t sys_blockProcess(uint64_t pid);
+void sys_yieldAll();
 
 #endif

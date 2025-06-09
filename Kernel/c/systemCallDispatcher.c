@@ -232,6 +232,10 @@ static int64_t sys_getProcessStatus(uint64_t pid){
     return getStatus(pid);
 }
 
+static void sys_yieldAll(){
+    yieldAll();
+}
+
 syscall syscallTable[] = {
     NULL, (syscall)sys_writeInPos, (syscall)sys_time, (syscall)sys_read, (syscall)sys_writeChar, 
     (syscall)sys_clear, (syscall)sys_saveRegisters, (syscall)sys_drawSquare, (syscall)sys_scrHeight, (syscall)sys_scrWidth,
@@ -240,7 +244,7 @@ syscall syscallTable[] = {
     (syscall)sys_waitpid, (syscall)sys_openSem, (syscall)sys_waitSem, (syscall)sys_postSem, (syscall)sys_closeSem, (syscall)sys_getProcessInfo,
     (syscall)sys_getPid, (syscall)sys_pipeOpen, (syscall)sys_pipeClose, (syscall)sys_changePriority, (syscall)sys_killProcess,
     (syscall)sys_malloc, (syscall)sys_free, (syscall)sys_memset, (syscall)sys_viewmem, (syscall)sys_blockProcess, 
-    (syscall)sys_unblockProcess, (syscall)sys_getProcessStatus
+    (syscall)sys_unblockProcess, (syscall)sys_getProcessStatus, (syscall)sys_yieldAll
 };
 
 uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {
