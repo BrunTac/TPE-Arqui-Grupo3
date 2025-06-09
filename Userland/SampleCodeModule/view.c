@@ -18,6 +18,109 @@ int exited = 0;
 int zoomedIn = 0;
 uint8_t defaultFds[FD_AMOUNT];
 
+Command commands[] = {
+    {"menu", "prints this command menu", menu}
+};
+
+void cat(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+}
+
+void wc(){
+    char line[MAX_BUFFER];
+    
+    int lines = 0;
+    int words = 0;
+    int chars = 0;
+    int charsInline = 0;
+    char c;
+
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                chars--;
+                charsInline--;
+                if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words--;
+                }
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                lines++;
+                charsInline = 0;
+            }else{
+                if(!isSpace(c) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
+                    words++;
+                }
+                chars++;
+                charsInline++;
+            }
+            putChar(c);
+        }
+    }
+    if(chars > 0){
+        lines++;
+    }
+    printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
+}
+
+void filter(){
+    int charsInline = 0;
+    char c;
+    while((c = getChar()) != '\0'){
+        if(c == '\b'){
+            if(charsInline > 0){
+                charsInline--;
+                putChar(c);
+            }
+        }else{
+            if(c == '\n'){
+                charsInline = 0;
+            }else{
+                charsInline++;
+            }
+            if(!isVocal(c)){
+                putChar(c);
+            }
+        }
+    }
+}
+
+void printMenu(){
+    newLine();
+    printDashLine();
+    printf("COMMAND MENU%n");
+    printDashLine();
+    printf("- menu............................prints this command menu%n");
+    printf("- time............................prints the current time%n");
+    printf("- showregisters...................prints the saved register values. To save the register values, press the TAB key at any time%n");
+    printf("- clear...........................clears the screen%n");
+    printf("- exception.......................tests exceptions. Use one of the following arguments:%n");
+    printf("    -opcode.......................throws the 'invalid opcode' exception%n");
+    printf("    -divzero......................throws the 'zero division' exception%n");
+    printf("- zoomin..........................increases the character font%n");
+    printf("- zoomout.........................decreases the character font%n");
+    printf("- snake...........................play Snake game%n");
+    printf("- exit............................exits the terminal%n%n");
+}
+
 void initialize(){
     defaultFds[0] = STDIN;
     defaultFds[1] = STDOUT;
@@ -46,8 +149,7 @@ void terminal(){
 
         cmdtokens[0][0] = '\0';
         getCommandline();   
-
-        // si se ingreso por lo menos un caracter     
+   
         if(cmdtokens[0][0] != '\0'){
             commandline_handler();
         }
@@ -149,90 +251,6 @@ void consumer(uint64_t argc, char ** argv){
     }
 }
 
-void cat(){
-    int charsInline = 0;
-    char c;
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                charsInline--;
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                charsInline = 0;
-            }else{
-                charsInline++;
-            }
-            putChar(c);
-        }
-    }
-}
-
-void wc(){
-    char line[MAX_BUFFER];
-    
-    int lines = 0;
-    int words = 0;
-    int chars = 0;
-    int charsInline = 0;
-    char c;
-
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                chars--;
-                charsInline--;
-                if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
-                    words--;
-                }
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                lines++;
-                charsInline = 0;
-            }else{
-                if(!isSpace(c) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
-                    words++;
-                }
-                chars++;
-                charsInline++;
-            }
-            putChar(c);
-        }
-    }
-    if(chars > 0){
-        lines++;
-    }
-    printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
-}
-
-void filter(){
-    int charsInline = 0;
-    char c;
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                charsInline--;
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                charsInline = 0;
-            }else{
-                charsInline++;
-            }
-            if(!isVocal(c)){
-                putChar(c);
-            }
-        }
-    }
-}
-void lol(){
-    return ;
-}
-
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
@@ -291,15 +309,18 @@ void commandline_handler(){
     }else if (strcmp(cmd, "kill") == 0){
         kill();
     }else if (strcmp(cmd, "phylo") == 0){
-        lol();
-        char * argv[] = {"phylo", "5"};
-        uint64_t pid = sys_createProcess(phylo, 2, argv, 1, argv[0], defaultFds);
+        char * argv[] = {"phylo"};
+        uint64_t pid = sys_createProcess(runPhylo, 1, argv, 1, argv[0], defaultFds);
         sys_waitpid(pid);
     }else if (strcmp(cmd, "block") == 0){
         block();
     }else{
         invalid_command();
     }
+}
+
+void runPhylo(){
+    phylo();
 }
 
 void notEnoughArguments(int arguments){
@@ -433,24 +454,6 @@ void printDashLine(){
     printf("--------------------------------------------------------------------------------------------------------------------------------%n");
 }
 
-void printMenu(){
-    newLine();
-    printDashLine();
-    printf("COMMAND MENU%n");
-    printDashLine();
-    printf("- menu............................prints this command menu%n");
-    printf("- time............................prints the current time%n");
-    printf("- showregisters...................prints the saved register values. To save the register values, press the TAB key at any time%n");
-    printf("- clear...........................clears the screen%n");
-    printf("- exception.......................tests exceptions. Use one of the following arguments:%n");
-    printf("    -opcode.......................throws the 'invalid opcode' exception%n");
-    printf("    -divzero......................throws the 'zero division' exception%n");
-    printf("- zoomin..........................increases the character font%n");
-    printf("- zoomout.........................decreases the character font%n");
-    printf("- snake...........................play Snake game%n");
-    printf("- exit............................exits the terminal%n%n");
-}
-
 void ps() {
     ProcessInfo processes[MAX_PROCESSES];
     int count = sys_getProcessInfo(processes);
@@ -495,115 +498,6 @@ void kill(){
     }
 }
 
-#define MAX_PHILOSOPHERS 10
-
-#define LEFT i
-#define RIGHT (i+1) % philosophersAmount
-
-int names[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-
-typedef enum {
-    THINKING = 0,
-    EATING
-} PhiloStatus;
-
-typedef struct {
-    uint64_t pid;
-    PhiloStatus status;
-} Philosopher;
-
-int8_t forks[MAX_PHILOSOPHERS];
-Philosopher philos[MAX_PHILOSOPHERS];
-uint8_t philosophersAmount;
-
-uint8_t fds[] = {STDIN, STDOUT, STDERR};
-
-uint8_t printUpdateSem;
-
-void phylo(uint64_t argc, char ** argv){
-    philosophersAmount = atoi(argv[1]);
-    for(uint8_t i = 0; i < philosophersAmount; i++){
-        addPhilosopher(i);
-    }
-    printUpdateSem = sys_openSem("printUpdateSem", 0);
-    char * argvView[] = {"view"};
-    uint64_t viewPid = sys_createProcess(view, 1, argvView, 1, argvView[0], fds);
-    
-    char c;
-    while((c = getChar()) != '\0'){
-        if(c == 'a' && philosophersAmount < MAX_PHILOSOPHERS){
-            addPhilosopher(philosophersAmount++);
-        }else if(c == 'r' && philosophersAmount > 0){
-            removePhilosopher(--philosophersAmount);
-        }
-    }
-    for(uint8_t i = 0; i < philosophersAmount; i++){
-        removePhilosopher(i);
-    }
-    sys_killProcess(viewPid);
-    sys_closeSem(printUpdateSem);
-}
-
-void addPhilosopher(uint8_t idx){
-    char name[MAX_BUFFER];
-    numToStr(idx, name);
-    forks[idx] = sys_openSem(name, 1);
-
-    char * argv[] = {name, name};
-    philos[idx].pid = sys_createProcess(philosopher, 2, argv, 1, name, fds);
-    philos[idx].status = THINKING;
-}
-
-void removePhilosopher(uint8_t idx){
-    sys_killProcess(philos[idx].pid);
-    sys_closeSem(forks[idx]);
-}
-
-void view(){
-    while(1){
-        sys_waitSem(printUpdateSem);
-        for(uint8_t i = 0; i < philosophersAmount; i++){
-            printf("%s ", philos[i].status == EATING ? "E" : ".");
-        }
-        newLine();
-    }
-}
-
-void philosopher(uint64_t argc, char ** argv){
-    uint8_t i = atoi(argv[1]);
-    while(1){
-        think(i);
-        take_forks(i);
-        eat(i);
-        put_forks(i);
-    }
-}
-
-void take_forks(int i){
-    if(i % 2 == 1){
-        sys_waitSem(forks[LEFT]);
-        sys_waitSem(forks[RIGHT]);
-    }else{
-        sys_waitSem(forks[RIGHT]);
-        sys_waitSem(forks[LEFT]);
-    }
-}
-
-void put_forks(int i){
-    sys_postSem(forks[LEFT]);
-    sys_postSem(forks[RIGHT]);
-}
-
-void think(int i){
-    philos[i].status = THINKING;
-    sys_postSem(printUpdateSem);
-    sys_sleep(20);
-}
-
-void eat(int i){
-    philos[i].status = EATING;
-    sys_postSem(printUpdateSem);
-    sys_sleep(20);
 void block(){
     if (checkArguments(1)){
         uint64_t pid = atoi(cmdtokens[1]);
@@ -614,6 +508,5 @@ void block(){
             sys_unblockProcess(pid);
             printf("Process with pid %d unblocked successfully\n", atoi(cmdtokens[1]));
         }   
-    }
-    
+    } 
 }

@@ -15,6 +15,9 @@ typedef enum {
 typedef struct {
     uint64_t pid;
     uint64_t ppid;
+    uint64_t argc;
+    char ** argv;
+    function fn;
     uint64_t isEmpty;
     BlockedQueueADT blockedQueue;
     char name[MAX_CHAR_NAME];

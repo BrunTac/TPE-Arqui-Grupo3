@@ -79,12 +79,19 @@ uint64_t createProcess(function fn, int argc, char * argv[], int priority, const
     processes[pid].isEmpty = 0;
     processes[pid].pid = pid;
     processes[pid].ppid = getCurrentProcess();
+    processes[pid].argc = argc;
+    processes[pid].argv = (char **) malloc_mm(stackManager, sizeof(char *) * argc);
+    for(uint64_t i = 0; i < argc; i++){
+        processes[pid].argv[i] = (char *) malloc_mm(stackManager, strlen(argv[i]) + 1);
+        strcpy(processes[pid].argv[i], argv[i]);
+    }
+    processes[pid].fn = fn;
     processes[pid].blockedQueue = newQueue();
     strcpy(processes[pid].name, name);
     processes[pid].fileDescriptors[0] = fds[0];
     processes[pid].fileDescriptors[1] = fds[1];
     processes[pid].fileDescriptors[2] = fds[2];
-    addToScheduler(pid, argc, argv, stackPtr, fn, priority);
+    addToScheduler(pid, processes[pid].argc, processes[pid].argv, stackPtr, processes[pid].fn, priority);
     return pid;
 }
 

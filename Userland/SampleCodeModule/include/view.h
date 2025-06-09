@@ -36,5 +36,6 @@ void loop();
 void nice();
 void kill();
 void block();
+void runPhylo();
 
 #endif
