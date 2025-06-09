@@ -62,8 +62,11 @@ void keyboard_handler() {
         checkCtrl(scanCode);
 
         if(ctrlOn) {
-                if(scanCode == 0x2E)
+                if(scanCode == 0x2E){
                         terminateForeground();
+                }else if(scanCode == 0x20){
+                        bufferKey('\0');
+                }
                 return;
         }
         if(scanCode >= 0x80){

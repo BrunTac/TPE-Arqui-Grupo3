@@ -15,7 +15,7 @@ int64_t pipe_open(const char * name){
         }
         if(pipes[i] && strcmp(pipes[i]->name, name) == 0){
             pipes[i]->openingProcessCount++;
-            return i;
+            return i + FD_AMOUNT;
         }
     }
     if(firstFree == -1){
@@ -23,7 +23,8 @@ int64_t pipe_open(const char * name){
     }
     pipes[firstFree] = malloc(sizeof(Pipe));
 
-    pipes[firstFree]->name = name;
+    pipes[firstFree]->name = malloc(strlen(name) + 1);
+    strcpy(pipes[firstFree]->name, 0);
     pipes[firstFree]->readingIdx = 0;
     pipes[firstFree]->toBeRead = 0;
     pipes[firstFree]->writingQueue = newQueue();

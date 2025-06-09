@@ -21,7 +21,7 @@ enum{
     BURGUNDY = 0x4A1E1B,
     SOFT_RED = 0x6B3A36,
     GRAY_BLUE = 0x1A2B4C,
-    LIGHT_GRAY_BLUE = 0x2F456A
+    LIGHT_GRAY_BLUE = 0x2F456A,
 };
 
 #endif
