@@ -18,6 +18,7 @@ typedef struct {
     uint64_t pid;
     uint64_t ppid;
     uint64_t isEmpty;
+    uintptr_t stackPtr;
     BlockedQueueADT blockedQueue;
     char name[MAX_CHAR_NAME];
     uint8_t fileDescriptors[FD_AMOUNT];

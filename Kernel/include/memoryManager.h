@@ -23,4 +23,8 @@ void *malloc(size_t size);
 
 void free(void *memToFree);
 
+void visualizeMemory(memory_manager_t *mgr);
+
+void viewmem();
+
 #endif

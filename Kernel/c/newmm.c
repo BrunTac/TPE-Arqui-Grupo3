@@ -1,6 +1,14 @@
 #include <memoryManager.h>
 #include <structs.h>
 #include <processManager.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <videoDriver.h>
+#include <lib.h>
+
+#define BLOCK_HEIGHT 3
+#define BLOCKS_START_Y 5
+#define SCREEN_MARGIN 2
 
 memory_manager_t *createMemoryManager_mm(void * manager, void *memoryRegion, size_t regionSize) {
     if(!memoryRegion || !manager || regionSize < sizeof(header_t)) {
@@ -80,4 +88,86 @@ void *malloc(size_t size) {
 
 void free(void *memToFree) {
     free_mm(heapManager, memToFree);
+}
+
+void visualizeMemory(mm_t *mgr) {
+    if (!mgr || !mgr->firstBlock)
+        return;
+
+    clear();
+
+    // obtengo la cantidad de memoria a cargo del manager, la cantidad de memoria usada
+    // y los "fragmentos" (basicamente cantidad de cosas usando mem)
+    size_t totalMemory = mgr->memEnd - mgr->memStart;
+    size_t usedMemory = 0;
+    size_t fragmentCount = 0;
+    header_t *current = mgr->firstBlock;
+
+    // calculo tanto la cantidad de memoria usada como los fragmentos
+    while (current) {
+        if (!current->isFree) {
+            usedMemory += current->size + sizeof(header_t);
+        }
+        fragmentCount++;
+        current = current->next;
+    }
+
+    // imprimo lo anterior (mem total, mem usada y cant fragmentos)
+    char buffer[20];
+    uintToBase(totalMemory, buffer, 10);
+    prints("Memoria total: ", WHITE, BLACK); prints(buffer, WHITE, BLACK); print_newline();
+    uintToBase(usedMemory, buffer, 10);
+    prints("Memoria usada: ", WHITE, BLACK); prints(buffer, WHITE, BLACK); print_newline();
+    uintToBase(fragmentCount, buffer, 10);
+    prints("Fragment count: ", WHITE, BLACK); prints(buffer, WHITE, BLACK); print_newline();
+
+    // Visualize memory blocks
+    /* current = mgr->firstBlock;
+    int blockX = SCREEN_MARGIN;
+    int maxWidth = getWidth() - (2 * SCREEN_MARGIN);
+
+    while (current) {
+        // Calculate block width proportional to its size
+        int blockWidth = (current->size * maxWidth) / totalMemory;
+        if (blockWidth < 4) blockWidth = 4; // Minimum visible width
+
+        // Draw block
+        Color blockColor = current->isFree ? GREEN : RED;
+        
+        // Draw block border
+        for (int x = blockX; x < blockX + blockWidth; x++) {
+            printsInPos("-", x, BLOCKS_START_Y, WHITE, BLACK);
+            printsInPos("-", x, BLOCKS_START_Y + BLOCK_HEIGHT, WHITE, BLACK);
+        }
+        for (int y = BLOCKS_START_Y; y <= BLOCKS_START_Y + BLOCK_HEIGHT; y++) {
+            printsInPos("|", blockX, y, WHITE, BLACK);
+            printsInPos("|", blockX + blockWidth - 1, y, WHITE, BLACK);
+        }
+
+        // Fill block
+        for (int y = BLOCKS_START_Y + 1; y < BLOCKS_START_Y + BLOCK_HEIGHT; y++) {
+            for (int x = blockX + 1; x < blockX + blockWidth - 1; x++) {
+                printsInPos(" ", x, y, WHITE, blockColor);
+            }
+        }
+
+        // Print block size
+        uintToBase(current->size, buffer, 10);
+        int textX = blockX + (blockWidth / 2) - (strlen(buffer) / 2);
+        printsInPos(buffer, textX, BLOCKS_START_Y + 1, WHITE, blockColor);
+
+        blockX += blockWidth;
+        current = current->next;
+    }
+
+    // Print legend
+    printsInPos("Legend:", SCREEN_MARGIN, BLOCKS_START_Y + BLOCK_HEIGHT + 2, WHITE, BLACK);
+    printsInPos("[ ]", SCREEN_MARGIN, BLOCKS_START_Y + BLOCK_HEIGHT + 3, WHITE, GREEN);
+    printsInPos(" - Free Memory", SCREEN_MARGIN + 4, BLOCKS_START_Y + BLOCK_HEIGHT + 3, WHITE, BLACK);
+    printsInPos("[ ]", SCREEN_MARGIN, BLOCKS_START_Y + BLOCK_HEIGHT + 4, WHITE, RED);
+    printsInPos(" - Used Memory", SCREEN_MARGIN + 4, BLOCKS_START_Y + BLOCK_HEIGHT + 4, WHITE, BLACK); */
+}
+
+void viewmem() {
+    visualizeMemory(heapManager);
 }

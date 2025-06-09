@@ -15,8 +15,8 @@ int64_t exitProcess(uint64_t pid){
         processes[pid].isEmpty = 1;
         removeFromScheduler(pid);
 
-    emptyQueue(processes[pid].blockedQueue);
-    free_mm(stackManager, stackPtr);
+        emptyQueue(processes[pid].blockedQueue);
+        free_mm(stackManager, (void *) processes[pid].stackPtr);
     
         int_20h();
         return 0;
@@ -78,6 +78,7 @@ uint64_t createProcess(function fn, int argc, char * argv[], int priority, const
     processes[pid].pid = pid;
     processes[pid].ppid = getCurrentProcess();
     processes[pid].blockedQueue = newQueue();
+    processes[pid].stackPtr = (uintptr_t) stackPtr;
     strcpy(processes[pid].name, name);
     processes[pid].fileDescriptors[0] = fds[0];
     processes[pid].fileDescriptors[1] = fds[1];
@@ -125,7 +126,5 @@ int8_t getErrorFd(uint64_t pid){
 uint8_t isValidPid(uint64_t pid){
     return pid > 0 && pid < MAX_PROCESSES && !processes[pid].isEmpty;
 }
-
-
 
 

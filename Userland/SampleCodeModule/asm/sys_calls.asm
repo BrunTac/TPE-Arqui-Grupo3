@@ -28,6 +28,10 @@ GLOBAL sys_pipeOpen
 GLOBAL sys_pipeClose
 GLOBAL sys_changePriority
 GLOBAL sys_killProcess
+GLOBAL sys_malloc
+GLOBAL sys_free
+GLOBAL sys_memset
+GLOBAL sys_viewmem
 
 section .text
 
@@ -178,5 +182,25 @@ sys_changePriority:
 
 sys_killProcess:
     mov rax, 30
+    int 80h
+    ret
+
+sys_malloc:
+    mov rax, 31
+    int 80h
+    ret
+
+sys_free: 
+    mov rax, 32
+    int 80h
+    ret
+
+sys_memset: 
+    mov rax, 33
+    int 80h
+    ret
+
+sys_viewmem:
+    mov rax, 34
     int 80h
     ret

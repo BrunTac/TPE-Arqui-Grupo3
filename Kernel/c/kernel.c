@@ -58,7 +58,7 @@ int main()
 	initializeProcessManager();
 
 	/* 
-	char *args[] = { "100", NULL };  // or whatever limit you want
+	char *args[] = { "4096", NULL };  // or whatever limit you want
     test_mm(1, args);
 
     // If test_mm loops forever, the kernel will hang there.

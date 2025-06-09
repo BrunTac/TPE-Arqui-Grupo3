@@ -8,7 +8,9 @@ typedef uint32_t Color;
 enum{
     WHITE = 0xFFFFFF,
     BLACK = 0x000000,
-    RED = 0xFF0000
+    RED = 0xFF0000,
+    GREEN = 0x008000,
+    YELLOW = 0xFFFF00 
 };
 
 void putPixel(Color color, uint64_t x, uint64_t y);

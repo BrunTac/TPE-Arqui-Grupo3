@@ -1,7 +1,7 @@
 #include "pipes.h"
 #include "semaphores.h"
 #include "structs.h"
-#include "newmm.h"
+#include "memoryManager.h"
 #include "processManager.h"
 #include "scheduler.h"
 
@@ -21,7 +21,7 @@ uint8_t pipe_open(const char * name){
     if(firstFree == -1){
         //ERROR ????
     }
-    pipes[firstFree] = malloc_mm(getHeap(), sizeof(Pipe));
+    pipes[firstFree] = malloc(sizeof(Pipe));
 
     pipes[firstFree]->name = name;
     pipes[firstFree]->readingIdx = 0;
@@ -95,7 +95,7 @@ void pipe_close(uint8_t pipeId){
     if(pipes[idx]->openingProcessCount-- == 1){
         sem_post(pipes[idx]->sem);
         sem_close(pipes[idx]->sem);
-        free_mm(getHeap(), pipes[idx]);
+        free(pipes[idx]);
         pipes[idx] = NULL;
         return ;
     }

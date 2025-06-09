@@ -1,14 +1,17 @@
 #include <keyboard.h>
+#include <processManager.h>
 #include <stdint.h>
-
 
 char buffer[BUFFER_SIZE];
 int head = 0;
 int tail = 0;
 int shiftOn = 0;
+int ctrlOn = 0;
 char lastPressed = '\0';
 
 extern uint8_t readKey();
+void checkCtrl(uint8_t scanCode);
+void checkShift(uint8_t scanCode);
 
 char scanCodeToAscii_shiftOff[0x60] = {
             0x00, 0x1B, '1', '2', '3', '4', '5', '6',
@@ -51,13 +54,13 @@ void keyboard_handler() {
         uint8_t scanCode = readKey();
         char key;
 
-        if(scanCode == 0x2A || scanCode == 0x36) {
-                shiftOn = 1;
-                return;
-        }
+        checkShift(scanCode);
 
-        if((scanCode == 0xAA || scanCode == 0xB6) && shiftOn) {
-                shiftOn = 0;
+        checkCtrl(scanCode);
+
+        if(ctrlOn) {
+                if(scanCode == 0x2E)
+                        terminateForeground();
                 return;
         }
 
@@ -71,7 +74,32 @@ void keyboard_handler() {
 
         bufferKey(key);
         lastPressed = key;
+}
 
+void checkShift(uint8_t scanCode) {
+        if(scanCode == 0x2A || scanCode == 0x36) {
+                shiftOn = 1;
+                return;
+        }
+
+        if((scanCode == 0xAA || scanCode == 0xB6) && shiftOn) {
+                shiftOn = 0;
+                return;
+        }
+        return;
+}
+
+void checkCtrl(uint8_t scanCode) {
+        if(scanCode == 0x1D) {
+                ctrlOn = 1;
+                return;
+        }
+
+        if(scanCode == 0x9D && ctrlOn) {
+                ctrlOn = 0;
+                return;
+        }
+        return;
 }
 
 char getKey() {
@@ -79,7 +107,6 @@ char getKey() {
                 char toReturn = buffer[tail];
                 tail = (tail + 1) % BUFFER_SIZE;
                 return toReturn;
-
         } else
                 return '\0';
 }

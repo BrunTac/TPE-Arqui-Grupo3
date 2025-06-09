@@ -25,5 +25,7 @@ int8_t getInputFd(uint64_t pid);
 int8_t getOutputFd(uint64_t pid);
 int8_t getErrorFd(uint64_t pid);
 uint8_t isValidPid(uint64_t pid);
+void ctrlC();
+void ctrlD();
 
 #endif

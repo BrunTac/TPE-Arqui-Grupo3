@@ -6,6 +6,7 @@
 #include <snake.h>
 #include <structs.h>
 #include <phylo.h>
+#include <tests.h>
 
 extern void opcodeError();
 
@@ -230,6 +231,10 @@ void filter(){
     }
 }
 
+void wrap_testmm() {
+    testmm();
+}
+
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
@@ -291,7 +296,12 @@ void commandline_handler(){
         char * argv[] = {"phylo", "5"};
         uint64_t pid = sys_createProcess(phylo, 2, argv, 1, argv[0], defaultFds);
         sys_waitpid(pid);
-    }else{
+    } else if (strcmp(cmd, "testmm") == 0) {
+        uint64_t pid = sys_createProcess(wrap_testmm, 0, 0, 1, "testmm", defaultFds);
+        sys_waitpid(pid);
+    } else if (strcmp(cmd, "viewmem") == 0) {
+        sys_viewmem();
+    } else {
         invalid_command();
     }
 }

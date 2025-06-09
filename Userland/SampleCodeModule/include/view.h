@@ -36,4 +36,6 @@ void loop();
 void nice();
 void kill();
 
+void wrap_testmm();
+
 #endif
