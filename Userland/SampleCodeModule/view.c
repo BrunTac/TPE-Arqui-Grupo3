@@ -3,9 +3,11 @@
 #include <sys_calls.h>
 #include <sounds.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <snake.h>
 #include <structs.h>
 #include <phylo.h>
+#include "ipc.h"
 
 extern void opcodeError();
 
@@ -18,107 +20,46 @@ int exited = 0;
 int zoomedIn = 0;
 uint8_t defaultFds[FD_AMOUNT];
 
+uint8_t pipes[MAX_PIPES];
+uint8_t pipeCounter;
+uint8_t isBackground;
+
 Command commands[] = {
-    {"menu", "prints this command menu", menu}
+    {"menu", "prints this command menu", menu, 0, 1}, {"time", "prints the current time", time, 1, 0}, 
+    {"showregisters", "prints the saved register values. To save the register values, press the TAB key at any time", showregisters, 1, 0},
+    {"clear", "clears the screen", clear, 1, 0}, {"exception", "tests exceptions. Use one of the following arguments:", test_exception, 1, 0},
+    {"zoomin", "increases the character font", zoomin, 1, 0}, {"zoomout", "decreases the character font", zoomout, 1, 0},
+    {"snake", "play Snake game", snake, 0, 0}, {"exit", "exits the terminal", exitShell, 1, 0}, {"ps", "list running processes", ps, 0, 1},
+    {"loop", "run a looped program that prints its pid", loop, 0, 1}, {"cat", "concatenate and display received content", cat, 0, 0},
+    {"wc", "counts lines, words and chars", wc, 0, 0}, {"filter", "filters vocals", filter, 0, 0}, {"block", "blocks/unblocks process given a pid", block, 1, 0},
+    {"kill", "terminates a process given a pid", kill, 1, 0}, {"nice", "updates priority, given a pid and a prority", nice, 1, 0},
+    {"phylo", "displays the philosophers-comensals problem", runPhylo, 0, 0}, {NULL, NULL, NULL}
 };
-
-void cat(){
-    int charsInline = 0;
-    char c;
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                charsInline--;
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                charsInline = 0;
-            }else{
-                charsInline++;
-            }
-            putChar(c);
-        }
-    }
-}
-
-void wc(){
-    char line[MAX_BUFFER];
-    
-    int lines = 0;
-    int words = 0;
-    int chars = 0;
-    int charsInline = 0;
-    char c;
-
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                chars--;
-                charsInline--;
-                if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
-                    words--;
-                }
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                lines++;
-                charsInline = 0;
-            }else{
-                if(!isSpace(c) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
-                    words++;
-                }
-                chars++;
-                charsInline++;
-            }
-            putChar(c);
-        }
-    }
-    if(chars > 0){
-        lines++;
-    }
-    printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
-}
-
-void filter(){
-    int charsInline = 0;
-    char c;
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                charsInline--;
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                charsInline = 0;
-            }else{
-                charsInline++;
-            }
-            if(!isVocal(c)){
-                putChar(c);
-            }
-        }
-    }
-}
 
 void printMenu(){
     newLine();
     printDashLine();
     printf("COMMAND MENU%n");
     printDashLine();
-    printf("- menu............................prints this command menu%n");
-    printf("- time............................prints the current time%n");
-    printf("- showregisters...................prints the saved register values. To save the register values, press the TAB key at any time%n");
-    printf("- clear...........................clears the screen%n");
-    printf("- exception.......................tests exceptions. Use one of the following arguments:%n");
-    printf("    -opcode.......................throws the 'invalid opcode' exception%n");
-    printf("    -divzero......................throws the 'zero division' exception%n");
-    printf("- zoomin..........................increases the character font%n");
-    printf("- zoomout.........................decreases the character font%n");
-    printf("- snake...........................play Snake game%n");
-    printf("- exit............................exits the terminal%n%n");
+
+    for(int i = 0; commands[i].name != NULL; i++){
+        int dots = 32 - strlen(commands[i].name);
+        printf("- %s", commands[i].name);
+        for(int j = 0; j < dots; j++){
+            putChar('.');
+        }
+        printf("%s%n", commands[i].description);
+        if(strcmp("exception", commands[i].name) == 0){
+            printf("    -opcode.......................throws the 'invalid opcode' exception%n");
+            printf("    -divzero......................throws the 'zero division' exception%n");
+        }
+    }
+    newLine();
+    printf("PROCESS MODIFIERS%n");
+    printf("- Use '|' between processes commands to pipe them%n");
+    printf("- Use '&' after a process to run it in background%n");
+    newLine();
+    putChar('\0');
 }
 
 void initialize(){
@@ -251,10 +192,95 @@ void consumer(uint64_t argc, char ** argv){
     }
 }
 
+int8_t getCommand(char * name){
+    for(uint8_t i = 0; commands[i].name != NULL; i++){
+        if(strcmp(commands[i].name, name) == 0){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void pipe_handler(){
+    uint64_t pids[MAX_PIPES + 1];
+    uint8_t i;
+    for(i = 0; i < pipeCounter; i++){
+        char name[] = {'p', 'i', 'p', 'e', ' ', i + '0', '\0'};
+        pipes[i] = sys_pipeOpen(name);
+    }
+    int8_t cmdIdx = getCommand(cmdtokens[0]);
+    uint8_t fds[] = {STDIN, pipes[0], STDERR};
+    char * argv[] = {commands[cmdIdx].name};
+    pids[0] = sys_createProcess(commands[cmdIdx].fn, 1, argv, DEFAULT_PRIORITY, argv[0], fds);
+    for(i = 1; i < pipeCounter; i++){
+        cmdIdx = getCommand(cmdtokens[i * 2]);
+        fds[0] = pipes[i - 1];
+        fds[1] = pipes[i];
+        argv[0] = commands[cmdIdx].name;
+        pids[i] = sys_createProcess(commands[cmdIdx].fn, 1, argv, DEFAULT_PRIORITY, argv[0], fds);
+    }
+    cmdIdx = getCommand(cmdtokens[i * 2]);
+    fds[0] = pipes[i - 1];
+    fds[1] = STDOUT;
+    argv[0] = commands[cmdIdx].name;
+    pids[i] = sys_createProcess(commands[cmdIdx].fn, 1, argv, DEFAULT_PRIORITY, argv[0], fds);
+
+    for(i = 0; i < pipeCounter; i++){
+        sys_waitpid(pids[i]);
+        sys_pipeClose(pipes[i]);
+    }
+    sys_waitpid(pids[i]);
+}
+
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
-    if(strcmp(cmd, "menu") == 0){
+    isBackground = 0;
+    int8_t i;
+    for(i = 0; i < tokens; i++){
+        if(strcmp(cmdtokens[i], "|") == 0){
+            if(i % 2 == 0){
+                printError("Invalid use of pipes. Try 'processA | processB | process C | ... '%n");
+                return ;
+            }
+            if(++pipeCounter == MAX_PIPES){
+                printError("You can only use up to %d pipes%n", MAX_PIPES);
+                return ;
+            }
+        }else if(strcmp(cmdtokens[i], "&") == 0){
+            if(i == 0 || i != tokens - 1){
+                printError("Invalid way to run background. Try 'process &'%n");
+                return ;
+            }
+            isBackground = 1;
+        }
+    }
+    if(isBackground && pipeCounter > 0){
+        printError("Can not pipe and run in background at the same time%n");
+        return ;
+    }
+    if(pipeCounter > 0){
+        if(tokens % 2 == 0 || pipeCounter < (tokens - 1) / 2){
+            printError("Invalid use of pipes. Try 'processA | processB | process C | ... '%n");
+        }else{
+            pipe_handler();
+        }
+        return ;
+    }
+    if((i = getCommand(cmd)) < 0){
+        invalid_command();
+        return ;
+    }
+    if(isBackground && !commands[i].canBeBackground){
+        printError("Can not run command '%s' on background%n", cmd);
+    }else{
+        char * argv[] = {commands[i].name};
+        uint64_t pid = sys_createProcess(commands[i].fn, 1, argv, DEFAULT_PRIORITY, argv[0], defaultFds);
+        if(!isBackground){
+            sys_waitpid(pid);
+        }
+    }
+    /*if(strcmp(cmd, "menu") == 0){
         menu();
     }else if(strcmp(cmd, "clear") == 0){
         clear();
@@ -316,7 +342,7 @@ void commandline_handler(){
         block();
     }else{
         invalid_command();
-    }
+    }*/
 }
 
 void runPhylo(){
@@ -340,7 +366,7 @@ int checkArguments(int arguments){
         notEnoughArguments(arguments);
         return 0;
     }
-    if(tokens > arguments + 1){
+    if(tokens > arguments + 1 && pipeCounter == 0){
         tooManyArguments(arguments);
         return 0;
     }
@@ -355,7 +381,6 @@ void menu(){
 
 void clear(){
     if (checkArguments(0)){
-        // vacia la pantalla y ubica los punteros de posicion en el principio
         sys_clear();
     }
 }
@@ -432,7 +457,6 @@ void invalid_command(){
     printError("Error. '%s' is an invalid command.%n", cmdtokens[0]);
     printf("%nToo see all available commands enter: 'menu'");
 }
-
 
 void test_opcode_exep(){
     opcodeError();

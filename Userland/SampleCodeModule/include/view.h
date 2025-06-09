@@ -4,6 +4,8 @@
 #include <stdint.h>
 
 #define MAX_TOKENS 10
+#define MAX_PIPES 10
+#define DEFAULT_PRIORITY 1
 
 void initialize();
 void terminal();

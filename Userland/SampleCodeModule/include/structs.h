@@ -22,9 +22,11 @@ typedef struct {
 } ProcessInfo;
 
 typedef struct{
-    const char * name;
-    const char * description;
+    char * name;
+    char * description;
     function fn;
+    uint8_t isBuiltin;
+    uint8_t canBeBackground;
 } Command;
 
 #endif
