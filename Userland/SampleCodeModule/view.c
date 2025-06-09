@@ -34,7 +34,9 @@ Command commands[] = {
     {"loop", "run a looped program that prints its pid", runLoop, 1, 0, 1}, {"cat", "concatenate and display received content", runCat, 1, 0, 0},
     {"wc", "counts lines, words and chars", runWc, 1, 0, 0}, {"filter", "filters vocals", runFilter, 1, 0, 0}, {"block", "blocks/unblocks process given a pid", block, 2, 1, 0},
     {"kill", "terminates a process given a pid", kill, 2, 1, 0}, {"nice", "updates priority, given a pid and a prority", nice, 3, 1, 0},
-    {"phylo", "displays the philosophers-comensals problem given an initial amount", runPhylo, 2, 0, 0}, {NULL, NULL, NULL, 0, 0, 0}
+    {"phylo", "displays the philosophers-comensals problem given an initial amount", runPhylo, 2, 0, 0}, {"testmm" , "tests memory manager", runTestmm, 1, 0, 1},
+    {"mem", "displays memory state", runViewMem, 1, 1, 1}, {"testPrio" , "tests priority on procesess", runTestprio, 1, 0, 1}, {"testProcesses" , "tests processes", runTestprocesses, 1, 0, 1},
+    {NULL, NULL, NULL, 0, 0, 0}
 };
 
 void initialize(){
@@ -161,17 +163,6 @@ void pipe_handler(){
     }
 }
 
-void runTestmm() {
-    testmm();
-}
-
-void runTestprio() {
-    testprio();
-}
-
-void runTestprocesses() {
-    testprocesses();
-}
 
 void commandline_handler(){
     newLine();
@@ -355,6 +346,22 @@ void runWc(){
 
 void runFilter(){
     filter();
+}
+
+void runTestmm() {
+    testmm();
+}
+
+void runTestprio() {
+    testprio();
+}
+
+void runTestprocesses() {
+    testprocesses();
+}
+
+void runViewMem(){
+    sys_viewmem();
 }
 
 void invalid_command(char * cmd){

@@ -36,12 +36,14 @@ void runPs();
 void runCat();
 void runWc();
 void runFilter();
+void runViewMem();
+void runTestprocesses();
+void runTestprio();
+void runTestmm();
 
 void printHeader();
 void invalid_command();
 
 int checkArguments(int arguments);
-
-void wrap_testmm();
 
 #endif
