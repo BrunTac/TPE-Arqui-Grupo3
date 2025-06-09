@@ -25,7 +25,8 @@ typedef struct{
     char * name;
     char * description;
     function fn;
-    uint8_t isBuiltin;
+    uint64_t argc;
+    uint8_t isBuiltIn;
     uint8_t canBeBackground;
 } Command;
 

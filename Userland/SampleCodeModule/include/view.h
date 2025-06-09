@@ -13,31 +13,34 @@ void terminal();
 void getCommandline();
 void tokenize();
 void commandline_handler();
+void pipe_handler();
+int8_t getCommand(char * name);
 
-void menu();
+// BUILT-IN COMMANDS
 void clear();
 void time();
 void showregisters();
-void test_exception();
-void fontsize();
-void snake();
-void beep();
 void zoomin();
 void zoomout();
+void nice(uint64_t argc, char * argv[]);
+void kill(uint64_t argc, char * argv[]);
+void block(uint64_t argc, char * argv[]);
 void exitShell();
-void invalid_command();
 
-void test_opcode_exep();
-void test_divzero_exep();
+// PROCESS COMMANDS
+void menu();
+void runSnake();
+void runPhylo(uint64_t argc, char * argv[]);
+void runLoop();
+void runPs();
+void runCat();
+void runWc();
+void runFilter();
 
 void printHeader();
 void printDashLine();
-void printMenu();
-void ps();
-void loop();
-void nice();
-void kill();
-void block();
-void runPhylo();
+void invalid_command();
+
+int checkArguments(int arguments);
 
 #endif

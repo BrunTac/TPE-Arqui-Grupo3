@@ -223,7 +223,6 @@ void print(const char c, Color fnt, Color bgd){
         case '\0':
         	break;
         default:
-
             putChar(c, fnt , bgd);
         	break;
     }

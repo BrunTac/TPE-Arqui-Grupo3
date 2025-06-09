@@ -2,10 +2,18 @@
 #include "libc.h"
 #include "sys_calls.h"
 
-#define MAX_PHILOSOPHERS 9
-#define INIT_PHILOSOPHERS 5
+void addPhilosopher(uint8_t idx);
+void removePhilosopher(uint8_t idx);
+void view();
+void philosopher(uint64_t argc, char ** argv);
+uint8_t left(uint8_t i);
+uint8_t right(uint8_t i);
+void take_forks(int i);
+void put_forks(int i);
+void think(int i);
+void eat(int i);
 
-char * names[] = {"Kaladin", "Dalinar", "Shallan", "Adolin", "Szeth", "Jasnah", "Navani", "Lift", "Wit"};
+char * names[] = {"Lift", "Wit", "Szeth", "Jasnah", "Adolin", "Kaladin", "Shallan", "Dalinar", "Navani"};
 
 typedef enum {
     THINKING = 0,
@@ -26,17 +34,16 @@ uint8_t philosophersAmount;
 uint8_t fds[] = {STDIN, STDOUT, STDERR};
 
 uint8_t printUpdateSem;
-
 uint8_t printing;
 
-uint8_t mutex;
+//uint8_t mutex;
 
-void phylo(){
-    philosophersAmount = INIT_PHILOSOPHERS;
+void phylo(uint8_t  philos){
+    philosophersAmount = philos;
     for(uint8_t i = 0; i < philosophersAmount; i++){
         addPhilosopher(i);
     }
-    mutex = sys_openSem("mutex", 1);
+    //mutex = sys_openSem("mutex", 1);
 
     printUpdateSem = sys_openSem("printUpdateSem", 1);
     printing = 0;
@@ -105,7 +112,7 @@ void philosopher(uint64_t argc, char ** argv){
 
 void take_forks(int i){
     
-    sys_waitSem(mutex);
+    //sys_waitSem(mutex);
     if(i % 2 == 1){
         philos[i].waitingLeft = 1;
         sys_waitSem(forks[left(i)]);
@@ -121,7 +128,7 @@ void take_forks(int i){
         sys_waitSem(forks[left(i)]);
         philos[i].waitingLeft = 0;
     }
-    sys_postSem(mutex);
+    //sys_postSem(mutex);
 }
 
 void put_forks(int i){

@@ -137,9 +137,8 @@ void scanf(const char *format, void *variable) {
 }
 
 char getChar(){
-    char c = '\0';
-    while(c == '\0')
-        sys_read(&c);
+    char c;
+    sys_read(&c);
     return c;
 }
 
@@ -197,7 +196,8 @@ int isSpace(char c){
 int isVocal(char c){
     return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
 }
- int atoi(const char *str) {
+
+int atoi(const char *str) {
     int result = 0;
     int sign = 1;
 

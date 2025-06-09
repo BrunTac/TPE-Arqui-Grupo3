@@ -52,7 +52,7 @@ static int64_t sys_writeChar(char c, Color font, Color background, uint8_t isErr
 static int64_t sys_read(char * c) {
     uint64_t pid = getCurrentProcess();
     int8_t fd = getInputFd(pid);
-     if(fd < 0){
+    if(fd < 0){
         //ERROR???
         return 0;
     }

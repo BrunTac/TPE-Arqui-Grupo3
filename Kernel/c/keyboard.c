@@ -1,12 +1,16 @@
 #include <keyboard.h>
 #include <stdint.h>
-
+#include "processManager.h"
+#include "scheduler.h"
 
 char buffer[BUFFER_SIZE];
 int head = 0;
 int tail = 0;
+int toBeRead = 0;
+int readingIdx = 0;
 int shiftOn = 0;
 char lastPressed = '\0';
+uint64_t waitingPid;
 
 extern uint8_t readKey();
 
@@ -40,10 +44,9 @@ char scanCodeToAscii_shiftOn[0x60] = {
 };
 
 void bufferKey(char key) {
-        if((head + 1) % BUFFER_SIZE != tail) {
-
-                buffer[head] = key;
-                head = (head + 1) % BUFFER_SIZE;
+        buffer[(readingIdx + toBeRead) % BUFFER_SIZE] = key;
+        if(toBeRead++ == 0){
+                unblockProcess(waitingPid);
         }
 }
 
@@ -75,18 +78,19 @@ void keyboard_handler() {
 }
 
 char getKey() {
-        if(head != tail) {
-                char toReturn = buffer[tail];
-                tail = (tail + 1) % BUFFER_SIZE;
-                return toReturn;
-
-        } else
-                return '\0';
+        while(toBeRead == 0){
+                waitingPid = getCurrentProcess();
+                blockProcess(waitingPid);
+                yieldProcess(waitingPid);
+        }
+        toBeRead--;
+        char c = buffer[readingIdx];
+        readingIdx = (readingIdx + 1) % BUFFER_SIZE;
+        return c;
 }
 
 void emptyBuffer(){
-        head = 0;
-        head = tail;
+        toBeRead = 0;
 }
 
 char getLastPressed(){

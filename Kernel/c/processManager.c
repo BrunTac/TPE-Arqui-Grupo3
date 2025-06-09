@@ -11,6 +11,10 @@ mm_t *stackManager;
 
 int64_t exitProcess(uint64_t pid){ 
     if (isValidPid(pid)){
+        int8_t fd = getOutputFd(pid);
+        if(fd != STDOUT){
+            pipe_write(fd, '\0');
+        }
         processes[pid].isEmpty = 1;
         removeFromScheduler(pid);
 

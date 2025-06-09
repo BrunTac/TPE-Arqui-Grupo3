@@ -1,5 +1,30 @@
-#include "ipc.h"
+#include "processes.h"
 #include "libc.h"
+#include "sys_calls.h"
+#include <stdint.h>
+
+void loop(){
+    int pid = sys_getPid();
+    for (uint8_t i = 0; i < 10; i++){
+        printf("This is my pid: %d\n", pid);
+        sys_sleep(20);
+    }
+}
+
+void ps() {
+    ProcessInfo processes[MAX_PROCESSES];
+    int count = sys_getProcessInfo(processes);
+
+    for (int i = 0; i < count; i++) {
+        printf("PID: %d | PPID: %d | PRI: %d | STATE: %d | NAME: %s | RSP: %d\n",
+               processes[i].pid,
+               processes[i].ppid,
+               processes[i].priority,
+               processes[i].status,
+               processes[i].name,
+               processes[i].rsp);
+    }
+}
 
 void cat(){
     int charsInline = 0;
@@ -38,7 +63,6 @@ void wc(){
                 if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
                     words--;
                 }
-                putChar(c);
             }
         }else{
             if(c == '\n'){
@@ -51,7 +75,6 @@ void wc(){
                 chars++;
                 charsInline++;
             }
-            putChar(c);
         }
     }
     if(chars > 0){
@@ -81,3 +104,41 @@ void filter(){
         }
     }
 }
+
+/*void ps1() {
+    uint8_t sem1 = sys_openSem("sem1", 1);
+    uint8_t sem2 = sys_openSem("sem2", 0);
+    for (int i = 0; i < 10; i++) {
+        sys_waitSem(sem1);
+        printf("1%n");
+        sys_postSem(sem2);
+    }
+    sys_closeSem(sem1);
+    sys_closeSem(sem2);
+}
+
+void ps2() {
+    uint8_t sem1 = sys_openSem("sem1", 1);
+    uint8_t sem2 = sys_openSem("sem2", 0);
+    for (int i = 0; i < 10; i++) {
+        sys_waitSem(sem2);
+        printf("2%n");
+        sys_postSem(sem1);
+    }
+    sys_closeSem(sem1);
+    sys_closeSem(sem2);
+}
+
+void p1(uint64_t argc, char ** argv){
+    for(int i = 0; i < 10; i++){
+        printf("1%n");
+        sys_sleep(20);
+    }
+}
+
+void p2(uint64_t argc, char ** argv){
+    for(int i = 0; i < 10; i++){
+        printf("2%n");
+        sys_sleep(20);
+    }
+}*/
