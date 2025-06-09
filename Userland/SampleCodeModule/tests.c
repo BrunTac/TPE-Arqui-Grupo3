@@ -372,7 +372,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   return 0;
 }
 
-uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, pares de procesos, use_sem, 0}
   int64_t processPairs;
   
   if((processPairs = satoi(argv[1])) <= 0)
