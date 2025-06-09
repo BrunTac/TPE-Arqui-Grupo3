@@ -42,4 +42,6 @@ void invalid_command();
 
 int checkArguments(int arguments);
 
+void wrap_testmm();
+
 #endif

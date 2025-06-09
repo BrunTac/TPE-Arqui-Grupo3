@@ -82,6 +82,14 @@ int64_t changePriority(uint64_t pid, uint8_t priority){
     return -1;
 } 
 
+void terminateForeground() {
+    for(int i = 2 ; i < MAX_PROCESSES ; i++)
+        if(processes[i].status == READY) {
+            yieldProcess(i);
+            exitProcess(i);
+        }
+}
+
 int64_t getStatus(uint64_t pid){
     if (isValidPid(pid)){
         return processes[pid].status;

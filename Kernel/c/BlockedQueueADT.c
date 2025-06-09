@@ -1,5 +1,5 @@
 #include "BlockedQueueADT.h"
-#include "newmm.h"
+#include "memoryManager.h"
 #include "processManager.h"
 
 typedef struct Node {
@@ -13,7 +13,7 @@ struct BlockedQueue {
 };
 
 BlockedQueueADT newQueue(void) {
-    BlockedQueueADT queue = malloc_mm(getHeap(), sizeof(struct BlockedQueue));
+    BlockedQueueADT queue = malloc(sizeof(struct BlockedQueue));
     if (queue == NULL) return NULL;
     queue->head = queue->tail = NULL;
     return queue;
@@ -22,7 +22,7 @@ BlockedQueueADT newQueue(void) {
 void enqueue(BlockedQueueADT queue, uint64_t pid) {
     if (!queue) return;
 
-    Node* newNode = malloc_mm(getHeap(), sizeof(Node));
+    Node* newNode = malloc(sizeof(Node));
     if (!newNode) return;
 
     newNode->pid = pid;
@@ -49,7 +49,7 @@ void dequeue(BlockedQueueADT queue) {
     }
 
     unblockProcess(pid);
-    free_mm(getHeap(), temp);
+    free(temp);
 }
 
 void freeQueue(BlockedQueueADT queue) {
@@ -58,11 +58,11 @@ void freeQueue(BlockedQueueADT queue) {
     Node* current = queue->head;
     while (current) {
         Node* next = current->next;
-        free_mm(getHeap(), current);
+        free(current);
         current = next;
     }
 
-    free_mm(getHeap(), queue);
+    free(queue);
 }
 
 uint8_t isQueued(BlockedQueueADT queue, uint64_t pid){

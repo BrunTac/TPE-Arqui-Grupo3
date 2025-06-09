@@ -28,6 +28,10 @@ GLOBAL sys_pipeOpen
 GLOBAL sys_pipeClose
 GLOBAL sys_changePriority
 GLOBAL sys_killProcess
+GLOBAL sys_malloc
+GLOBAL sys_free
+GLOBAL sys_memset
+GLOBAL sys_viewmem
 GLOBAL sys_unblockProcess
 GLOBAL sys_blockProcess
 GLOBAL sys_getProcessStatus
@@ -184,17 +188,37 @@ sys_killProcess:
     int 80h
     ret
 
-sys_blockProcess:
+sys_malloc:
     mov rax, 31
     int 80h
     ret
 
-sys_unblockProcess:
+sys_free: 
     mov rax, 32
     int 80h
     ret
 
-sys_getProcessStatus:
+sys_memset: 
     mov rax, 33
+    int 80h
+    ret
+
+sys_viewmem:
+    mov rax, 34
+    int 80h
+    ret
+
+sys_blockProcess:
+    mov rax, 35
+    int 80h
+    ret
+
+sys_unblockProcess:
+    mov rax, 36
+    int 80h
+    ret
+
+sys_getProcessStatus:
+    mov rax, 37
     int 80h
     ret

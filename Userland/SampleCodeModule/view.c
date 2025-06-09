@@ -7,8 +7,14 @@
 #include <snake.h>
 #include <structs.h>
 #include <phylo.h>
+<<<<<<< HEAD
 #include "processes.h"
 #include "tests.h"
+=======
+#include <tests.h>
+
+extern void opcodeError();
+>>>>>>> memoryManager
 
 char user[MAX_BUFFER];
 char cmdline[MAX_BUFFER];
@@ -158,9 +164,22 @@ void pipe_handler(){
     sys_waitpid(pids[i]);
 }
 
+void runTestmm() {
+    testmm();
+}
+
+void runTestprio() {
+    testprio();
+}
+
+void runTestprocesses() {
+    testprocesses();
+}
+
 void commandline_handler(){
     newLine();
     char * cmd = cmdtokens[0];
+<<<<<<< HEAD
     isBackground = 0;
     pipeCounter = 0;
     int8_t i;
@@ -195,6 +214,80 @@ void commandline_handler(){
         return ;
     }
     if((i = getCommand(cmd)) < 0){
+=======
+    if(strcmp(cmd, "menu") == 0){
+        menu();
+    }else if(strcmp(cmd, "clear") == 0){
+        clear();
+    }else if(strcmp(cmd, "time") == 0){
+        time();
+    }else if(strcmp(cmd, "showregisters") == 0){
+        showregisters();
+    }else if(strcmp(cmd, "exception") == 0){
+        test_exception();
+    }else if(strcmp(cmd, "snake") == 0){
+        snake();
+    }else if(strcmp(cmd, "zoomin") == 0){
+        zoomin();
+    }else if(strcmp(cmd, "zoomout") == 0){
+        zoomout();
+    }else if(strcmp(cmd, "exit") == 0) {
+        exitShell();
+    }else if(strcmp(cmd, "test1") == 0){
+        sys_createProcess(p1, 0, 0, 1, "p1", defaultFds);
+        sys_createProcess(p2, 0, 0, 5, "p2", defaultFds);
+    }else if(strcmp(cmd, "test2") == 0){
+        uint64_t pid = sys_createProcess(p1, 0, 0, 5, "p1", defaultFds);
+        sys_waitpid(pid);
+    }else if(strcmp(cmd, "test3") == 0){
+        sys_createProcess(ps1, 0, 0, 1, "ps1", defaultFds);
+        sys_createProcess(ps2, 0, 0, 3, "ps2", defaultFds);
+    }else if(strcmp(cmd, "pipe") == 0){
+        uint8_t pipeFd = sys_pipeOpen("mi primer pipe");
+        uint8_t fds1[] = {STDIN, pipeFd, STDERR};
+        uint8_t fds2[] = {pipeFd, STDOUT, STDERR};
+        uint64_t pid1 = sys_createProcess(producer, 0, 0, 1, "p", fds1);
+        uint64_t pid2 = sys_createProcess(consumer, 0, 0, 3, "c", fds2);
+        sys_waitpid(pid1);
+        sys_waitpid(pid2);
+        sys_pipeClose(pipeFd);
+    }else if(strcmp(cmd, "ps") == 0){
+        uint64_t pid = sys_createProcess(ps, 0, 0, 5, "ps", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "loop") == 0){
+        sys_createProcess(loop, 0, 0, 1, "loop", defaultFds);
+    }else if (strcmp(cmd, "cat") == 0){
+        uint64_t pid = sys_createProcess(cat, 0, 0, 1, "cat", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "wc") == 0){
+        uint64_t pid = sys_createProcess(wc, 0, 0, 1, "wc", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "filter") == 0){
+        uint64_t pid = sys_createProcess(filter, 0, 0, 1, "filter", defaultFds);
+        sys_waitpid(pid);
+    }else if (strcmp(cmd, "nice") == 0){
+        nice();
+    }else if (strcmp(cmd, "kill") == 0){
+        kill();
+    }else if (strcmp(cmd, "phylo") == 0){
+        char * argv[] = {"phylo"};
+        uint64_t pid = sys_createProcess(runPhylo, 1, argv, 1, argv[0], defaultFds);
+        sys_waitpid(pid);
+    } else if (strcmp(cmd, "testmm") == 0) {
+        uint64_t pid = sys_createProcess(runTestmm, 0, 0, 1, "testmm", defaultFds);
+        sys_waitpid(pid);
+    } else if (strcmp(cmd, "viewmem") == 0) {
+        sys_viewmem();
+    } else if (strcmp(cmd, "block") == 0){
+        block();
+    } else if (strcmp(cmd, "testprio") == 0) {
+        uint64_t pid = sys_createProcess(runTestprio, 0, 0, 1, "testprio", defaultFds);
+        sys_waitpid(pid);
+    } else if (strcmp(cmd, "testprocesses") == 0) {
+        uint64_t pid = sys_createProcess(runTestprocesses, 0, 0, 1, "testprocesses", defaultFds);
+        sys_waitpid(pid);
+    }else{
+>>>>>>> memoryManager
         invalid_command();
         return ;
     }

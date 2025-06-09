@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <libc.h>
 #include <structs.h>
+#include <stddef.h>
 
 void sys_time(char destiny[3][3]);
 void sys_read(char * c);
@@ -36,7 +37,12 @@ int8_t sys_pipeOpen(const char * name);
 void sys_pipeClose(uint8_t pipeId);
 int64_t sys_changePriority(uint64_t pid, uint8_t priority);
 int64_t sys_killProcess(uint64_t pid);
+void *sys_malloc(size_t size);
+void sys_free(void *memToFree);
+void *sys_memset(void * destination, int32_t c, uint64_t length);
+void sys_viewmem();
 int64_t sys_getProcessStatus(uint64_t pid);
 int64_t sys_unblockProcess(uint64_t pid);
 int64_t sys_blockProcess(uint64_t pid);
+
 #endif

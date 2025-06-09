@@ -1,11 +1,13 @@
 #include <videoDriver.h>
 #include <keyboard.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <lib.h>
 #include <time.h>
 #include <soundDriver.h>
 #include <processManager.h>
 #include <semaphores.h>
+#include <memoryManager.h>
 #include "pipes.h"
 
 typedef int64_t (*syscall)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
@@ -197,6 +199,22 @@ static int64_t sys_killProcess(uint64_t pid){
     return exitProcess(pid);
 }
 
+static void * sys_malloc(size_t size) {
+    return malloc(size);
+}
+
+static void sys_free(void *memToFree) {
+    free(memToFree);
+}
+
+void *sys_memset(void * destination, int32_t c, uint64_t length) {
+    return memset(destination, c, length);
+}
+
+void sys_viewmem() {
+    viewmem();
+}
+
 static int64_t sys_blockProcess(uint64_t pid){
     blockProcess(pid);
     return 0;
@@ -217,8 +235,9 @@ syscall syscallTable[] = {
     (syscall)sys_sleep, (syscall)sys_beep, (syscall)sys_readLastPressed, (syscall)sys_ticksElapsed, (syscall)sys_changeFont,
     (syscall)sys_getFontWidth, (syscall)sys_showRegisters, (syscall)sys_clearLastPressed, (syscall)sys_createProcess, (syscall)sys_exitProcess,
     (syscall)sys_waitpid, (syscall)sys_openSem, (syscall)sys_waitSem, (syscall)sys_postSem, (syscall)sys_closeSem, (syscall)sys_getProcessInfo,
-    (syscall)sys_getPid, (syscall)sys_pipeOpen, (syscall)sys_pipeClose, (syscall)sys_changePriority, (syscall)sys_killProcess, 
-    (syscall)sys_blockProcess, (syscall)sys_unblockProcess, (syscall)sys_getProcessStatus
+    (syscall)sys_getPid, (syscall)sys_pipeOpen, (syscall)sys_pipeClose, (syscall)sys_changePriority, (syscall)sys_killProcess,
+    (syscall)sys_malloc, (syscall)sys_free, (syscall)sys_memset, (syscall)sys_viewmem, (syscall)sys_blockProcess, 
+    (syscall)sys_unblockProcess, (syscall)sys_getProcessStatus
 };
 
 uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {

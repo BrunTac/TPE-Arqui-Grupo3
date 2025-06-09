@@ -1,5 +1,5 @@
 #include <processManager.h>
-#include <newmm.h>
+#include <memoryManager.h>
 #include <lib.h>
 #include "pipes.h"
 
@@ -7,8 +7,9 @@ extern char endOfKernel;
 void int_20h();
 
 static entryPCB processes[MAX_PROCESSES];
-mm_t *heapManager;
-mm_t *stackManager;
+
+memory_manager_t *heapManager;
+memory_manager_t *stackManager;
 
 int64_t exitProcess(uint64_t pid){ 
     if (isValidPid(pid)){
@@ -20,6 +21,7 @@ int64_t exitProcess(uint64_t pid){
         removeFromScheduler(pid);
 
         emptyQueue(processes[pid].blockedQueue);
+        free_mm(stackManager, (void *) processes[pid].stackPtr);
     
         int_20h();
         return 0;
@@ -36,10 +38,6 @@ void initMemoryManagers() {
 
     heapManager = createMemoryManager_mm(metadataHeap, heapMemory, HEAP_REGION_SIZE);
     stackManager = createMemoryManager_mm(metadataStack, stackMemory, STACK_REGION_SIZE);
-}
-
-mm_t * getHeap(){
-    return heapManager;
 }
 
 void waitpid(uint64_t pid){
@@ -92,6 +90,7 @@ uint64_t createProcess(function fn, int argc, char * argv[], int priority, const
     }
     processes[pid].fn = fn;
     processes[pid].blockedQueue = newQueue();
+    processes[pid].stackPtr = (uintptr_t) stackPtr;
     strcpy(processes[pid].name, name);
     processes[pid].fileDescriptors[0] = fds[0];
     processes[pid].fileDescriptors[1] = fds[1];
@@ -139,7 +138,5 @@ int8_t getErrorFd(uint64_t pid){
 uint8_t isValidPid(uint64_t pid){
     return pid > 0 && pid < MAX_PROCESSES && !processes[pid].isEmpty;
 }
-
-
 
 

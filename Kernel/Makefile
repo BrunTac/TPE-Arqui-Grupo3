@@ -10,7 +10,20 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
+# Define which files to use for each target before any compilation
+ifeq ($(MAKECMDGOALS),buddy)
+    GCCFLAGS += -DUSE_BUDDY_MM
+    override SOURCES := $(filter-out c/newmm.c,$(wildcard c/*.c))
+else
+    GCCFLAGS += -DUSE_NORMAL_MM
+    override SOURCES := $(filter-out c/buddyMM.c,$(wildcard c/*.c))
+endif
+
+override OBJECTS := $(SOURCES:.c=.o) font.o
+
 all: $(KERNEL)
+
+buddy: $(KERNEL)
 
 $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) font.o
 	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNEL) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS)
