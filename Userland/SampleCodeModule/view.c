@@ -19,7 +19,6 @@ int exited = 0;
 int tokens = 0;
 uint8_t defaultFds[] = {STDIN, STDOUT, STDERR};
 
-uint8_t pipes[MAX_PIPES];
 uint8_t pipeCounter;
 uint8_t isBackground;
 
@@ -119,6 +118,7 @@ int8_t getCommand(char * name){
 }
 
 void pipe_handler(){
+    uint8_t pipes[MAX_PIPES];
     int64_t pids[MAX_PIPES + 1];
     uint8_t i;
     for(i = 0; i < MAX_PIPES + 1; i++){
@@ -126,7 +126,8 @@ void pipe_handler(){
     }
     for(i = 0; i < pipeCounter; i++){
         char name[] = {'p', 'i', 'p', 'e', ' ', i + '0', '\0'};
-        pipes[i] = sys_pipeOpen(name);
+        int64_t aux = sys_pipeOpen(name);
+        pipes[i] = (uint8_t)aux;
     }
     uint8_t fds[] = {-1, -1, STDERR};
     for(uint8_t processes = 0; processes < pipeCounter + 1; processes++){

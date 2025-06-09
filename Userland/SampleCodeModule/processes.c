@@ -46,6 +46,10 @@ void cat(){
     }
 }
 
+void lol(){
+    return ;
+}
+
 void wc(){
     char line[MAX_BUFFER];
     
@@ -73,13 +77,14 @@ void wc(){
                     words++;
                 }
                 chars++;
-                charsInline++;
+                line[charsInline++] = c;
             }
         }
     }
     if(chars > 0){
         lines++;
     }
+    lol();
     printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
 }
 
