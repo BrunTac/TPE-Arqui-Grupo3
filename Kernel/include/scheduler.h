@@ -24,5 +24,6 @@ void getProcessInfo(uint64_t pid, ProcessInfo *info);
 int64_t changePriority(uint64_t pid, uint8_t priority);
 extern uint64_t currentProcess;
 int64_t getStatus(uint64_t pid);
+void terminateForeground();
 
 #endif

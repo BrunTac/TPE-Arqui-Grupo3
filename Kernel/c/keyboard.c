@@ -59,7 +59,6 @@ void keyboard_handler() {
         char key;
 
         checkShift(scanCode);
-
         checkCtrl(scanCode);
 
         if(ctrlOn) {
@@ -67,18 +66,18 @@ void keyboard_handler() {
                         terminateForeground();
                 return;
         }
-
-        if(scanCode >= 0x80)
+        if(scanCode >= 0x80){
                 return;
-
-        if(shiftOn == 1)
+        }
+        if(shiftOn == 1){
                 key = scanCodeToAscii_shiftOn[scanCode];
-        else
+        }else{
                 key = scanCodeToAscii_shiftOff[scanCode];
-
+        }
         if (key != 0x00){
                 bufferKey(key);
                 lastPressed = key;
+        }
 }
 
 void checkShift(uint8_t scanCode) {
@@ -104,10 +103,7 @@ void checkCtrl(uint8_t scanCode) {
                 ctrlOn = 0;
                 return;
         }
-        return;        }
-        
-
-
+        return;
 }
 
 char getKey() {

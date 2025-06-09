@@ -12,7 +12,6 @@ void test_divzero_exep();
 // test_util.c
 //
 
-
 // Random
 static uint32_t m_z = 362436069;
 static uint32_t m_w = 521288629;
@@ -296,7 +295,9 @@ int64_t testprocesses() {
   return test_processes(1, argv);
 }
 
-// test exceptions
+//
+// test_exception.c
+//
 
 void test_exception(uint64_t argc, char * argv[]){
     char * arg = argv[1];
