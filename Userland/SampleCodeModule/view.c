@@ -252,89 +252,16 @@ void consumer(uint64_t argc, char ** argv){
     }
 }
 
-void cat(){
-    int charsInline = 0;
-    char c;
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                charsInline--;
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                charsInline = 0;
-            }else{
-                charsInline++;
-            }
-            putChar(c);
-        }
-    }
-}
-
-void wc(){
-    char line[MAX_BUFFER];
-    
-    int lines = 0;
-    int words = 0;
-    int chars = 0;
-    int charsInline = 0;
-    char c;
-
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                chars--;
-                charsInline--;
-                if(!isSpace(line[charsInline]) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
-                    words--;
-                }
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                lines++;
-                charsInline = 0;
-            }else{
-                if(!isSpace(c) && (charsInline == 0 || isSpace(line[charsInline - 1]))){
-                    words++;
-                }
-                chars++;
-                charsInline++;
-            }
-            putChar(c);
-        }
-    }
-    if(chars > 0){
-        lines++;
-    }
-    printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
-}
-
-void filter(){
-    int charsInline = 0;
-    char c;
-    while((c = getChar()) != '\0'){
-        if(c == '\b'){
-            if(charsInline > 0){
-                charsInline--;
-                putChar(c);
-            }
-        }else{
-            if(c == '\n'){
-                charsInline = 0;
-            }else{
-                charsInline++;
-            }
-            if(!isVocal(c)){
-                putChar(c);
-            }
-        }
-    }
-}
-
-void wrap_testmm() {
+void runTestmm() {
     testmm();
+}
+
+void runTestprio() {
+    testprio();
+}
+
+void runTestprocesses() {
+    testprocesses();
 }
 
 void commandline_handler(){
@@ -399,12 +326,18 @@ void commandline_handler(){
         uint64_t pid = sys_createProcess(runPhylo, 1, argv, 1, argv[0], defaultFds);
         sys_waitpid(pid);
     } else if (strcmp(cmd, "testmm") == 0) {
-        uint64_t pid = sys_createProcess(wrap_testmm, 0, 0, 1, "testmm", defaultFds);
+        uint64_t pid = sys_createProcess(runTestmm, 0, 0, 1, "testmm", defaultFds);
         sys_waitpid(pid);
     } else if (strcmp(cmd, "viewmem") == 0) {
         sys_viewmem();
     } else if (strcmp(cmd, "block") == 0){
         block();
+    } else if (strcmp(cmd, "testprio") == 0) {
+        uint64_t pid = sys_createProcess(runTestprio, 0, 0, 1, "testprio", defaultFds);
+        sys_waitpid(pid);
+    } else if (strcmp(cmd, "testprocesses") == 0) {
+        uint64_t pid = sys_createProcess(runTestprocesses, 0, 0, 1, "testprocesses", defaultFds);
+        sys_waitpid(pid);
     }else{
         invalid_command();
     }

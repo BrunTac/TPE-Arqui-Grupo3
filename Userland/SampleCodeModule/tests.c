@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define MAX_BLOCKS 128
-
 //
 // test_util.c
 //
@@ -73,13 +71,22 @@ void endless_loop() {
     ;
 }
 
-// ACA FALTA endless_loop_print
+void endless_loop_print(uint64_t wait) {
+  int64_t pid = sys_getPid();
+
+  while (1) {
+    printf("%d ", pid);
+    bussy_wait(wait);
+  }
+}
 
 
 
 //
 // test_mm.c
 //
+
+#define MAX_BLOCKS 128
 
 typedef struct MM_rq {
   void *address;
@@ -142,4 +149,145 @@ void test_mm(uint64_t argc, char *argv[]) {
 void testmm() {
   char *args[] = { "100", NULL };  // or whatever limit you want
   test_mm(1, args);
+}
+
+//
+// test_prio.c
+//
+
+#define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
+#define WAIT 10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
+
+#define TOTAL_PROCESSES 3
+#define LOWEST 0  // TODO: Change as required
+#define MEDIUM 1  // TODO: Change as required
+#define HIGHEST 2 // TODO: Change as required
+#define FD_AMOUNT 3
+
+int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
+
+void testprio() {
+  int64_t pids[TOTAL_PROCESSES];
+  char *argv[] = {0};
+  uint64_t i;
+  uint8_t defaultFds[FD_AMOUNT] = {0, 1, 2};
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    pids[i] = sys_createProcess((function) endless_loop_print, 0, argv, 0, "endless_print_loop", defaultFds);
+
+  bussy_wait(WAIT);
+  printf("\nCHANGING PRIORITIES...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    sys_changePriority(pids[i], prio[i]);
+
+  bussy_wait(WAIT);
+  printf("\nBLOCKING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    sys_blockProcess(pids[i]);
+
+  printf("CHANGING PRIORITIES WHILE BLOCKED...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    sys_changePriority(pids[i], MEDIUM);
+
+  printf("UNBLOCKING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    sys_unblockProcess(pids[i]);
+
+  bussy_wait(WAIT);
+  printf("\nKILLING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    sys_killProcess(pids[i]);
+}
+
+//
+// test_processes.c
+//
+
+typedef struct P_rq {
+  int32_t pid;
+  Status state;
+} p_rq;
+
+int64_t test_processes(uint64_t argc, char *argv[]) {
+  uint8_t rq;
+  uint8_t alive = 0;
+  uint8_t action;
+  uint64_t max_processes;
+  char *argvAux[] = {0};
+  uint8_t defaultFds[FD_AMOUNT] = {0, 1, 2};
+
+  if (argc != 1)
+    return -1;
+
+  if ((max_processes = satoi(argv[0])) <= 0)
+    return -1;
+
+  p_rq p_rqs[max_processes];
+
+  while (1) {
+
+    // Create max_processes processes
+    for (rq = 0; rq < max_processes; rq++) {
+      p_rqs[rq].pid = sys_createProcess((function) endless_loop, 0, argvAux, 3, "endless_loop", defaultFds);
+
+      if (p_rqs[rq].pid == -1) {
+        printf("test_processes: ERROR creating process\n");
+        return -1;
+      } else {
+        p_rqs[rq].state = READY;
+        alive++;
+      }
+    }
+
+    // Randomly kills, blocks or unblocks processes until every one has been EXITED
+    while (alive > 0) {
+
+      for (rq = 0; rq < max_processes; rq++) {
+        action = GetUniform(100) % 2;
+
+        switch (action) {
+          case 0:
+            if (p_rqs[rq].state == READY || p_rqs[rq].state == BLOCKED) {
+              if (sys_killProcess(p_rqs[rq].pid) == -1) {
+                printf("test_processes: ERROR killing process\n");
+                return -1;
+              }
+              p_rqs[rq].state = EXITED;
+              alive--;
+            }
+            break;
+
+          case 1:
+            if (p_rqs[rq].state == READY) {
+              if (sys_blockProcess(p_rqs[rq].pid) == -1) {
+                printf("test_processes: ERROR blocking process\n");
+                return -1;
+              }
+              p_rqs[rq].state = BLOCKED;
+            }
+            break;
+        }
+      }
+
+      // Randomly unblocks processes
+      for (rq = 0; rq < max_processes; rq++)
+        if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
+          if (sys_unblockProcess(p_rqs[rq].pid) == -1) {
+            printf("test_processes: ERROR unblocking process\n");
+            return -1;
+          }
+          p_rqs[rq].state = READY;
+        }
+    }
+  }
+}
+
+int64_t testprocesses() {
+  char * argv[] = {"10"};
+  return test_processes(1, argv);
 }

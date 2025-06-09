@@ -6,5 +6,7 @@ uint8_t memcheck(void *start, uint8_t value, uint32_t size);
 int64_t satoi(char *str);
 void bussy_wait(uint64_t n);
 void endless_loop();
-// falta endless_loop_print
+void endless_loop_print(uint64_t wait);
 void testmm();
+void testprio();
+int64_t testprocesses();
