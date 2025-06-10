@@ -322,11 +322,8 @@ void test_divzero_exep(){
 // test_sync.c
 //
 
-<<<<<<< HEAD
-=======
 #define TOTAL_PAIR_PROCESSES 2
 
->>>>>>> main
 int64_t global; // shared memory
 
 void slowInc(int64_t *p, int64_t inc) {
@@ -340,10 +337,6 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
-<<<<<<< HEAD
-  int8_t sem;
-=======
->>>>>>> main
   char * SEM_ID = "sem";
 
 

@@ -375,14 +375,6 @@ void runTestprocesses() {
     testprocesses();
 }
 
-void runTestsync() {
-    testsync();
-}
-
-void runTestnosync() {
-    testnosync();
-}
-
 void runViewMem(){
     sys_viewmem();
 }
