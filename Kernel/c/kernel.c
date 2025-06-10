@@ -7,7 +7,6 @@
 #include <idtLoader.h>
 #include <interrupts.h>
 #include <processManager.h>
-#include <tests.h>
 
 extern uint8_t text;
 extern uint8_t rodata;

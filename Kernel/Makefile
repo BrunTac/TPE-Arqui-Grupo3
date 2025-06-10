@@ -13,7 +13,7 @@ STATICLIBS=
 # Define which files to use for each target before any compilation
 ifeq ($(MAKECMDGOALS),buddy)
     GCCFLAGS += -DUSE_BUDDY_MM
-    override SOURCES := $(filter-out c/newmm.c,$(wildcard c/*.c))
+    override SOURCES := $(filter-out c/chosenMM.c,$(wildcard c/*.c))
 else
     GCCFLAGS += -DUSE_NORMAL_MM
     override SOURCES := $(filter-out c/buddyMM.c,$(wildcard c/*.c))

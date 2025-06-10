@@ -328,7 +328,7 @@ int64_t global; // shared memory
 
 void slowInc(int64_t *p, int64_t inc) {
   uint64_t aux = *p;
-  //sys_yield(); // This makes the race condition highly probable
+  sys_yield(); // This makes the race condition highly probable
   aux += inc;
   *p = aux;
 }
@@ -357,10 +357,10 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
           return -1;
     }
   }
-    
-
+  
   uint64_t i;
   for (i = 0; i < n; i++) {
+    //printf("n: %d%n", global);
     if (use_sem)
       sys_waitSem(sem);
     slowInc(&global, inc);
@@ -391,6 +391,7 @@ uint64_t test_sync(uint64_t argc, char *argv[]) {
 
   global = 0;
 
+  
   uint64_t i;
   for (i = 0; i < processPairs; i++) {
     pids[i] = sys_createProcess((function) my_process_inc, 4, argvDec, 1, defaultFds, 1);
