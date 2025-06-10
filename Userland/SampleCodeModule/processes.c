@@ -16,11 +16,11 @@ void ps() {
     int count = sys_getProcessInfo(processes);
 
     for (int i = 0; i < count; i++) {
-        printf("PID: %d | PPID: %d | PRI: %d | STATE: %s | NAME: %s | RSP: %d\n",
+        printf("PID: %d | PPID: %d | PRI: %d | STATUS: %s | NAME: %s | RSP: %d\n",
                processes[i].pid,
                processes[i].ppid,
                processes[i].priority,
-               processes[i].status  == 0 ? "READY" : (processes[i].priority == 1 ? "BLOCKED" : "EXITED"),
+               processes[i].status == 0 ? "READY" : (processes[i].status == 1 ? "BLOCKED" : "EXITED"),
                processes[i].name,
                processes[i].rsp);
     }
