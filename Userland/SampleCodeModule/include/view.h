@@ -45,5 +45,7 @@ void printHeader();
 void invalid_command();
 
 int checkArguments(int arguments);
+void runTestsync();
+void runTestnosync();
 
 #endif

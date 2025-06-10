@@ -70,7 +70,7 @@ void yieldProcess(uint64_t pid){
 
 void yieldAll() {
     for(int i = 0 ; i < MAX_PROCESSES ; i++)
-        if(isValidPid(pid))
+        if(isValidPid(i))
             yieldProcess(i);
 }
 
