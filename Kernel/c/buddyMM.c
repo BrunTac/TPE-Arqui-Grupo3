@@ -175,7 +175,7 @@ static void searchTree(buddy_t *node, size_t *usedMemory, size_t *fragmentCount)
     if (!node->left && !node->right) {
         (*fragmentCount)++;
         if (!node->isFree) {
-            *usedMemory += node->size;
+            *usedMemory += node->size
         }
         return;
     }
