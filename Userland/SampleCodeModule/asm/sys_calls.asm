@@ -35,7 +35,7 @@ GLOBAL sys_viewmem
 GLOBAL sys_unblockProcess
 GLOBAL sys_blockProcess
 GLOBAL sys_getProcessStatus
-GLOBAL sys_yieldAll
+GLOBAL sys_yield
 
 section .text
 
@@ -224,7 +224,7 @@ sys_getProcessStatus:
     int 80h
     ret
 
-sys_yieldAll:
+sys_yield:
     mov rax, 38
     int 80h
     ret

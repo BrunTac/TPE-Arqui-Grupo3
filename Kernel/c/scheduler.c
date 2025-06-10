@@ -68,12 +68,6 @@ void yieldProcess(uint64_t pid){
     int_20h();
 }
 
-void yieldAll() {
-    for(int i = 0 ; i < MAX_PROCESSES ; i++)
-        if(isValidPid(i))
-            yieldProcess(i);
-}
-
 void getProcessInfo(uint64_t pid, ProcessInfo *info){
     info->status = processes[pid].status;
     info->rsp = processes[pid].rsp; 
