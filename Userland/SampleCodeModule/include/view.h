@@ -40,6 +40,8 @@ void runViewMem();
 void runTestprocesses();
 void runTestprio();
 void runTestmm();
+void runTestsync();
+void runTestnosync();
 
 void printHeader();
 void invalid_command();

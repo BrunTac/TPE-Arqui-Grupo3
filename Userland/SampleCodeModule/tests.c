@@ -322,8 +322,6 @@ void test_divzero_exep(){
 // test_sync.c
 //
 
-#define TOTAL_PAIR_PROCESSES 2
-
 int64_t global; // shared memory
 char * SEM_ID = "sem";
 
@@ -338,6 +336,8 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
+  char * SEM_ID = "sem";
+
 
   if (argc != 4)
     return -1;
