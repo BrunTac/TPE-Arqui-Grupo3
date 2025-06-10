@@ -19,7 +19,7 @@ void ps() {
         printf("PID: %d | PPID: %d | PRI: %d | STATE: %d | NAME: %s | RSP: %d\n",
                processes[i].pid,
                processes[i].ppid,
-               processes[i].priority,
+               processes[i].priority == 0 ? "READY" : (processes[i].priority == 1 ? "BLOCKED" : "EXITED"),
                processes[i].status,
                processes[i].name,
                processes[i].rsp);
