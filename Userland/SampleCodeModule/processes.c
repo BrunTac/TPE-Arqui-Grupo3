@@ -5,7 +5,7 @@
 
 void loop(){
     int pid = sys_getPid();
-    for (uint8_t i = 0; i < 10; i++){
+    while(1){
         printf("This is my pid: %d\n", pid);
         sys_sleep(20);
     }
@@ -16,11 +16,11 @@ void ps() {
     int count = sys_getProcessInfo(processes);
 
     for (int i = 0; i < count; i++) {
-        printf("PID: %d | PPID: %d | PRI: %d | STATE: %d | NAME: %s | RSP: %d\n",
+        printf("PID: %d | PPID: %d | PRI: %d | STATUS: %s | NAME: %s | RSP: %d\n",
                processes[i].pid,
                processes[i].ppid,
                processes[i].priority,
-               processes[i].status,
+               processes[i].status == 0 ? "READY" : (processes[i].status == 1 ? "BLOCKED" : "EXITED"),
                processes[i].name,
                processes[i].rsp);
     }
@@ -44,10 +44,6 @@ void cat(){
             putChar(c);
         }
     }
-}
-
-void lol(){
-    return ;
 }
 
 void wc(){
@@ -84,7 +80,6 @@ void wc(){
     if(chars > 0){
         lines++;
     }
-    lol();
     printf("%nlines: %d    words: %d    chars: %d%n", lines, words, chars);
 }
 

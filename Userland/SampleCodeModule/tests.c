@@ -171,12 +171,13 @@ int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
 void testprio() {
   int64_t pids[TOTAL_PROCESSES];
-  char *argv[] = {0};
   uint64_t i;
   uint8_t defaultFds[FD_AMOUNT] = {0, 1, 2};
 
-  for (i = 0; i < TOTAL_PROCESSES; i++)
-    pids[i] = sys_createProcess((function) endless_loop_print, 0, argv, 0, "endless_print_loop", defaultFds);
+  for (i = 0; i < TOTAL_PROCESSES; i++){
+    char * argv[] = {"endless_print_loop"};
+    pids[i] = sys_createProcess((function) endless_loop_print, 1, argv, 0, defaultFds, 1);
+  }
 
   bussy_wait(WAIT);
   printf("\nCHANGING PRIORITIES...\n");
@@ -221,7 +222,6 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   uint8_t alive = 0;
   uint8_t action;
   uint64_t max_processes;
-  char *argvAux[] = {0};
   uint8_t defaultFds[FD_AMOUNT] = {0, 1, 2};
 
   if (argc != 1)
@@ -236,7 +236,8 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = sys_createProcess((function) endless_loop, 0, argvAux, 3, "endless_loop", defaultFds);
+      char * argv[] = {"endless_loop"};
+      p_rqs[rq].pid = sys_createProcess((function) endless_loop, 1, argv, 3, defaultFds, 1);
 
       if (p_rqs[rq].pid == -1) {
         printf("test_processes: ERROR creating process\n");
@@ -321,11 +322,16 @@ void test_divzero_exep(){
 // test_sync.c
 //
 
+<<<<<<< HEAD
+=======
+#define TOTAL_PAIR_PROCESSES 2
+
+>>>>>>> main
 int64_t global; // shared memory
 
 void slowInc(int64_t *p, int64_t inc) {
   uint64_t aux = *p;
-  sys_yieldAll(); // This makes the race condition highly probable
+  sys_yield(); // This makes the race condition highly probable
   aux += inc;
   *p = aux;
 }
@@ -334,36 +340,39 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
+<<<<<<< HEAD
   int8_t sem;
+=======
+>>>>>>> main
   char * SEM_ID = "sem";
 
-  if (argc != 3)
+
+  if (argc != 4)
     return -1;
 
-  if ((n = satoi(argv[0])) <= 0)
+  if ((n = satoi(argv[1])) <= 0)
     return -1;
-  if ((inc = satoi(argv[1])) == 0)
+  if ((inc = satoi(argv[2])) == 0)
     return -1;
-  if ((use_sem = satoi(argv[2])) < 0) 
+  if ((use_sem = satoi(argv[3])) < 0)
     return -1;
 
-  if (use_sem) {
-    sem = sys_openSem(SEM_ID, 1) + 1;
-    if (!sem) {
-      printf("test_sync: ERROR opening semaphore\n");
-      return -1;
+  uint8_t sem;
+  if (use_sem){
+    if ((sem = sys_openSem(SEM_ID, 1)) == -1) {
+          printf("test_sync: ERROR opening semaphore%n");
+          return -1;
     }
   }
-
-  printf("%d%n", use_sem);
-
+  
   uint64_t i;
   for (i = 0; i < n; i++) {
-    if (use_sem) 
+    //printf("n: %d%n", global);
+    if (use_sem)
       sys_waitSem(sem);
     slowInc(&global, inc);
     if (use_sem)
-      sys_waitSem(sem);
+      sys_postSem(sem);
   }
 
   if (use_sem)
@@ -372,27 +381,28 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   return 0;
 }
 
-uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, pares de procesos, use_sem, 0}
+uint64_t test_sync(uint64_t argc, char *argv[]) {
   int64_t processPairs;
   
-  if((processPairs = satoi(argv[1])) <= 0)
+  if((processPairs = satoi(argv[2])) <= 0)
       return -1;
 
   uint64_t pids[2 * processPairs];
   uint8_t defaultFds[FD_AMOUNT] = {0, 1, 2};
 
-  if (argc != 2)
+  if (argc != 4)
     return -1;
 
-  char *argvDec[] = {argv[0], "-1", argv[2], NULL};
-  char *argvInc[] = {argv[0], "1", argv[2], NULL};
+  char *argvDec[] = {argv[0], argv[1], "-1", argv[3], NULL};
+  char *argvInc[] = {argv[0], argv[1], "1", argv[3], NULL};
 
   global = 0;
 
+  
   uint64_t i;
   for (i = 0; i < processPairs; i++) {
-    pids[i] = sys_createProcess((function) my_process_inc, 3, argvDec, 1, "my_process_inc", defaultFds);
-    pids[i + processPairs] = sys_createProcess((function) my_process_inc, 3, argvInc, 1, "my_process_inc", defaultFds);
+    pids[i] = sys_createProcess((function) my_process_inc, 4, argvDec, 1, defaultFds, 1);
+    pids[i + processPairs] = sys_createProcess((function) my_process_inc, 4, argvInc, 1, defaultFds, 1);
   }
 
   for (i = 0; i < processPairs; i++) {
@@ -400,17 +410,17 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, pares de procesos, use_s
     sys_waitpid(pids[i + processPairs]);
   }
 
-  printf("Final value: %d\n", global);
+  printf("Final value: %d%n", global);
 
   return 0;
 }
 
-uint64_t testsync() {
-  char * argv[] = {"500", "5", "1", 0};
-  return test_sync(2, argv);
+uint64_t testsync(char * n, char * processPairs) {
+  char * argv[] = {"testsync", n, processPairs, "1", 0};
+  return test_sync(4, argv);
 }
 
-uint64_t testnosync() {
-  char * argv[] = {"500", "5", "0", 0};
-  return test_sync(2, argv);
-} 
+uint64_t testnosync(char * n, char * processPairs) {
+  char * argv[] = {"testnosync", n, processPairs, "0", 0};
+  return test_sync(4, argv);
+}

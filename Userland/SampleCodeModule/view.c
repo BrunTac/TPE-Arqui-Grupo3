@@ -36,7 +36,7 @@ Command commands[] = {
     {"kill", "terminates a process given a pid", kill, 2, 1, 0}, {"nice", "updates priority, given a pid and a prority", nice, 3, 1, 0},
     {"phylo", "displays the philosophers-comensals problem given an initial amount", runPhylo, 2, 0, 0},  {"mem", "displays memory state", runViewMem, 1, 1, 1},
     {"testmm" , "tests memory manager", runTestmm, 1, 0, 1}, {"testPrio" , "tests priority on procesess", runTestprio, 1, 0, 1}, {"testProcesses" , "tests processes", runTestprocesses, 1, 0, 1},
-    {"testsync", "tests semaphores with synchronization", runTestsync, 1, 0, 1}, {"testnosync", "tests semaphores without synchronization", runTestnosync, 1, 0, 1},
+    {"testsync", "tests semaphores with synchronization", runTestsync, 3, 0, 1}, {"testnosync", "tests semaphores without synchronization", runTestnosync, 3, 0, 1},
     {NULL, NULL, NULL, 0, 0, 0}
 };
 
@@ -154,7 +154,7 @@ void pipe_handler(){
             fds[1] = pipes[processes];
         }
         char * argv[] = {commands[cmdIdx].name};
-        pids[processes] = sys_createProcess(commands[cmdIdx].fn, 1, argv, DEFAULT_PRIORITY, argv[0], fds);
+        pids[processes] = sys_createProcess(commands[cmdIdx].fn, 1, argv, DEFAULT_PRIORITY, fds, 0);
     }
     for(i = 0; i < pipeCounter + 1; i++){
         sys_waitpid(pids[i]);
@@ -215,7 +215,7 @@ void commandline_handler(){
         if(commands[i].isBuiltIn){
             commands[i].fn(commands[i].argc, argv);
         }else{
-            uint64_t pid = sys_createProcess(commands[i].fn, commands[i].argc, argv, DEFAULT_PRIORITY, argv[0], defaultFds);
+            uint64_t pid = sys_createProcess(commands[i].fn, commands[i].argc, argv, DEFAULT_PRIORITY, defaultFds, isBackground);
             if(!isBackground){
                 sys_waitpid(pid);
             }
@@ -309,10 +309,13 @@ void nice(uint64_t argc, char * argv[]){
 
 void kill(uint64_t argc, char * argv[]){
     uint64_t pid = atoi(argv[1]);
+    if(pid < sys_getPid()){
+        printError("Can not kill shell or lower\n");
+    }
     if (sys_killProcess(pid) == 0){
         printf("Process with pid %d killed successfully\n", atoi(argv[1]));
     }else{
-        printf("Invalid pid\n");
+        printError("Invalid pid\n");
     }   
 }
 
@@ -382,6 +385,14 @@ void runTestnosync() {
 
 void runViewMem(){
     sys_viewmem();
+}
+
+void runTestsync(uint64_t argc, char * argv[]) {
+    testsync(argv[1], argv[2]);
+}
+
+void runTestnosync(uint64_t argc, char * argv[]) {
+    testnosync(argv[1], argv[2]);
 }
 
 void invalid_command(char * cmd){

@@ -24,7 +24,7 @@ void sys_ticksElapsed(int * ans);
 void sys_getFontWidth(int * ans);
 void sys_showRegisters();
 void sys_clearLastPressed();
-int64_t sys_createProcess(function fn, int argc, char * argv[], int priority, const char * name, uint8_t fds[FD_AMOUNT]);
+int64_t sys_createProcess(function fn, int argc, char * argv[], int priority, uint8_t fds[FD_AMOUNT], uint8_t isBackground);
 void sys_exitProcess();
 void sys_waitpid(uint64_t pid);
 int8_t sys_openSem(const char * name, uint64_t value);
@@ -44,6 +44,6 @@ int64_t sys_viewmem();
 int64_t sys_getProcessStatus(uint64_t pid);
 int64_t sys_unblockProcess(uint64_t pid);
 int64_t sys_blockProcess(uint64_t pid);
-void sys_yieldAll();
+void sys_yield();
 
 #endif

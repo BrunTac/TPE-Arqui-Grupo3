@@ -13,7 +13,7 @@ void initScheduler(){
     currentProcess = -1;
     char * name = "root";
 	char * argv[] = {name};
-    currentProcess = createProcess(root, 1, argv, 0, name, NULL);
+    currentProcess = createProcess(root, 1, argv, 0, NULL, 1);
 
     for(int i = 1; i < MAX_PROCESSES; i++){
         processes[i].status = -1;
@@ -68,14 +68,6 @@ void yieldProcess(uint64_t pid){
     int_20h();
 }
 
-void yieldAll() {
-    for(int i = 0 ; i < MAX_PROCESSES ; i++) {
-        if(isValidPid(i)) {
-            yieldProcess(i);
-        }
-    }
-}
-
 void getProcessInfo(uint64_t pid, ProcessInfo *info){
     info->status = processes[pid].status;
     info->rsp = processes[pid].rsp; 
@@ -88,13 +80,6 @@ int64_t changePriority(uint64_t pid, uint8_t priority){
         return 0;
     }
     return -1;
-} 
-
-void terminateForeground() {
-    for(int i = 2 ; i < MAX_PROCESSES ; i++)
-        if(processes[i].status == READY) {
-            exitProcess(i);
-        }
 }
 
 int64_t getStatus(uint64_t pid){
