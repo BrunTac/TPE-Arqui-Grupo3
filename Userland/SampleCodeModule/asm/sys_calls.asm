@@ -36,6 +36,7 @@ GLOBAL sys_unblockProcess
 GLOBAL sys_blockProcess
 GLOBAL sys_getProcessStatus
 GLOBAL sys_yield
+GLOBAL sys_createSem
 
 section .text
 
@@ -226,5 +227,10 @@ sys_getProcessStatus:
 
 sys_yield:
     mov rax, 38
+    int 80h
+    ret
+
+sys_createSem:
+    mov rax, 39
     int 80h
     ret

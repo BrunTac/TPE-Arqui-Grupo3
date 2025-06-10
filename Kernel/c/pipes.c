@@ -29,7 +29,7 @@ int64_t pipe_open(const char * name){
     pipes[firstFree]->toBeRead = 0;
     pipes[firstFree]->writingQueue = newQueue();
     pipes[firstFree]->readingQueue = newQueue();
-    pipes[firstFree]->sem = sem_open(name, 1);
+    pipes[firstFree]->sem = sem_create(name, 1);
     pipes[firstFree]->openingProcessCount = 1;
 
     return firstFree + FD_AMOUNT;

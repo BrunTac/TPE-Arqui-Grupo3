@@ -156,8 +156,12 @@ static int64_t sys_exitProcess() {
     return 0;
 }
 
-static int64_t sys_openSem(const char * name, uint64_t value) {
-    return sem_open(name, value);
+static int64_t sys_createSem(const char * name, uint64_t value) {
+    return sem_create(name, value);
+}
+
+static int64_t sys_openSem(const char * name) {
+    return sem_open(name);
 }
 
 static int64_t sys_waitSem(uint8_t sem) {
@@ -244,7 +248,7 @@ syscall syscallTable[] = {
     (syscall)sys_waitpid, (syscall)sys_openSem, (syscall)sys_waitSem, (syscall)sys_postSem, (syscall)sys_closeSem, (syscall)sys_getProcessInfo,
     (syscall)sys_getPid, (syscall)sys_pipeOpen, (syscall)sys_pipeClose, (syscall)sys_changePriority, (syscall)sys_killProcess,
     (syscall)sys_malloc, (syscall)sys_free, (syscall)sys_memset, (syscall)sys_viewmem, (syscall)sys_blockProcess, 
-    (syscall)sys_unblockProcess, (syscall)sys_getProcessStatus, (syscall)sys_yield
+    (syscall)sys_unblockProcess, (syscall)sys_getProcessStatus, (syscall)sys_yield, (syscall)sys_createSem
 };
 
 uint64_t sysCallDispatcher(uint64_t id, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t arg6) {

@@ -40,7 +40,7 @@ uint8_t printing;
 void phylo(uint8_t initialPhilos){
     printPhyloHeader(initialPhilos);
     
-    printUpdateSem = sys_openSem("printUpdateSem", 1);
+    printUpdateSem = sys_createSem("printUpdateSem", 1);
     printing = 0;
     char * argv[] = {"view"};
     uint64_t viewPid = sys_createProcess(view, 1, argv, 1, fds, 0);
@@ -85,7 +85,7 @@ void emptyTable(){
 }
 
 void addPhilosopher(uint8_t idx){
-    forks[idx] = sys_openSem(names[idx], 1);
+    forks[idx] = sys_createSem(names[idx], 1);
 
     char idxToStr[] = {idx + '0', '\0'};
     char * argv[] = {names[idx], idxToStr};

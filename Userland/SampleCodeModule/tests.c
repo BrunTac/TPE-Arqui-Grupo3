@@ -325,6 +325,7 @@ void test_divzero_exep(){
 #define TOTAL_PAIR_PROCESSES 2
 
 int64_t global; // shared memory
+char * SEM_ID = "sem";
 
 void slowInc(int64_t *p, int64_t inc) {
   uint64_t aux = *p;
@@ -337,8 +338,6 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
-  char * SEM_ID = "sem";
-
 
   if (argc != 4)
     return -1;
@@ -352,7 +351,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
 
   uint8_t sem;
   if (use_sem){
-    if ((sem = sys_openSem(SEM_ID, 1)) == -1) {
+    if ((sem = sys_openSem(SEM_ID)) == -1) {
           printf("test_sync: ERROR opening semaphore%n");
           return -1;
     }
@@ -391,7 +390,7 @@ uint64_t test_sync(uint64_t argc, char *argv[]) {
 
   global = 0;
 
-  
+  sys_createSem(SEM_ID, 1);
   uint64_t i;
   for (i = 0; i < processPairs; i++) {
     pids[i] = sys_createProcess((function) my_process_inc, 4, argvDec, 1, defaultFds, 1);

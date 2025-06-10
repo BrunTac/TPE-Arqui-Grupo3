@@ -41,16 +41,26 @@ void sem_wait(uint8_t sem){
     unlock(&sems[sem]->lock);
 }
 
-int64_t sem_open(const char * name, uint64_t value){
+int64_t sem_open(const char * name){
+    for(uint8_t i = 0; i < MAX_SEMAPHORES; i++){
+        if(sems[i] && strcmp(sems[i]->name, name) == 0){
+            sems[i]->processCount++;
+            return i;
+        }
+    }
+    return -1;
+}
+
+int64_t sem_create(const char * name, uint64_t value){
     int8_t firstFree = -1;
     for(uint8_t i = 0; i < MAX_SEMAPHORES; i++){
         if(firstFree == -1 && !sems[i]){
             firstFree = i;
         }
         if(sems[i] && strcmp(sems[i]->name, name) == 0){
-            sems[i]->processCount++;
-            sems[i]->value = value;
-            return i;
+            sem_destroy(i);
+            firstFree = i;
+            break;
         }
     }
     if(firstFree == -1){
@@ -74,9 +84,7 @@ void sem_close(uint8_t sem){
     tryLock(&sems[sem]->lock);
     if(sems[sem]->processCount-- == 1){
         unlock(&sems[sem]->lock);
-        freeQueue(sems[sem]->waitingQueue);
-        free(sems[sem]);
-        sems[sem] = NULL;
+        sem_destroy(sem);
         return ;
     }
     unlock(&sems[sem]->lock);
@@ -84,4 +92,10 @@ void sem_close(uint8_t sem){
 
 uint8_t sem_isValid(uint8_t sem){
     return sem >= 0 && sem < MAX_SEMAPHORES && sems[sem] != NULL;
+}
+
+void sem_destroy(uint8_t sem){
+    freeQueue(sems[sem]->waitingQueue);
+    free(sems[sem]);
+    sems[sem] = NULL;
 }
